@@ -124,3 +124,106 @@ Goals of OS:
 - Fairness
 - Reliability
 - Security
+# Functions of Operating System
+
+## 1. Process Management
+Manages execution of processes.
+
+Functions:
+- Create process
+- Schedule process
+- Suspend process
+- Resume process
+- Terminate process
+
+Example:
+CPU executes:
+Chrome → VS Code → Spotify
+
+---
+
+## 2. Memory Management
+Manages RAM allocation and deallocation.
+
+Functions:
+- Allocate memory
+- Free memory
+- Track memory usage
+- Protect memory
+
+Example:
+8GB RAM:
+- Chrome → 2GB
+- VS Code → 1GB
+- Spotify → 500MB
+
+---
+
+## 3. File Management
+Manages files and directories.
+
+Functions:
+- Create/Delete files
+- Create/Delete folders
+- Manage permissions
+
+Example:
+Creating or deleting a file is handled by OS.
+
+---
+
+## 4. Device Management
+Controls hardware devices.
+
+Functions:
+- Allocate devices
+- Release devices
+- Manage device drivers
+
+Example:
+Keyboard → OS → Application
+
+---
+
+## 5. Security and Protection
+Protects processes and files.
+
+Example:
+Chrome cannot access WhatsApp memory directly.
+
+---
+
+## 6. Resource Allocation
+Distributes CPU, RAM and devices fairly.
+
+Example:
+CPU time is shared among Chrome, VS Code and Spotify.
+
+---
+
+## 7. Error Detection
+Detects hardware and software failures.
+
+Example:
+Disk failure or printer disconnect.
+
+---
+
+## 8. Accounting
+Tracks resource usage.
+
+Example:
+Task Manager showing CPU and RAM usage.
+
+---
+
+## 9. Communication Management
+Allows processes to communicate.
+
+Example:
+Browser process communicates with network process.
+
+---
+
+## Interview One-Liner
+OS manages processes, memory, files, devices and system resources efficiently.
