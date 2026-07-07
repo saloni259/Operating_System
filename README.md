@@ -706,3 +706,280 @@ Program -> Stored instructions.
 Process -> Program under execution.
 
 Thread -> Smallest unit of execution inside a process.
+# Process Memory Layout
+
+Whenever we run a program, the OS loads it into RAM and creates a process.
+
+The OS does **not** place everything randomly in memory. Instead, it divides the process memory into different sections, and each section has a specific purpose.
+
+A process memory layout looks like this:
+
++--------------------+
+| Stack              |  ↓ Grows Down
++--------------------+
+|                    |
+| Heap               |  ↑ Grows Up
+|                    |
++--------------------+
+| Data Segment       |
++--------------------+
+| Code Segment       |
++--------------------+
+
+Each section stores different types of data.
+
+---
+
+# 1. Code Segment (Text Segment)
+
+The Code Segment stores the actual instructions of our program.
+
+Whatever functions we write are converted into machine code after compilation and stored here.
+
+Example:
+
+```cpp
+int add(int a, int b){
+    return a + b;
+}
+```
+
+The compiled instructions of the `add()` function are stored in the Code Segment.
+
+### Characteristics
+- Stores executable instructions.
+- Usually read-only so the program cannot accidentally modify its own code.
+- If two processes run the same program (e.g., two Chrome windows), they can share the same code segment to save memory.
+
+**Easy way to remember:**
+Think of it as the **instruction manual** of the program.
+
+---
+
+# 2. Data Segment
+
+The Data Segment stores **global variables** and **static variables** because they exist throughout the program's execution.
+
+Example:
+
+```cpp
+int x = 10;
+static int y = 20;
+```
+
+Both `x` and `y` are stored in the Data Segment.
+
+The Data Segment has two parts:
+
+### (a) Initialized Data Segment
+
+Stores variables that already have a value.
+
+Example:
+
+```cpp
+int marks = 100;
+```
+
+### (b) BSS (Uninitialized Data Segment)
+
+Stores variables that are declared but not initialized.
+
+Example:
+
+```cpp
+int count;
+```
+
+The OS automatically initializes such variables to **0**.
+
+**Easy way to remember:**
+Data Segment stores variables that live for the **entire lifetime of the program**.
+
+---
+
+# 3. Heap
+
+Heap memory is used whenever memory is allocated **dynamically** during program execution.
+
+Whenever we use:
+
+- `new`
+- `malloc()`
+- `calloc()`
+- `realloc()`
+
+the memory comes from the Heap.
+
+Example:
+
+```cpp
+int* arr = new int[100];
+```
+
+The array of 100 integers is stored in the Heap.
+
+### Characteristics
+- Used for dynamic memory allocation.
+- Memory remains allocated until we explicitly free it.
+- Grows upward.
+- Slightly slower than Stack because the OS has to manage it.
+
+Example:
+
+```cpp
+delete[] arr;
+```
+
+If we forget to free heap memory, it leads to a **Memory Leak**.
+
+**Easy way to remember:**
+Heap is like renting a room—you keep it until you return it.
+
+---
+
+# 4. Stack
+
+The Stack stores temporary data needed while functions are executing.
+
+It stores:
+- Local variables
+- Function parameters
+- Return addresses
+- Function call information
+
+Example:
+
+```cpp
+void fun() {
+    int x = 10;
+}
+```
+
+The variable `x` is stored in the Stack.
+
+When the function finishes, `x` is automatically removed.
+
+### Characteristics
+- Managed automatically by the compiler/OS.
+- Very fast access.
+- Grows downward.
+- Memory is automatically freed when the function ends.
+
+**Easy way to remember:**
+Stack is like a notebook used during work. Once the work is finished, the notes are erased automatically.
+
+---
+
+# Complete Example
+
+```cpp
+int globalVar = 100;
+
+int main() {
+
+    int localVar = 10;
+
+    int* ptr = new int(20);
+
+    return 0;
+}
+```
+
+Memory allocation:
+
+- `globalVar` → Data Segment
+- `main()` instructions → Code Segment
+- `localVar` → Stack
+- `ptr` (pointer variable) → Stack
+- Value `20` created using `new` → Heap
+
+---
+
+# Why do Heap and Stack grow in opposite directions?
+
+Stack grows downward.
+
+Heap grows upward.
+
+This design allows both to use the available memory efficiently.
+
+As long as they don't meet, memory can be used safely.
+
+If they collide, the program usually crashes due to memory overflow.
+
+---
+
+# Real-Life Analogy
+
+Imagine a company.
+
+📖 **Code Segment** → Company's rule book (instructions).
+
+📂 **Data Segment** → Permanent employee records.
+
+📦 **Heap** → Temporary storage room. Things remain there until someone removes them.
+
+📝 **Stack** → Daily work notes. Once the day's work is finished, the notes are thrown away automatically.
+
+---
+
+# Interview Questions
+
+### Q1. What are the four sections of Process Memory Layout?
+
+- Code Segment
+- Data Segment
+- Heap
+- Stack
+
+---
+
+### Q2. Where are local variables stored?
+
+Stack.
+
+---
+
+### Q3. Where are global and static variables stored?
+
+Data Segment.
+
+---
+
+### Q4. Where is dynamically allocated memory stored?
+
+Heap.
+
+---
+
+### Q5. Why is Stack faster than Heap?
+
+Because Stack memory is managed automatically, whereas Heap memory requires dynamic allocation and deallocation.
+
+---
+
+### Q6. What happens if Heap memory is not freed?
+
+It causes a **Memory Leak**, where memory remains occupied even though it is no longer needed.
+
+---
+
+# Quick Revision
+
+| Memory Section | Stores |
+|---------------|--------------------------------|
+| Code Segment | Program instructions/functions |
+| Data Segment | Global & Static variables |
+| Heap | Dynamically allocated memory (`new`, `malloc`) |
+| Stack | Local variables, function calls, parameters |
+
+---
+
+# One-Line Summary
+
+Whenever a program starts executing, the OS creates a process and divides its memory into four parts:
+- **Code** for instructions,
+- **Data** for global/static variables,
+- **Heap** for dynamic memory,
+- **Stack** for local variables and function calls.
