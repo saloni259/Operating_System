@@ -579,3 +579,130 @@ Types of Operating Systems:
 3. What is RTOS?
 4. Difference between Hard RTOS and Soft RTOS?
 5. Why was Multiprogramming introduced?
+# Program vs Process vs Thread
+
+## Program
+
+A program is just a file containing instructions stored in disk. It is not doing anything until we run it.
+
+Examples:
+- chrome.exe
+- code.exe
+- spotify.exe
+
+These files are simply sitting in storage waiting to be executed.
+
+So we can say:
+
+Program = Instructions stored in disk.
+
+Think of it like a recipe book lying on a table. The instructions are there but nobody is cooking yet.
+
+---
+
+## Process
+
+When we run a program, OS loads it into RAM and starts executing it.
+
+At this point the program becomes a process.
+
+For example:
+
+chrome.exe stored in SSD -> Program
+
+Double click Chrome -> OS loads it into RAM -> Chrome Process is created.
+
+Therefore,
+
+Program + Execution = Process
+
+Unlike programs, processes are active because they are actually using CPU and memory.
+
+A process contains:
+- Program code
+- Data
+- Stack
+- Heap
+- CPU registers
+- Program counter
+
+One important thing to remember:
+
+A single program can create multiple processes.
+
+Example:
+
+Opening Chrome three times creates:
+- Chrome Process 1
+- Chrome Process 2
+- Chrome Process 3
+
+even though the program is still the same chrome.exe file.
+
+---
+
+## Thread
+
+A process may need to do many things at the same time.
+
+For example, while using Chrome:
+
+- one task loads the webpage,
+- another downloads files,
+- another plays videos,
+- another handles mouse clicks.
+
+If only one execution path existed, Chrome would freeze frequently.
+
+To solve this problem, a process is divided into smaller execution units called threads.
+
+You can think of threads as workers inside a company.
+
+Chrome = Company (Process)
+
+Workers inside company:
+- Download Worker
+- Rendering Worker
+- Network Worker
+- UI Worker
+
+These workers are threads.
+
+All threads share resources of the process such as:
+- Code section
+- Heap memory
+- Data section
+
+But every thread keeps its own:
+- Stack
+- Registers
+- Program Counter
+
+Because threads share resources, creating a thread is much cheaper than creating a process.
+
+That is why threads are called:
+
+"Lightweight Processes"
+
+---
+
+## Quick Revision
+
+Program:
+Instructions stored in disk.
+
+Process:
+Program currently executing in memory.
+
+Thread:
+Smallest execution unit inside a process.
+
+---
+
+## One Line Interview Answer
+
+Program -> Stored instructions.
+
+Process -> Program under execution.
+
+Thread -> Smallest unit of execution inside a process.
