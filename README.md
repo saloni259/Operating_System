@@ -2163,3 +2163,321 @@ The schedulers are like hospital staff:
 - **Medium-Term Scheduler** temporarily shifts patients out if the hospital becomes overcrowded.
 
 This analogy makes the entire concept very easy to remember.
+# Context Switching
+
+## What is Context Switching?
+
+A CPU can execute only **one process at a time** (assuming a single CPU system).
+
+But in our computer, many applications run together like:
+- Chrome
+- VS Code
+- Spotify
+- WhatsApp
+
+It looks like all of them are running simultaneously, but actually the OS keeps switching the CPU from one process to another very quickly.
+
+This switching is called **Context Switching**.
+
+In simple words,
+
+> **Context Switching means saving the current process and loading another process so the CPU can execute it.**
+
+---
+
+# What is "Context"?
+
+Before understanding Context Switching, we need to know what **Context** means.
+
+Context is all the information required to restart a process from the exact point where it stopped.
+
+For example,
+
+Suppose Chrome is executing:
+
+```cpp
+int a = 10;
+int b = 20;
+int c = a + b;
+cout << c;
+```
+
+If Chrome has already executed the first two lines and the OS switches the CPU to VS Code, Chrome should not start again from the first line.
+
+The OS saves Chrome's current information.
+
+Later, when Chrome gets the CPU again, it continues from:
+
+```cpp
+int c = a + b;
+```
+
+This saved information is called the **Context** of the process.
+
+---
+
+# Where is Context Stored?
+
+The context of every process is stored inside its **PCB (Process Control Block).**
+
+Some important information stored in PCB is:
+
+- Program Counter (next instruction to execute)
+- CPU Registers
+- Process State
+- Stack Pointer
+- Scheduling Information
+- Memory Information
+
+Whenever a process is paused, this information is saved in its PCB.
+
+---
+
+# Why do we need Context Switching?
+
+Imagine there are three processes:
+
+- Chrome
+- VS Code
+- Spotify
+
+If the CPU keeps executing only Chrome,
+
+VS Code and Spotify will never run.
+
+To give every process a chance to execute, the OS keeps switching the CPU between them.
+
+Without Context Switching:
+- No multitasking.
+- Poor CPU sharing.
+- Bad user experience.
+
+---
+
+# How does Context Switching happen?
+
+Suppose Chrome is currently running.
+
+Now its time quantum finishes.
+
+The OS wants to execute VS Code.
+
+The following steps happen:
+
+### Step 1
+
+The OS saves Chrome's current information into its PCB.
+
+It saves things like:
+- Program Counter
+- Registers
+- Process State
+
+Now Chrome is paused.
+
+---
+
+### Step 2
+
+The CPU Scheduler selects VS Code from the Ready Queue.
+
+---
+
+### Step 3
+
+The OS loads VS Code's saved information from its PCB.
+
+It restores:
+- Program Counter
+- Registers
+- Stack Pointer
+
+---
+
+### Step 4
+
+CPU starts executing VS Code.
+
+Later, when Chrome gets the CPU again, its PCB is loaded and execution continues from exactly where it stopped.
+
+---
+
+# What information is saved during Context Switching?
+
+The OS mainly saves:
+
+- Program Counter
+- CPU Registers
+- Process State
+- Stack Pointer
+- Scheduling Information
+- Memory Information
+
+This information is enough to restart the process without losing progress.
+
+---
+
+# Context Switching Overhead
+
+Context Switching takes time.
+
+During switching, the CPU is **not executing any user program**.
+
+It is only:
+- Saving one process.
+- Loading another process.
+
+This extra time is called **Context Switching Overhead**.
+
+Since no useful work is done during this time, it slightly reduces system performance.
+
+---
+
+# Advantages of Context Switching
+
+- Makes multitasking possible.
+- Improves CPU utilization.
+- Gives every process a chance to execute.
+- Improves system responsiveness.
+
+---
+
+# Disadvantages of Context Switching
+
+- Takes extra time.
+- Frequent switching reduces performance.
+- CPU does no useful work during switching.
+
+---
+
+# Process Context Switching vs Thread Context Switching
+
+## Process Context Switching
+
+Switching CPU from one process to another.
+
+Example:
+
+Chrome → VS Code
+
+Since both processes have different memory spaces, the OS has to switch:
+- Registers
+- Program Counter
+- Memory Mapping
+- Page Tables
+
+Therefore, it is **slower**.
+
+---
+
+## Thread Context Switching
+
+Switching between threads of the same process.
+
+Example:
+
+Chrome Download Thread → Chrome Render Thread
+
+Since threads share the same memory, only a few things need to be switched:
+- Registers
+- Program Counter
+- Stack
+
+Therefore, Thread Context Switching is **faster**.
+
+---
+
+# Real-Life Analogy
+
+Imagine you're reading two books.
+
+You read Book A up to page 50.
+
+Before starting Book B, you place a bookmark in Book A.
+
+Now you read Book B.
+
+Later, when you return to Book A, you don't start from page 1.
+
+You continue from page 50 using the bookmark.
+
+Here,
+
+- Book = Process
+- Bookmark = Context
+- Changing books = Context Switching
+
+---
+
+# Quick Revision
+
+- CPU executes only one process at a time.
+- OS switches CPU between processes very quickly.
+- This switching is called Context Switching.
+- Context = Current state of a process.
+- Context is stored in PCB.
+- During Context Switching:
+  - Current process state is saved.
+  - Next process state is loaded.
+- Context Switching takes extra time, called **Context Switching Overhead**.
+
+---
+
+# Common Mistakes
+
+❌ Context Switching means two processes run together.
+
+✅ Wrong.
+
+Only one process runs at a time on a single CPU.
+The CPU is simply switched very quickly.
+
+---
+
+❌ Context Switching happens only when a process finishes.
+
+✅ Wrong.
+
+It can happen when:
+- Time quantum expires.
+- Process requests I/O.
+- Higher priority process arrives.
+- Interrupt occurs.
+
+---
+
+# Interview Questions
+
+### What is Context Switching?
+
+Context Switching is the process of saving the current state of one process and restoring the state of another process so that the CPU can switch between them.
+
+---
+
+### Why is PCB important in Context Switching?
+
+Because PCB stores all the information required to pause and later resume a process.
+
+---
+
+### What is Context Switching Overhead?
+
+The extra time spent saving and restoring process information during Context Switching.
+
+---
+
+### Which is faster: Process Context Switching or Thread Context Switching?
+
+Thread Context Switching is faster because threads share the same memory space.
+
+---
+
+# Easy Way to Remember
+
+**Save → Switch → Restore**
+
+1. Save the current process.
+2. Switch the CPU.
+3. Restore the next process.
+
+This is Context Switching.
