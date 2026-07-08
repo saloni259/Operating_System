@@ -1338,3 +1338,425 @@ Think of PCB as the **personal file of a process**.
 Just like every student has a file in the college office containing all important details,
 
 every process has a PCB containing all the information required by the Operating System.
+# Process States
+
+## What is a Process State?
+
+When a program starts executing, it becomes a **process**.
+
+A process is not always running. Sometimes it is waiting for CPU, sometimes waiting for an I/O operation, and sometimes it has already finished.
+
+The **current condition of a process** at any particular time is called its **Process State**.
+
+In simple words,
+
+> Process State tells us **what the process is doing right now.**
+
+The Operating System stores the current state of every process inside its **PCB (Process Control Block).**
+
+---
+
+# Why do we need Process States?
+
+Suppose you open three applications:
+
+- Chrome
+- VS Code
+- Spotify
+
+A single CPU cannot execute all three at the same time.
+
+So the OS keeps changing their states and decides:
+
+- Which process should run?
+- Which process should wait?
+- Which process has finished?
+
+Without process states, the OS would not know what each process is doing.
+
+---
+
+# Types of Process States
+
+Every process generally passes through **five states** during its lifetime.
+
+```
+New
+ ↓
+Ready
+ ↓
+Running
+ ↙      ↘
+Waiting  Terminated
+   ↓
+ Ready
+```
+
+Let's understand each one.
+
+---
+
+# 1. New State
+
+A process enters the **New State** immediately after it is created.
+
+At this stage:
+
+- OS creates the Process Control Block (PCB).
+- Memory is allocated.
+- Required resources are prepared.
+
+The process is **not executing yet** because it has not received the CPU.
+
+### Example
+
+Suppose you double-click Chrome.
+
+The OS starts creating the Chrome process.
+
+At this moment, Chrome is in the **New State**.
+
+### Easy Analogy
+
+Think of a student entering the examination hall.
+
+The student has entered the hall but hasn't started writing yet.
+
+This is similar to the **New State**.
+
+---
+
+# 2. Ready State
+
+After the process is created, it moves to the **Ready State**.
+
+In this state:
+
+- Memory has been allocated.
+- PCB has been created.
+- All required resources are available.
+
+The process is simply waiting for the CPU.
+
+Remember:
+
+**Ready means waiting only for CPU.**
+
+### Example
+
+Suppose there are three processes:
+
+- Chrome
+- VS Code
+- Spotify
+
+CPU is currently executing Chrome.
+
+VS Code and Spotify are ready to execute but are waiting for the CPU.
+
+So they are in the **Ready State**.
+
+### Important Point
+
+All ready processes are kept in a **Ready Queue**.
+
+The CPU Scheduler selects one process from this queue and gives it the CPU.
+
+---
+
+# 3. Running State
+
+When the CPU is allocated to a process, it enters the **Running State**.
+
+This means the CPU is currently executing the instructions of that process.
+
+### Example
+
+If Chrome is currently using the CPU, then Chrome is in the **Running State**.
+
+### Important Point
+
+In a system with a single CPU,
+
+**only one process can be in the Running State at a time.**
+
+---
+
+# 4. Waiting State (Blocked State)
+
+Sometimes a process cannot continue its execution because it is waiting for some external event.
+
+Common reasons are:
+
+- Reading a file
+- Waiting for keyboard input
+- Waiting for network response
+- Waiting for printer
+- Waiting for disk operation
+
+Instead of wasting CPU time, the OS moves that process to the **Waiting State**.
+
+### Example
+
+Suppose Chrome is downloading a file.
+
+It sends a request to the disk.
+
+Until the disk sends the data, Chrome cannot continue.
+
+So Chrome enters the **Waiting State**.
+
+Meanwhile, the CPU starts executing another process.
+
+### Important Point
+
+Waiting means:
+
+**Waiting for an event (mostly I/O).**
+
+It is **NOT waiting for CPU.**
+
+---
+
+# Ready State vs Waiting State
+
+This is one of the most common interview questions.
+
+### Ready State
+
+The process has everything it needs except the CPU.
+
+It is simply waiting for CPU allocation.
+
+Example:
+
+A student is sitting inside the exam hall with a pen and question paper.
+
+He is only waiting for the teacher to say "Start."
+
+---
+
+### Waiting State
+
+The process is waiting for some event.
+
+Even if CPU becomes free, it still cannot execute.
+
+Example:
+
+A student forgot his pen.
+
+Even if the teacher says "Start writing," he cannot write until he gets a pen.
+
+---
+
+# 5. Terminated State
+
+When a process finishes its work, it enters the **Terminated State**.
+
+The OS releases:
+
+- Memory
+- CPU
+- Open files
+- Devices
+- PCB
+
+The process is completely removed from the system.
+
+### Example
+
+You close Chrome.
+
+The Chrome process ends.
+
+Its memory is released and its PCB is deleted.
+
+---
+
+# How does a Process move from one State to another?
+
+### New → Ready
+
+The process is created and all required resources are allocated.
+
+Now it is ready to execute.
+
+---
+
+### Ready → Running
+
+The CPU Scheduler selects the process and allocates the CPU.
+
+Execution starts.
+
+---
+
+### Running → Waiting
+
+The process requests an I/O operation.
+
+Example:
+
+- Reading a file
+- Waiting for network
+- Printing a document
+
+The process cannot continue, so it enters the Waiting State.
+
+---
+
+### Waiting → Ready
+
+The required event (usually I/O) is completed.
+
+Now the process is ready to execute again.
+
+It goes back to the Ready Queue.
+
+---
+
+### Running → Ready
+
+Sometimes the process is still executing, but its CPU time (time quantum) finishes.
+
+The OS removes the CPU from that process and puts it back into the Ready Queue.
+
+This happens in Round Robin Scheduling.
+
+---
+
+### Running → Terminated
+
+The process completes its execution.
+
+The OS releases all resources and deletes the PCB.
+
+---
+
+# Can a Process move directly from Waiting to Running?
+
+**No.**
+
+This is an important interview question.
+
+When an I/O operation finishes,
+
+the process first enters the **Ready State**.
+
+Only after the CPU Scheduler selects it again does it enter the Running State.
+
+So the sequence is:
+
+Waiting → Ready → Running
+
+Never:
+
+Waiting → Running
+
+---
+
+# Real-Life Analogy
+
+Imagine visiting a hospital.
+
+### New
+
+You enter the hospital.
+
+### Ready
+
+You complete registration and wait for your turn.
+
+### Running
+
+The doctor is examining you.
+
+### Waiting
+
+The doctor asks you to get an X-ray.
+
+You wait for the report.
+
+### Ready
+
+The report is ready.
+
+Now you're waiting outside the doctor's cabin again.
+
+### Running
+
+Doctor calls you and continues the check-up.
+
+### Terminated
+
+Treatment is complete and you leave the hospital.
+
+---
+
+# Quick Revision
+
+- **New** → Process is being created.
+- **Ready** → Waiting only for CPU.
+- **Running** → CPU is executing the process.
+- **Waiting** → Waiting for an external event (mostly I/O).
+- **Terminated** → Process has finished execution.
+
+---
+
+# Interview Questions
+
+### What is a Process State?
+
+A Process State tells the current status of a process during its execution.
+
+---
+
+### What are the five basic process states?
+
+- New
+- Ready
+- Running
+- Waiting (Blocked)
+- Terminated
+
+---
+
+### Difference between Ready and Waiting State?
+
+**Ready State:**
+Process is waiting only for CPU.
+
+**Waiting State:**
+Process is waiting for an event such as disk, keyboard, printer, or network.
+
+---
+
+### Can multiple processes be in Running State?
+
+- Single CPU → Only one process.
+- Multi-core CPU → One process per CPU core.
+
+---
+
+### Can a process directly move from Waiting to Running?
+
+No.
+
+It always follows:
+
+Waiting → Ready → Running
+
+---
+
+# Easy Way to Remember
+
+Think of the life of a student in an exam.
+
+- Enter Exam Hall → New
+- Waiting for Question Paper → Ready
+- Writing Exam → Running
+- Waiting for Extra Answer Sheet → Waiting
+- Exam Finished → Terminated
+
+This analogy makes it easy to remember all process states.
