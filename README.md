@@ -2481,3 +2481,416 @@ Thread Context Switching is faster because threads share the same memory space.
 3. Restore the next process.
 
 This is Context Switching.
+# Zombie Process, Orphan Process and Daemon Process
+
+Before learning these concepts, we need to understand one thing.
+
+Whenever a process creates another process:
+
+- The process that creates it is called the **Parent Process**.
+- The newly created process is called the **Child Process**.
+
+Example:
+
+```
+Chrome (Parent)
+   │
+   ├── Download Process (Child)
+   ├── Render Process (Child)
+   └── Network Process (Child)
+```
+
+One parent process can create multiple child processes.
+
+---
+
+# 1. Zombie Process
+
+## What is a Zombie Process?
+
+A Zombie Process is a process that has **already finished execution**, but its entry is still present in the **Process Table (PCB)** because the parent process has not collected its exit status.
+
+In simple words,
+
+> **The process is dead, but its PCB is still alive.**
+
+---
+
+## Why does Zombie Process occur?
+
+Whenever a child process finishes, it informs the OS that it has completed its work.
+
+But the OS does not immediately delete the PCB.
+
+It waits for the parent process to read the child's exit status using `wait()` or `waitpid()`.
+
+If the parent does not do this, the child process becomes a Zombie Process.
+
+---
+
+## Example
+
+Suppose:
+
+```
+Parent Process
+      │
+      └── Child Process
+```
+
+Child finishes execution.
+
+Normally:
+
+```
+Child finishes
+      ↓
+Parent calls wait()
+      ↓
+OS deletes PCB
+```
+
+But if Parent never calls `wait()`:
+
+```
+Child finishes
+      ↓
+PCB remains in Process Table
+      ↓
+Zombie Process
+```
+
+---
+
+## Does Zombie Process use CPU?
+
+No.
+
+The process has already completed.
+
+It does **not** use:
+- CPU
+- RAM
+- Disk
+
+Only a small PCB entry remains inside the Process Table.
+
+---
+
+## Why are Zombie Processes bad?
+
+One Zombie Process is not a problem.
+
+But if many Zombie Processes keep accumulating, they occupy entries in the Process Table.
+
+Eventually, the OS may not be able to create new processes.
+
+---
+
+## How can Zombie Process be removed?
+
+The parent process should call:
+
+```c
+wait();
+```
+
+or
+
+```c
+waitpid();
+```
+
+After that, the OS removes the PCB.
+
+If the parent itself terminates, Linux automatically assigns the Zombie to the **init/systemd** process, which collects the exit status and removes it.
+
+---
+
+## Easy Analogy
+
+Imagine a student has graduated from college.
+
+He has left the college.
+
+But the college office has not removed his record yet.
+
+Student → Gone
+
+Record → Still exists
+
+This is exactly what a Zombie Process is.
+
+---
+
+# 2. Orphan Process
+
+## What is an Orphan Process?
+
+An Orphan Process is a child process whose **parent process terminates before the child finishes execution**.
+
+In simple words,
+
+> **Parent dies first, child is still running.**
+
+---
+
+## Example
+
+Suppose:
+
+```
+Parent
+   │
+   └── Child
+```
+
+Now,
+
+Parent crashes.
+
+But Child is still executing.
+
+The child has no parent now.
+
+This child becomes an **Orphan Process**.
+
+---
+
+## What happens to the Orphan Process?
+
+The OS does not kill the child.
+
+Instead, it assigns a new parent.
+
+In Linux, the new parent is usually:
+
+- `init`
+- `systemd`
+
+The child continues executing normally.
+
+---
+
+## Does Orphan Process use CPU?
+
+Yes.
+
+Unlike Zombie Processes, Orphan Processes are still running.
+
+They continue to use:
+- CPU
+- Memory
+- Other resources
+
+until they finish execution.
+
+---
+
+## Easy Analogy
+
+Imagine a child whose parents are no longer alive.
+
+The government appoints a legal guardian.
+
+Similarly, the OS assigns a new parent (`init/systemd`) to the child process.
+
+---
+
+# 3. Daemon Process
+
+## What is a Daemon Process?
+
+A Daemon Process is a background process that continuously runs and provides services to other processes.
+
+It usually starts automatically when the system boots.
+
+Users normally do not interact with it directly.
+
+---
+
+## Why do we need Daemon Processes?
+
+Many system services should always be available.
+
+Examples:
+
+- Printing
+- Internet
+- Bluetooth
+- Email
+- Web Server
+
+Instead of starting these services every time, the OS keeps them running in the background.
+
+---
+
+## Example
+
+Suppose you print a document.
+
+The flow is:
+
+```
+User
+   ↓
+Print Command
+   ↓
+Printer Daemon
+   ↓
+Printer
+```
+
+The Printer Daemon receives the request and sends it to the printer.
+
+---
+
+## Examples of Daemon Processes
+
+- Print Service
+- Bluetooth Service
+- Network Manager
+- Web Server (Apache/Nginx)
+- SSH Service
+
+---
+
+## Characteristics of Daemon Process
+
+- Runs in the background.
+- Starts automatically during system boot.
+- No user interaction.
+- Provides system services.
+- Keeps running until the system shuts down.
+
+---
+
+## Easy Analogy
+
+Think of a security guard in a shopping mall.
+
+Even if no customers are present, the guard keeps doing his duty.
+
+Similarly, a Daemon Process keeps running in the background waiting for requests.
+
+---
+
+# Zombie Process vs Orphan Process
+
+| Zombie Process | Orphan Process |
+|---------------|----------------|
+| Child has finished execution | Child is still executing |
+| Parent is alive | Parent has terminated |
+| PCB still exists | Child gets a new parent (`init/systemd`) |
+| Uses only PCB entry | Uses CPU and Memory |
+| Removed using `wait()` | Continues execution normally |
+
+---
+
+# Zombie Process vs Daemon Process
+
+| Zombie Process | Daemon Process |
+|---------------|----------------|
+| Dead process | Background service process |
+| Does no useful work | Performs useful system services |
+| Temporary state | Runs continuously |
+| Undesirable | Necessary for the OS |
+
+---
+
+# Quick Revision
+
+### Zombie Process
+- Child has finished execution.
+- Parent has not collected exit status.
+- PCB still exists.
+- Does not use CPU.
+- Removed using `wait()`.
+
+---
+
+### Orphan Process
+- Parent terminates first.
+- Child is still running.
+- Adopted by `init/systemd`.
+- Continues execution normally.
+
+---
+
+### Daemon Process
+- Background process.
+- Starts during system boot.
+- Provides system services.
+- Runs continuously.
+
+---
+
+# Interview Questions
+
+### What is a Zombie Process?
+
+A terminated process whose PCB still exists because the parent process has not collected its exit status.
+
+---
+
+### What is an Orphan Process?
+
+A child process whose parent terminates before the child finishes execution.
+
+---
+
+### What is a Daemon Process?
+
+A background process that continuously provides system services.
+
+---
+
+### Does a Zombie Process use CPU?
+
+No.
+
+Only its PCB entry remains.
+
+---
+
+### Who adopts an Orphan Process?
+
+In Linux, `init` or `systemd`.
+
+---
+
+### Which function removes a Zombie Process?
+
+`wait()` or `waitpid()`.
+
+---
+
+# Easy Way to Remember
+
+### Zombie Process
+
+**Dead Child + Living Parent**
+
+Child has finished.
+
+Parent has not collected the exit status.
+
+---
+
+### Orphan Process
+
+**Dead Parent + Living Child**
+
+Parent has terminated.
+
+Child continues execution.
+
+---
+
+### Daemon Process
+
+**Background Worker**
+
+Always running.
+
+Always ready to provide services.
