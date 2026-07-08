@@ -1760,3 +1760,406 @@ Think of the life of a student in an exam.
 - Exam Finished → Terminated
 
 This analogy makes it easy to remember all process states.
+# Process Queues and Process Schedulers
+
+After understanding **Process States**, the next question is:
+
+> If there are hundreds of processes in the system, how does the OS manage all of them?
+
+The answer is **Process Queues**.
+
+The OS groups processes based on their current state. Instead of keeping them randomly, it places them into different queues. This makes process management much easier.
+
+---
+
+# What is a Process Queue?
+
+A Process Queue is simply a list of processes waiting for a particular resource or event.
+
+For example,
+- Some processes are waiting to enter memory.
+- Some are waiting for the CPU.
+- Some are waiting for an I/O operation.
+
+The OS keeps moving processes from one queue to another depending on their current state.
+
+---
+
+# Types of Process Queues
+
+There are mainly three queues:
+
+1. Job Queue
+2. Ready Queue
+3. Waiting Queue (Device Queue)
+
+Let's understand each one.
+
+---
+
+# 1. Job Queue
+
+## What is it?
+
+The Job Queue contains all newly created processes that are **not yet loaded into RAM**.
+
+These processes are still stored in secondary memory (Hard Disk/SSD).
+
+Since RAM is limited, every process cannot enter memory immediately.
+
+The OS decides which process should be loaded first.
+
+### Example
+
+Suppose you try to open:
+
+- Chrome
+- VS Code
+- Spotify
+- Photoshop
+- Android Studio
+
+But your RAM has space for only three applications.
+
+The remaining applications have to wait.
+
+These waiting processes form the **Job Queue**.
+
+### Easy Analogy
+
+Imagine a cinema hall.
+
+The hall is full.
+
+People are standing outside waiting for someone to leave.
+
+Those people represent the **Job Queue**.
+
+### Important Points
+
+- Stored in secondary memory.
+- Waiting to enter RAM.
+- Controlled by the Long-Term Scheduler.
+
+---
+
+# 2. Ready Queue
+
+## What is it?
+
+The Ready Queue contains processes that are already loaded into RAM and are ready to execute.
+
+The only thing they are waiting for is the CPU.
+
+Remember this line:
+
+**Ready = Waiting only for CPU.**
+
+### Example
+
+Suppose RAM contains:
+
+- Chrome
+- VS Code
+- Spotify
+
+CPU is currently executing Chrome.
+
+VS Code and Spotify are ready but waiting for CPU.
+
+Therefore they are in the Ready Queue.
+
+### Easy Analogy
+
+Imagine students sitting outside an interview room.
+
+They have completed registration and are fully prepared.
+
+They are simply waiting for their turn.
+
+That is exactly the Ready Queue.
+
+### Important Points
+
+- Processes are already in RAM.
+- Waiting only for CPU.
+- Managed by the Short-Term Scheduler.
+
+---
+
+# 3. Waiting Queue (Device Queue)
+
+## What is it?
+
+Sometimes a process cannot continue execution because it needs an external event.
+
+Examples:
+- Reading a file
+- Writing to disk
+- Waiting for printer
+- Waiting for internet
+- Waiting for keyboard input
+
+Such processes are moved to the Waiting Queue.
+
+### Example
+
+Suppose Chrome is downloading a movie.
+
+It sends a request to the disk.
+
+Until the disk sends the data, Chrome cannot continue.
+
+Instead of wasting CPU time, the OS moves Chrome to the Waiting Queue and gives the CPU to another process.
+
+Once the download is ready, Chrome moves back to the Ready Queue.
+
+### Easy Analogy
+
+You order food at a restaurant.
+
+Now you're waiting for the food to arrive.
+
+You cannot start eating even if a table is empty.
+
+Similarly, a waiting process cannot execute until its event is completed.
+
+### Important Points
+
+- Waiting for an event, not CPU.
+- Mostly waits for I/O operations.
+- After the event finishes, it moves back to the Ready Queue.
+
+---
+
+# Process Flow
+
+A process usually moves like this:
+
+```
+Job Queue
+     │
+     ▼
+Ready Queue
+     │
+     ▼
+Running
+  │       │
+  │       ▼
+  │   Terminated
+  ▼
+Waiting Queue
+     │
+     ▼
+Ready Queue
+```
+
+Try to remember this flow because it is asked frequently in interviews.
+
+---
+
+# Process Schedulers
+
+Now the question is:
+
+Who moves processes from one queue to another?
+
+The answer is:
+
+**Schedulers**
+
+A Scheduler is a part of the Operating System that decides which process should move next.
+
+There are three schedulers.
+
+---
+
+# 1. Long-Term Scheduler (Job Scheduler)
+
+## Work
+
+Moves processes from:
+
+Job Queue → Ready Queue
+
+In other words,
+
+It selects which processes should enter RAM.
+
+### Why is it needed?
+
+RAM is limited.
+
+If the OS loads every process into memory, the system will become slow.
+
+So the Long-Term Scheduler carefully selects processes.
+
+### Example
+
+100 processes are waiting on the disk.
+
+RAM has space for only 20.
+
+The Long-Term Scheduler selects 20 processes and loads them into memory.
+
+### Important Points
+
+- Works on Job Queue.
+- Runs less frequently.
+- Controls the Degree of Multiprogramming (number of processes in RAM).
+
+---
+
+# 2. Short-Term Scheduler (CPU Scheduler)
+
+## Work
+
+Moves processes from:
+
+Ready Queue → Running
+
+It decides which process gets the CPU.
+
+### Example
+
+Ready Queue contains:
+
+- Chrome
+- VS Code
+- Spotify
+
+The CPU Scheduler selects Chrome.
+
+Chrome enters the Running State.
+
+### Important Points
+
+- Works on Ready Queue.
+- Runs very frequently.
+- Fastest scheduler because CPU decisions happen continuously.
+
+---
+
+# 3. Medium-Term Scheduler
+
+## Work
+
+Temporarily removes processes from RAM and stores them on disk.
+
+This process is called **Swapping**.
+
+Later, when memory becomes available, the process is brought back into RAM.
+
+### Why is it needed?
+
+Sometimes RAM becomes full.
+
+Instead of crashing the system, the OS temporarily removes some processes.
+
+### Example
+
+RAM = 8 GB
+
+Running processes require 10 GB.
+
+The OS temporarily moves Spotify to disk.
+
+Later, when memory is available, Spotify is loaded back into RAM.
+
+### Important Points
+
+- Performs Swapping.
+- Helps manage memory efficiently.
+- Improves overall system performance.
+
+---
+
+# Comparison of Schedulers
+
+| Scheduler | Main Work |
+|-----------|-----------|
+| Long-Term Scheduler | Moves processes from Disk → RAM |
+| Short-Term Scheduler | Gives CPU to a process |
+| Medium-Term Scheduler | Swaps processes between RAM and Disk |
+
+---
+
+# Quick Revision
+
+### Job Queue
+- Processes are on Disk.
+- Waiting to enter RAM.
+
+### Ready Queue
+- Processes are in RAM.
+- Waiting only for CPU.
+
+### Waiting Queue
+- Processes are waiting for I/O or some event.
+
+### Long-Term Scheduler
+- Job Queue → Ready Queue
+
+### Short-Term Scheduler
+- Ready Queue → Running
+
+### Medium-Term Scheduler
+- Performs Swapping.
+
+---
+
+# Interview Questions
+
+### What is a Process Queue?
+
+A Process Queue is a collection of processes waiting for a particular resource or event.
+
+---
+
+### Difference between Job Queue and Ready Queue?
+
+**Job Queue**
+- Stored on Disk.
+- Waiting to enter RAM.
+
+**Ready Queue**
+- Already in RAM.
+- Waiting only for CPU.
+
+---
+
+### Which scheduler is the fastest?
+
+Short-Term Scheduler, because it runs whenever the CPU becomes free.
+
+---
+
+### Which scheduler controls the Degree of Multiprogramming?
+
+Long-Term Scheduler.
+
+---
+
+### Which scheduler performs Swapping?
+
+Medium-Term Scheduler.
+
+---
+
+# Easy Way to Remember
+
+Think of a hospital.
+
+- **Job Queue** → Patients waiting outside the hospital.
+- **Ready Queue** → Patients sitting outside the doctor's cabin.
+- **Running** → Patient is with the doctor.
+- **Waiting Queue** → Patient has gone for an X-ray or blood test.
+- **Terminated** → Patient's treatment is complete.
+
+The schedulers are like hospital staff:
+
+- **Long-Term Scheduler** admits patients into the hospital.
+- **Short-Term Scheduler** sends the next patient to the doctor.
+- **Medium-Term Scheduler** temporarily shifts patients out if the hospital becomes overcrowded.
+
+This analogy makes the entire concept very easy to remember.
