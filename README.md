@@ -983,3 +983,358 @@ Whenever a program starts executing, the OS creates a process and divides its me
 - **Data** for global/static variables,
 - **Heap** for dynamic memory,
 - **Stack** for local variables and function calls.
+# Process Control Block (PCB)
+
+## What is PCB?
+
+Whenever a program starts running, it becomes a **process**.
+
+Now imagine multiple processes are running at the same time:
+
+- Chrome
+- VS Code
+- Spotify
+- WhatsApp
+
+The OS has to manage all of them.
+
+To do this, the OS creates a **PCB (Process Control Block)** for every process.
+
+Simply remember:
+
+> **PCB is the identity card + record book of a process.**
+
+It stores all the important information about that process so that the OS can manage it properly.
+
+---
+
+## Why do we need PCB?
+
+Let's understand with an example.
+
+Suppose Chrome is running.
+
+After a few milliseconds, the OS gives the CPU to VS Code.
+
+Now Chrome is paused.
+
+Later, when Chrome gets the CPU again, how will it know from where to continue?
+
+Without saving its current information, Chrome would have to start from the beginning every time.
+
+To avoid this, before removing Chrome from the CPU, the OS saves its current state inside the PCB.
+
+Later, when Chrome gets the CPU again, the OS reads the PCB and resumes execution from exactly where it stopped.
+
+So,
+
+**PCB helps the OS pause and resume a process without losing its progress.**
+
+---
+
+# What information does PCB store?
+
+## 1. Process ID (PID)
+
+Every process gets a unique ID.
+
+It helps the OS identify processes.
+
+Example:
+
+Chrome → PID = 101
+
+VS Code → PID = 102
+
+Spotify → PID = 103
+
+Think of PID like your **college roll number**.
+
+---
+
+## 2. Process State
+
+PCB stores the current state of the process.
+
+Possible states are:
+
+- New
+- Ready
+- Running
+- Waiting
+- Terminated
+
+Example:
+
+If Chrome is downloading a file, it may be in the **Waiting** state.
+
+The OS checks the PCB and knows that Chrome should not get the CPU until the download operation is ready.
+
+---
+
+## 3. Program Counter (PC)
+
+This is one of the most important fields in PCB.
+
+It stores the address of the **next instruction** that the process should execute.
+
+Example:
+
+```cpp
+int a = 10;
+int b = 20;
+int c = a + b;
+cout << c;
+```
+
+Suppose the CPU has already executed the first two statements.
+
+The Program Counter stores the address of:
+
+```cpp
+int c = a + b;
+```
+
+When the process runs again, execution starts from this instruction instead of starting from the beginning.
+
+---
+
+## 4. CPU Registers
+
+While a process is running, the CPU stores temporary values in registers.
+
+During context switching, these register values are saved in the PCB.
+
+When the process gets the CPU again, these values are restored.
+
+This allows the process to continue normally without losing calculations.
+
+---
+
+## 5. CPU Scheduling Information
+
+The scheduler needs some information before deciding which process should run next.
+
+PCB stores details such as:
+
+- Process Priority
+- Queue Number
+- Scheduling Information
+
+Example:
+
+Chrome Priority = 5
+
+Spotify Priority = 2
+
+The scheduler may give the CPU to Chrome first because it has higher priority.
+
+---
+
+## 6. Memory Management Information
+
+PCB stores information about the memory used by the process.
+
+This helps the OS know where the process is located in RAM.
+
+Examples:
+
+- Base Address
+- Limit Register
+- Page Table
+- Segment Table
+
+We will study these in detail in Memory Management.
+
+---
+
+## 7. Accounting Information
+
+The OS also keeps some statistics about the process.
+
+Examples:
+
+- CPU time used
+- Process creation time
+- User ID
+
+This information is useful for monitoring and system management.
+
+Example:
+
+When Task Manager shows:
+
+Chrome → CPU Usage = 15%
+
+this information comes from accounting data.
+
+---
+
+## 8. I/O Status Information
+
+PCB stores information related to input/output devices.
+
+Examples:
+
+- Which files are open?
+- Which printer is being used?
+- Which devices are allocated?
+
+Example:
+
+If Chrome is downloading a file, PCB may store:
+
+- Network Card in use
+- File "movie.mp4" is open
+
+---
+
+# PCB and Context Switching
+
+This is the most important use of PCB.
+
+Suppose Chrome is running.
+
+Now the OS wants to execute VS Code.
+
+The OS performs three steps:
+
+### Step 1
+Save Chrome's current information into its PCB.
+
+Information saved:
+- Program Counter
+- Registers
+- Process State
+- Other details
+
+### Step 2
+Load VS Code's PCB.
+
+Restore:
+- Registers
+- Program Counter
+
+### Step 3
+VS Code starts executing.
+
+Later, when Chrome gets the CPU again, the OS loads Chrome's PCB and execution continues from exactly where it stopped.
+
+This entire process is called **Context Switching**.
+
+Without PCB, context switching would not be possible.
+
+---
+
+# Where is PCB stored?
+
+All PCBs are stored in a table maintained by the Operating System.
+
+This table is called the **Process Table**.
+
+Example:
+
+Process Table
+
+PID 101 → Chrome PCB
+
+PID 102 → VS Code PCB
+
+PID 103 → Spotify PCB
+
+Whenever the OS needs information about a process, it simply checks its PCB.
+
+---
+
+# Life Cycle of PCB
+
+1. Process is created.
+2. OS creates a PCB.
+3. PCB is updated while the process runs.
+4. When the process finishes, its PCB is deleted.
+
+So,
+
+**One Process = One PCB**
+
+---
+
+# Real-Life Analogy
+
+Think of a hospital.
+
+Every patient has a file containing:
+
+- Patient ID
+- Current condition
+- Medicines
+- Reports
+- Doctor's notes
+
+Doctors never remember everything by heart.
+
+They simply open the patient's file.
+
+Similarly,
+
+Every process has a PCB.
+
+Whenever the OS needs information, it checks the PCB.
+
+---
+
+# Quick Revision
+
+- Every process has its own PCB.
+- PCB is created when the process is created.
+- PCB is deleted when the process terminates.
+- PCB stores all important information about the process.
+- PCB is essential for context switching.
+
+---
+
+# Interview Questions
+
+### What is PCB?
+
+PCB (Process Control Block) is a data structure maintained by the Operating System that stores all the information required to manage a process.
+
+---
+
+### Why is PCB needed?
+
+PCB allows the OS to:
+- Manage processes.
+- Perform context switching.
+- Pause and resume processes.
+- Keep track of process information.
+
+---
+
+### How many PCBs are created?
+
+One PCB is created for every process.
+
+Example:
+
+5 running processes → 5 PCBs.
+
+---
+
+### Which PCB field is most important during context switching?
+
+- Program Counter
+- CPU Registers
+- Process State
+
+These are saved before switching and restored when the process gets the CPU again.
+
+---
+
+# Easy Way to Remember
+
+Think of PCB as the **personal file of a process**.
+
+Just like every student has a file in the college office containing all important details,
+
+every process has a PCB containing all the information required by the Operating System.
