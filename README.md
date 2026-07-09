@@ -3623,3 +3623,357 @@ The person who comes first gets the ticket first.
 Nobody can skip the queue.
 
 This is exactly how FCFS Scheduling works.
+# Shortest Job First (SJF) Scheduling
+
+After studying FCFS, we noticed one major problem.
+
+If a long process comes first, all the small processes have to wait for a long time. This increases the average waiting time.
+
+To solve this problem, the Operating System introduced **Shortest Job First (SJF)** Scheduling.
+
+---
+
+# What is SJF Scheduling?
+
+SJF (Shortest Job First) is a **Non-Preemptive CPU Scheduling Algorithm**.
+
+In this algorithm, the process having the **smallest Burst Time** is executed first.
+
+In simple words,
+
+> **The process that requires the least CPU time gets the CPU first.**
+
+Unlike FCFS, SJF does **not** consider arrival order (when all processes are available). It mainly considers the Burst Time.
+
+---
+
+# What is Burst Time?
+
+Burst Time is the amount of CPU time required by a process to complete its execution.
+
+Example:
+
+| Process | Burst Time |
+|----------|------------|
+| P1 | 6 |
+| P2 | 2 |
+| P3 | 8 |
+| P4 | 3 |
+
+Here,
+
+P2 has the smallest Burst Time.
+
+So, P2 will execute first.
+
+---
+
+# Why is SJF called Non-Preemptive?
+
+Once a process starts executing,
+
+the OS will not stop it until it finishes.
+
+Even if another process with a smaller Burst Time arrives later,
+
+the currently running process continues its execution.
+
+Only after it finishes does the scheduler choose the next shortest job.
+
+---
+
+# How does SJF work?
+
+Consider the following processes:
+
+| Process | Arrival Time | Burst Time |
+|----------|--------------|------------|
+| P1 | 0 | 6 |
+| P2 | 0 | 2 |
+| P3 | 0 | 8 |
+| P4 | 0 | 3 |
+
+Since all processes arrive at the same time,
+
+we compare only their Burst Time.
+
+Execution order:
+
+```
+P2 → P4 → P1 → P3
+```
+
+### Gantt Chart
+
+```
+0      2      5      11      19
+| P2 | P4 | P1 | P3 |
+```
+
+---
+
+# Completion Time (CT)
+
+Completion Time means the time at which a process finishes execution.
+
+| Process | CT |
+|----------|----|
+| P2 | 2 |
+| P4 | 5 |
+| P1 | 11 |
+| P3 | 19 |
+
+---
+
+# Turnaround Time (TAT)
+
+Turnaround Time tells us the total time spent by a process in the system.
+
+Formula:
+
+```
+TAT = Completion Time - Arrival Time
+```
+
+Calculation:
+
+P2 = 2 - 0 = 2
+
+P4 = 5 - 0 = 5
+
+P1 = 11 - 0 = 11
+
+P3 = 19 - 0 = 19
+
+| Process | TAT |
+|----------|-----|
+| P2 | 2 |
+| P4 | 5 |
+| P1 | 11 |
+| P3 | 19 |
+
+---
+
+# Waiting Time (WT)
+
+Waiting Time is the time a process waits in the Ready Queue before getting the CPU.
+
+Formula:
+
+```
+WT = Turnaround Time - Burst Time
+```
+
+Calculation:
+
+P2 = 2 - 2 = 0
+
+P4 = 5 - 3 = 2
+
+P1 = 11 - 6 = 5
+
+P3 = 19 - 8 = 11
+
+| Process | WT |
+|----------|----|
+| P2 | 0 |
+| P4 | 2 |
+| P1 | 5 |
+| P3 | 11 |
+
+---
+
+# Average Waiting Time
+
+Formula:
+
+```
+Average WT = (Sum of Waiting Times) / Number of Processes
+```
+
+Calculation:
+
+```
+(0 + 2 + 5 + 11) / 4
+
+= 18 / 4
+
+= 4.5
+```
+
+This is smaller than FCFS, which is why SJF is considered a better scheduling algorithm in terms of average waiting time.
+
+---
+
+# Why does SJF give Minimum Average Waiting Time?
+
+SJF executes small processes first.
+
+As a result:
+
+- Small processes finish quickly.
+- Most processes spend less time waiting.
+- Average Waiting Time becomes minimum.
+
+This is one of the biggest advantages of SJF and is a very common interview question.
+
+---
+
+# What if Arrival Times are Different?
+
+Suppose:
+
+| Process | Arrival Time | Burst Time |
+|----------|--------------|------------|
+| P1 | 0 | 6 |
+| P2 | 2 | 2 |
+| P3 | 4 | 1 |
+
+At time **0**, only P1 has arrived.
+
+Even though P2 has a smaller Burst Time,
+
+the CPU cannot execute it because it has not arrived yet.
+
+So,
+
+P1 starts first.
+
+After P1 finishes, the scheduler chooses the shortest Burst Time among the processes that are available.
+
+**Important:**
+
+SJF always selects the shortest job from the processes that have already arrived.
+
+---
+
+# Advantages of SJF
+
+### 1. Minimum Average Waiting Time
+
+Among all Non-Preemptive Scheduling Algorithms, SJF gives the minimum average waiting time.
+
+---
+
+### 2. Better Turnaround Time
+
+Since shorter jobs finish earlier, the average turnaround time is also reduced.
+
+---
+
+### 3. Better CPU Performance
+
+Processes spend less time waiting, improving overall system efficiency.
+
+---
+
+# Disadvantages of SJF
+
+### 1. Starvation (Most Important)
+
+Suppose there is one long process:
+
+```
+P1 = 20 sec
+```
+
+Now small processes keep arriving:
+
+```
+P2 = 1 sec
+P3 = 2 sec
+P4 = 1 sec
+P5 = 2 sec
+```
+
+The scheduler keeps selecting the shortest process.
+
+The long process (P1) keeps waiting and may never get the CPU.
+
+This situation is called **Starvation**.
+
+---
+
+### 2. Burst Time Must Be Known
+
+The scheduler must know the Burst Time before execution.
+
+In real operating systems, it is difficult to know exactly how long a process will run.
+
+Because of this, pure SJF is rarely used directly.
+
+---
+
+# FCFS vs SJF
+
+| FCFS | SJF |
+|------|-----|
+| Executes process based on Arrival Time | Executes process based on Burst Time |
+| Simple to implement | Slightly more complex |
+| Higher Average Waiting Time | Lower Average Waiting Time |
+| No Starvation | Starvation may occur |
+| Fair based on arrival | Long processes may wait longer |
+
+---
+
+# Quick Revision
+
+- SJF = Shortest Job First.
+- It is a **Non-Preemptive** Scheduling Algorithm.
+- Process with the smallest Burst Time gets the CPU first.
+- Gives the minimum Average Waiting Time.
+- Biggest disadvantage = Starvation.
+- Burst Time should be known before execution.
+
+---
+
+# Interview Questions
+
+### What is SJF Scheduling?
+
+SJF is a Non-Preemptive CPU Scheduling Algorithm in which the process with the smallest Burst Time is executed first.
+
+---
+
+### Why is SJF better than FCFS?
+
+Because SJF gives the minimum Average Waiting Time.
+
+---
+
+### What is the biggest disadvantage of SJF?
+
+Starvation and the requirement of knowing Burst Time in advance.
+
+---
+
+### Is SJF Preemptive?
+
+No.
+
+SJF is Non-Preemptive.
+
+The Preemptive version of SJF is called **Shortest Remaining Time First (SRTF).**
+
+---
+
+### Can Starvation occur in SJF?
+
+Yes.
+
+Long processes may wait indefinitely if smaller processes continue to arrive.
+
+---
+
+# Easy Way to Remember
+
+Imagine four customers standing at a supermarket billing counter.
+
+- Customer A → 20 items
+- Customer B → 2 items
+- Customer C → 1 item
+- Customer D → 3 items
+
+If the cashier serves the customers with fewer items first, more customers leave quickly and the queue becomes shorter.
+
+This is exactly how **Shortest Job First (SJF)** Scheduling works.
