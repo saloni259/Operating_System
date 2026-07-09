@@ -6410,3 +6410,492 @@ Remember:
 **Concurrency = Switching**
 
 **Parallelism = Simultaneous Execution**
+# Race Condition
+
+After learning about Concurrency, we know that multiple processes or threads can run at the same time.
+
+Now imagine that two processes are trying to access the same data simultaneously.
+
+If they modify the data together without proper coordination, the final result may become incorrect.
+
+This problem is called a **Race Condition**.
+
+---
+
+# What is a Race Condition?
+
+A Race Condition is a situation where **two or more processes (or threads) access the same shared resource at the same time, and at least one of them modifies it.**
+
+As a result, the final output depends on the order in which the processes execute.
+
+In simple words,
+
+> Multiple processes "race" to access the same shared resource, so the final result becomes unpredictable.
+
+---
+
+# Why does a Race Condition occur?
+
+A Race Condition occurs when the following three conditions are true:
+
+### 1. Shared Resource
+
+Multiple processes are accessing the same resource.
+
+Examples:
+
+- Shared Variable
+- Shared Memory
+- File
+- Database
+- Printer
+
+---
+
+### 2. At least one process modifies the resource
+
+If every process is only reading the data,
+
+there is no Race Condition.
+
+The problem occurs only when at least one process writes or modifies the shared resource.
+
+---
+
+### 3. Concurrent Execution
+
+The processes execute at the same time (or overlap because of Context Switching).
+
+Without concurrent execution, there is no Race Condition.
+
+---
+
+# Example 1 : Counter Variable
+
+Suppose,
+
+```
+count = 5
+```
+
+Two processes execute simultaneously.
+
+### Process P1
+
+```cpp
+count++;
+```
+
+### Process P2
+
+```cpp
+count++;
+```
+
+Expected Answer:
+
+```
+5
+
+↓
+
+6
+
+↓
+
+7
+```
+
+Final value should be:
+
+```
+count = 7
+```
+
+---
+
+### What actually happens?
+
+Both processes first read:
+
+```
+count = 5
+```
+
+Then,
+
+Both calculate:
+
+```
+5 + 1 = 6
+```
+
+Finally,
+
+Both write:
+
+```
+count = 6
+```
+
+Final Answer:
+
+```
+count = 6
+```
+
+instead of
+
+```
+count = 7
+```
+
+This incorrect result is called a **Race Condition**.
+
+---
+
+# Why does this happen?
+
+Many students think
+
+```cpp
+count++;
+```
+
+is one CPU instruction.
+
+Actually, it happens in three steps.
+
+```
+Read count
+
+↓
+
+Increase by 1
+
+↓
+
+Write count
+```
+
+Suppose,
+
+Process P1 reads the value.
+
+Before it writes the new value,
+
+the CPU switches to Process P2.
+
+Now P2 also reads the old value.
+
+Both processes write the same updated value.
+
+Therefore,
+
+one update is lost.
+
+This is called a **Lost Update Problem**, which is a type of Race Condition.
+
+---
+
+# Example 2 : Bank Account
+
+Suppose,
+
+Current Balance:
+
+```
+₹1000
+```
+
+Two transactions happen simultaneously.
+
+### Process P1
+
+Deposit ₹500
+
+Expected Balance:
+
+```
+₹1500
+```
+
+### Process P2
+
+Withdraw ₹300
+
+Expected Balance:
+
+```
+₹700
+```
+
+Correct Final Balance should be:
+
+```
+₹1200
+```
+
+But if both processes read the balance at the same time,
+
+both read:
+
+```
+₹1000
+```
+
+P1 writes:
+
+```
+₹1500
+```
+
+Immediately after,
+
+P2 writes:
+
+```
+₹700
+```
+
+Final Balance becomes:
+
+```
+₹700
+```
+
+instead of
+
+```
+₹1200
+```
+
+Again,
+
+this is a Race Condition.
+
+---
+
+# Real-Life Analogy
+
+Imagine two friends are editing the same Google Docs document.
+
+Friend A writes:
+
+```
+Operating System
+```
+
+Friend B writes:
+
+```
+Computer Networks
+```
+
+Both press **Save** at the same time.
+
+Sometimes,
+
+Friend A's changes are saved.
+
+Sometimes,
+
+Friend B's changes are saved.
+
+The final document depends on who saves last.
+
+This unpredictable result is exactly like a **Race Condition**.
+
+---
+
+# Why is Race Condition dangerous?
+
+Race Conditions may cause:
+
+- Incorrect calculations.
+- Wrong bank balance.
+- Corrupted files.
+- Database inconsistency.
+- Software crashes.
+- Unexpected program behavior.
+
+This is why Race Conditions must be prevented.
+
+---
+
+# How can we prevent Race Condition?
+
+The Operating System should allow **only one process at a time** to access the shared resource.
+
+This is done using synchronization techniques such as:
+
+- Critical Section
+- Mutex
+- Semaphore
+- Monitor
+
+We will study each of these topics next.
+
+---
+
+# When does Race Condition NOT occur?
+
+Suppose two processes execute:
+
+```cpp
+cout << count;
+```
+
+Both are only reading the value.
+
+No process modifies it.
+
+Therefore,
+
+**Race Condition does not occur.**
+
+---
+
+# When does Race Condition occur?
+
+Suppose two processes execute:
+
+```cpp
+count++;
+```
+
+or
+
+```cpp
+count = count + 10;
+```
+
+Here,
+
+the shared variable is being modified.
+
+Therefore,
+
+Race Condition can occur.
+
+---
+
+# Real Operating System Examples
+
+Race Conditions are common in:
+
+- ATM Transactions
+- Online Banking
+- Railway Reservation Systems
+- Flight Booking Systems
+- Shared Databases
+- Multi-threaded Applications
+
+---
+
+# Advantages of preventing Race Condition
+
+If Race Conditions are prevented:
+
+- Data remains correct.
+- Shared resources are accessed safely.
+- Programs become reliable.
+- System consistency is maintained.
+- Unexpected errors are avoided.
+
+---
+
+# Quick Revision
+
+- Race Condition occurs when multiple processes access the same shared resource simultaneously.
+- At least one process must modify the shared resource.
+- The final result depends on the execution order.
+- Reading only → Safe.
+- Writing/Modifying → Race Condition may occur.
+- `count++` is **not** a single instruction.
+- It consists of:
+  - Read
+  - Modify
+  - Write
+- Race Condition is prevented using:
+  - Critical Section
+  - Mutex
+  - Semaphore
+
+---
+
+# Interview Questions
+
+### What is a Race Condition?
+
+A Race Condition is a situation where multiple processes or threads access and modify the same shared resource simultaneously, resulting in unpredictable or incorrect output.
+
+---
+
+### Why does Race Condition occur?
+
+Because multiple processes modify shared data concurrently without proper synchronization.
+
+---
+
+### Can Race Condition occur if all processes only read the data?
+
+No.
+
+If every process only reads the data, the shared resource is not modified, so Race Condition does not occur.
+
+---
+
+### Why is `count++` not an atomic operation?
+
+Because it is performed in three steps:
+
+1. Read
+2. Modify
+3. Write
+
+If another process interrupts between these steps, incorrect results may occur.
+
+---
+
+### Give a real-life example of Race Condition.
+
+Examples:
+
+- ATM Transactions
+- Online Banking
+- Google Docs editing
+- Railway Reservation System
+
+---
+
+### How can Race Condition be prevented?
+
+Using synchronization mechanisms like:
+
+- Critical Section
+- Mutex
+- Semaphore
+- Monitor
+
+---
+
+# Easy Way to Remember
+
+Think of **two people editing the same Google Docs file**.
+
+Both save their changes at the same time.
+
+The final document depends on **who saves last**.
+
+Similarly,
+
+when two processes modify the same shared data simultaneously, the final result becomes unpredictable.
+
+This is called a **Race Condition**.
+
+---
+
+# One-Line Interview Answer
+
+**Race Condition is a situation where multiple processes or threads access and modify the same shared resource simultaneously, causing unpredictable or incorrect results due to the lack of proper synchronization.**
