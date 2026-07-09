@@ -4330,3 +4330,362 @@ Suddenly, another patient arrives who needs only **2 minutes**.
 The doctor pauses the first patient, treats the second patient quickly, and then returns to the first one.
 
 This is exactly how **Shortest Remaining Time First (SRTF)** Scheduling works.
+# Priority Scheduling
+
+After studying FCFS, SJF and SRTF, we learned that processes can be selected based on Arrival Time or Burst Time.
+
+But in real life, not every process is equally important.
+
+Some processes are more critical than others.
+
+For example:
+
+- Keyboard Input
+- Antivirus
+- System Processes
+- Emergency Tasks
+
+These processes should get CPU before normal background processes.
+
+To solve this problem, **Priority Scheduling** is used.
+
+---
+
+# What is Priority Scheduling?
+
+Priority Scheduling is a CPU Scheduling Algorithm in which the process having the **highest priority** gets the CPU first.
+
+Instead of comparing Arrival Time or Burst Time, the scheduler compares the **Priority** of processes.
+
+The process with the highest priority is selected for execution.
+
+---
+
+# Important Point
+
+Different operating systems follow different priority numbering systems.
+
+Some systems consider:
+
+```
+Priority = 1
+Highest Priority
+```
+
+Some systems consider:
+
+```
+Priority = 10
+Highest Priority
+```
+
+👉 Therefore, always read the question carefully before solving numerical problems.
+
+---
+
+# Types of Priority Scheduling
+
+There are two types:
+
+1. Non-Preemptive Priority Scheduling
+2. Preemptive Priority Scheduling
+
+---
+
+# 1. Non-Preemptive Priority Scheduling
+
+In this scheduling algorithm, once a process gets the CPU, it continues execution until it finishes or enters the Waiting State.
+
+Even if another process with higher priority arrives, the currently running process is **not interrupted**.
+
+### Example
+
+| Process | Arrival | Burst | Priority |
+|----------|---------|-------|----------|
+| P1 | 0 | 6 | 3 |
+| P2 | 2 | 2 | 1 |
+
+(Assume smaller number means higher priority.)
+
+At time 0,
+
+Only P1 is available.
+
+So P1 starts executing.
+
+At time 2,
+
+P2 arrives with higher priority.
+
+But since this is **Non-Preemptive**, P1 continues execution.
+
+After P1 finishes,
+
+P2 gets the CPU.
+
+---
+
+# 2. Preemptive Priority Scheduling
+
+In this scheduling algorithm, the OS continuously checks whether a process with higher priority has arrived.
+
+If yes,
+
+the currently running process is interrupted immediately and the higher priority process gets the CPU.
+
+### Example
+
+Using the same processes:
+
+| Process | Arrival | Burst | Priority |
+|----------|---------|-------|----------|
+| P1 | 0 | 6 | 3 |
+| P2 | 2 | 2 | 1 |
+
+Time = 0
+
+P1 starts execution.
+
+Time = 2
+
+P2 arrives.
+
+Since P2 has higher priority,
+
+the OS pauses P1 and gives CPU to P2.
+
+After P2 finishes,
+
+P1 resumes execution from where it stopped.
+
+This is called **Preemptive Priority Scheduling**.
+
+---
+
+# What happens if two processes have the same priority?
+
+This is a common interview question.
+
+If two processes have equal priority,
+
+the OS generally follows **FCFS (First Come First Serve)**.
+
+Example:
+
+| Process | Priority |
+|----------|----------|
+| P1 | 2 |
+| P2 | 2 |
+
+If P1 arrived first,
+
+P1 will execute before P2.
+
+---
+
+# Advantages of Priority Scheduling
+
+### 1. Important processes execute first.
+
+Critical tasks get CPU immediately.
+
+---
+
+### 2. Suitable for Real-Time Systems.
+
+Processes like:
+
+- Emergency Tasks
+- System Services
+- Device Drivers
+
+can be assigned higher priority.
+
+---
+
+### 3. Flexible Scheduling.
+
+The OS can assign priorities according to system requirements.
+
+---
+
+# Disadvantages of Priority Scheduling
+
+## 1. Starvation (Most Important)
+
+This is the biggest disadvantage.
+
+Suppose:
+
+```
+P1 → Low Priority
+
+P2 → High Priority
+
+P3 → High Priority
+
+P4 → High Priority
+```
+
+Every time a high-priority process arrives,
+
+the scheduler selects it.
+
+P1 keeps waiting.
+
+If this continues, P1 may never get the CPU.
+
+This situation is called **Starvation**.
+
+---
+
+# What is Starvation?
+
+Starvation is a situation in which a process keeps waiting indefinitely because higher priority processes continue getting the CPU.
+
+In simple words,
+
+> **A process waits forever and never gets a chance to execute.**
+
+---
+
+# How to solve Starvation?
+
+The solution is **Aging**.
+
+---
+
+# What is Aging?
+
+Aging is a technique used to prevent Starvation.
+
+In Aging, the priority of a waiting process is gradually improved over time.
+
+As the waiting time increases,
+
+its priority also increases.
+
+Eventually,
+
+it becomes high enough to get the CPU.
+
+### Example
+
+Initially,
+
+```
+P1 Priority = 10
+```
+
+After waiting:
+
+```
+10 → 9 → 8 → 7 → 6 → 5 ...
+```
+
+Finally,
+
+P1 gets the CPU.
+
+Thus, Starvation is avoided.
+
+---
+
+# Real-Life Analogy
+
+Imagine a hospital.
+
+Emergency patients are treated first.
+
+Normal patients wait.
+
+But if a normal patient has been waiting for a long time,
+
+the doctor eventually treats them.
+
+This gradual increase in importance is similar to **Aging**.
+
+---
+
+# Difference Between Preemptive and Non-Preemptive Priority Scheduling
+
+| Non-Preemptive | Preemptive |
+|----------------|------------|
+| Running process cannot be interrupted. | Running process can be interrupted. |
+| Fewer Context Switches. | More Context Switches. |
+| Simpler to implement. | Better response for high-priority processes. |
+
+---
+
+# Difference Between SJF and Priority Scheduling
+
+| SJF | Priority Scheduling |
+|-----|----------------------|
+| CPU is allocated based on Burst Time. | CPU is allocated based on Priority. |
+| Shortest process executes first. | Highest priority process executes first. |
+| Starvation may occur. | Starvation may occur. |
+
+---
+
+# Quick Revision
+
+- Priority Scheduling selects the process with the highest priority.
+- It can be **Preemptive** or **Non-Preemptive**.
+- If two processes have the same priority, FCFS is usually used.
+- Biggest disadvantage = **Starvation**.
+- Starvation is prevented using **Aging**.
+
+---
+
+# Interview Questions
+
+### What is Priority Scheduling?
+
+Priority Scheduling is a CPU Scheduling Algorithm in which the process with the highest priority gets the CPU first.
+
+---
+
+### What are the two types of Priority Scheduling?
+
+- Non-Preemptive Priority Scheduling
+- Preemptive Priority Scheduling
+
+---
+
+### What is Starvation?
+
+Starvation is a situation where a process waits indefinitely because higher-priority processes continuously get the CPU.
+
+---
+
+### How can Starvation be prevented?
+
+By using **Aging**, which gradually increases the priority of waiting processes.
+
+---
+
+### What happens if two processes have the same priority?
+
+The OS generally schedules them using **FCFS**.
+
+---
+
+### Which type gives better response time?
+
+Preemptive Priority Scheduling, because a high-priority process can immediately interrupt the currently running process.
+
+---
+
+# Easy Way to Remember
+
+Think of a hospital.
+
+- Emergency patient → High Priority → Treated first.
+- Normal patient → Low Priority → Waits.
+- If the normal patient keeps waiting for a long time, the doctor finally treats them.
+
+Emergency treatment = **Priority Scheduling**
+
+Giving a chance to the waiting patient later = **Aging**
+
+This analogy helps remember both **Priority Scheduling** and **Starvation** together.
