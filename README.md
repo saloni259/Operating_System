@@ -3977,3 +3977,356 @@ Imagine four customers standing at a supermarket billing counter.
 If the cashier serves the customers with fewer items first, more customers leave quickly and the queue becomes shorter.
 
 This is exactly how **Shortest Job First (SJF)** Scheduling works.
+
+# Shortest Remaining Time First (SRTF) Scheduling
+
+After studying SJF, we learned that it always executes the process with the shortest Burst Time.
+
+But SJF has one limitation.
+
+Once a process starts executing, it cannot be interrupted, even if another shorter process arrives later.
+
+To solve this problem, **Shortest Remaining Time First (SRTF)** Scheduling was introduced.
+
+---
+
+# What is SRTF?
+
+SRTF (Shortest Remaining Time First) is the **Preemptive version of SJF**.
+
+Instead of comparing the total Burst Time, it compares the **Remaining Burst Time** of all available processes.
+
+Whenever a new process arrives, the OS checks:
+
+**"Does the new process require less CPU time than the remaining time of the currently running process?"**
+
+If the answer is **Yes**, the CPU is immediately taken away from the current process and given to the new one.
+
+This process is called **Preemption**.
+
+---
+
+# What is Remaining Time?
+
+Remaining Time means the CPU time that is still required to complete a process.
+
+Formula:
+
+```
+Remaining Time = Burst Time − Executed Time
+```
+
+Example:
+
+A process has Burst Time = 10 sec.
+
+It has already executed for 4 sec.
+
+Remaining Time:
+
+```
+10 − 4 = 6 sec
+```
+
+SRTF always compares these remaining times.
+
+---
+
+# Why is SRTF called Preemptive?
+
+Because the Operating System can interrupt a running process whenever a new process arrives with a smaller Remaining Time.
+
+Example:
+
+Suppose:
+
+```
+P1 (Remaining Time = 7 sec) → Running
+```
+
+Now,
+
+```
+P2 arrives (Burst Time = 3 sec)
+```
+
+Since
+
+```
+3 < 7
+```
+
+the OS immediately stops P1 and gives the CPU to P2.
+
+Later, after P2 finishes, P1 continues from where it stopped.
+
+---
+
+# How does SRTF work?
+
+Let's understand with an example.
+
+| Process | Arrival Time | Burst Time |
+|----------|--------------|------------|
+| P1 | 0 | 8 |
+| P2 | 1 | 4 |
+| P3 | 2 | 2 |
+
+### Step 1
+
+Time = 0
+
+Only P1 has arrived.
+
+CPU starts executing P1.
+
+Remaining Time of P1 becomes:
+
+```
+7
+```
+
+---
+
+### Step 2
+
+Time = 1
+
+P2 arrives.
+
+Compare:
+
+```
+P1 Remaining = 7
+
+P2 Burst = 4
+```
+
+Since P2 has less remaining time,
+
+CPU switches from P1 to P2.
+
+This is called **Preemption**.
+
+---
+
+### Step 3
+
+Time = 2
+
+P3 arrives.
+
+Compare:
+
+```
+P2 Remaining = 3
+
+P3 Burst = 2
+```
+
+Again,
+
+P3 is shorter.
+
+CPU immediately switches to P3.
+
+---
+
+### Step 4
+
+P3 finishes.
+
+Now compare:
+
+```
+P1 Remaining = 7
+
+P2 Remaining = 3
+```
+
+P2 is shorter.
+
+So CPU executes P2.
+
+---
+
+### Step 5
+
+P2 finishes.
+
+Only P1 remains.
+
+CPU executes P1 until completion.
+
+---
+
+# Gantt Chart
+
+```
+0     1      2      4      7             14
+
+| P1 | P2 | P3 | P2 |      P1      |
+```
+
+Notice that the CPU keeps switching whenever a shorter process arrives.
+
+This is the biggest difference between SJF and SRTF.
+
+---
+
+# Why is SRTF better than SJF?
+
+In SJF,
+
+once a process starts, it cannot be interrupted.
+
+In SRTF,
+
+if a shorter process arrives, it immediately gets the CPU.
+
+Because of this,
+
+- Small processes finish faster.
+- Response Time improves.
+- Average Waiting Time becomes even smaller.
+
+---
+
+# Advantages of SRTF
+
+### 1. Better Response Time
+
+Small processes get CPU quickly.
+
+This makes the system more responsive.
+
+---
+
+### 2. Lower Average Waiting Time
+
+Compared to FCFS and even SJF (when arrivals differ), SRTF generally provides a lower average waiting time.
+
+---
+
+### 3. Good for Interactive Systems
+
+Interactive applications require quick responses.
+
+SRTF helps provide faster responses to newly arriving short processes.
+
+---
+
+# Disadvantages of SRTF
+
+### 1. Too Many Context Switches
+
+Every time a shorter process arrives,
+
+the OS performs Context Switching.
+
+Frequent Context Switching increases overhead and reduces performance.
+
+---
+
+### 2. Starvation
+
+Suppose there is one long process.
+
+If small processes keep arriving,
+
+the long process may never get enough CPU time to finish.
+
+This problem is called **Starvation**.
+
+---
+
+### 3. Burst Time Must Be Known
+
+The scheduler needs to know the Burst Time in advance.
+
+In real systems, it is difficult to predict exactly how much CPU time a process will require.
+
+---
+
+# SJF vs SRTF
+
+| SJF | SRTF |
+|------|------|
+| Non-Preemptive | Preemptive |
+| Compares Burst Time | Compares Remaining Time |
+| Running process cannot be interrupted | Running process can be interrupted |
+| Fewer Context Switches | More Context Switches |
+| Slightly higher Response Time | Better Response Time |
+
+---
+
+# FCFS vs SRTF
+
+| FCFS | SRTF |
+|------|------|
+| Executes based on Arrival Time | Executes based on Remaining Time |
+| Non-Preemptive | Preemptive |
+| Convoy Effect occurs | Convoy Effect is reduced |
+| Higher Waiting Time | Lower Waiting Time |
+
+---
+
+# Quick Revision
+
+- SRTF = Shortest Remaining Time First.
+- It is the **Preemptive version of SJF**.
+- CPU always executes the process with the smallest Remaining Time.
+- A running process can be interrupted if a shorter process arrives.
+- Gives better Response Time and lower Average Waiting Time.
+- Biggest disadvantages:
+  - Starvation
+  - High Context Switching Overhead
+  - Burst Time must be known.
+
+---
+
+# Interview Questions
+
+### What is SRTF Scheduling?
+
+SRTF is the Preemptive version of SJF in which the process with the shortest Remaining Time gets the CPU.
+
+---
+
+### Why is SRTF called Preemptive?
+
+Because the OS can interrupt the currently running process if another process arrives with a shorter Remaining Time.
+
+---
+
+### What is compared in SRTF?
+
+Remaining Burst Time.
+
+---
+
+### Can Starvation occur in SRTF?
+
+Yes.
+
+Long processes may keep waiting if smaller processes continue arriving.
+
+---
+
+### Which is better: SJF or SRTF?
+
+SRTF usually gives better Response Time and lower Waiting Time because it allows preemption.
+
+However, it causes more Context Switching.
+
+---
+
+# Easy Way to Remember
+
+Imagine a doctor is treating a patient who needs **20 minutes**.
+
+Suddenly, another patient arrives who needs only **2 minutes**.
+
+The doctor pauses the first patient, treats the second patient quickly, and then returns to the first one.
+
+This is exactly how **Shortest Remaining Time First (SRTF)** Scheduling works.
