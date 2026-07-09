@@ -8439,3 +8439,622 @@ Think of a **library study room** with only **one key**.
 Remember:
 
 **Mutex = One Key → One Person → One Critical Section**
+# Semaphore
+
+After learning Mutex, we know that only one process can enter the Critical Section at a time.
+
+But what if multiple identical resources are available?
+
+For example,
+
+- 5 printers
+- 10 database connections
+- 20 parking spaces
+
+Here, allowing only one process is inefficient.
+
+To solve this problem, the Operating System uses **Semaphore**.
+
+---
+
+# What is a Semaphore?
+
+A Semaphore is a synchronization mechanism used to control access to shared resources.
+
+It uses an **integer variable** to keep track of the number of available resources.
+
+Unlike Mutex, Semaphore can allow one or more processes to access resources depending on the available count.
+
+In simple words,
+
+> **Semaphore is an integer variable that controls how many processes can access a shared resource at the same time.**
+
+---
+
+# Why do we need Semaphore?
+
+Suppose a computer lab has **5 printers**.
+
+If Mutex is used,
+
+only one student can print at a time,
+
+even though 5 printers are available.
+
+This wastes resources.
+
+Semaphore solves this by allowing up to **5 students** to print simultaneously.
+
+---
+
+# Why is it called Semaphore?
+
+The word "Semaphore" comes from railway signaling.
+
+Think of a railway signal.
+
+🟢 Green Signal → Train can move.
+
+🔴 Red Signal → Train must stop.
+
+Similarly,
+
+Semaphore tells a process:
+
+- Resource available → Enter.
+- Resource unavailable → Wait.
+
+---
+
+# Semaphore Variable
+
+Semaphore is simply an integer.
+
+Example:
+
+```cpp
+Semaphore S = 3;
+```
+
+Meaning,
+
+Three identical resources are available.
+
+Example:
+
+- 3 Printers
+- 3 Parking Slots
+- 3 Database Connections
+
+Whenever a process acquires a resource,
+
+the semaphore value decreases.
+
+Whenever a process releases the resource,
+
+the semaphore value increases.
+
+---
+
+# Operations of Semaphore
+
+Semaphore mainly uses two operations.
+
+## 1. wait() Operation
+
+Also called:
+
+- P()
+- Down()
+- Acquire()
+
+Purpose:
+
+To request or acquire a resource.
+
+Pseudo Code:
+
+```cpp
+wait(S)
+{
+    while(S <= 0);
+
+    S--;
+}
+```
+
+Meaning:
+
+If a resource is available,
+
+the process enters,
+
+and the semaphore value decreases.
+
+Otherwise,
+
+the process waits.
+
+---
+
+### Example
+
+Initially,
+
+```
+S = 3
+```
+
+P1 executes
+
+```
+wait(S)
+```
+
+Semaphore becomes
+
+```
+3 → 2
+```
+
+P2 executes
+
+```
+wait(S)
+```
+
+Semaphore becomes
+
+```
+2 → 1
+```
+
+P3 executes
+
+```
+wait(S)
+```
+
+Semaphore becomes
+
+```
+1 → 0
+```
+
+P4 executes
+
+```
+wait(S)
+```
+
+Since
+
+```
+S = 0
+```
+
+P4 must wait until a resource becomes available.
+
+---
+
+## 2. signal() Operation
+
+Also called:
+
+- V()
+- Up()
+- Release()
+
+Purpose:
+
+To release a resource.
+
+Pseudo Code:
+
+```cpp
+signal(S)
+{
+    S++;
+}
+```
+
+Meaning:
+
+The semaphore value increases,
+
+allowing another waiting process to enter.
+
+---
+
+### Example
+
+Suppose,
+
+```
+S = 0
+```
+
+P1 finishes its work.
+
+It executes
+
+```
+signal(S)
+```
+
+Semaphore becomes
+
+```
+0 → 1
+```
+
+Now one waiting process can enter.
+
+---
+
+# How Semaphore Works
+
+Suppose there are **2 printers**.
+
+Initially,
+
+```
+Semaphore = 2
+```
+
+Processes:
+
+```
+P1
+
+P2
+
+P3
+```
+
+### Step 1
+
+P1 executes
+
+```
+wait()
+```
+
+Semaphore:
+
+```
+2 → 1
+```
+
+P1 starts printing.
+
+---
+
+### Step 2
+
+P2 executes
+
+```
+wait()
+```
+
+Semaphore:
+
+```
+1 → 0
+```
+
+P2 starts printing.
+
+---
+
+### Step 3
+
+P3 executes
+
+```
+wait()
+```
+
+Semaphore is 0.
+
+Therefore,
+
+P3 waits.
+
+---
+
+### Step 4
+
+P1 finishes printing.
+
+It executes
+
+```
+signal()
+```
+
+Semaphore:
+
+```
+0 → 1
+```
+
+Now,
+
+P3 acquires the printer and starts printing.
+
+---
+
+# Types of Semaphore
+
+There are two types.
+
+---
+
+# 1. Binary Semaphore
+
+Binary means only **two possible values**.
+
+```
+0
+
+or
+
+1
+```
+
+Example:
+
+```cpp
+Semaphore S = 1;
+```
+
+Only one process can enter the Critical Section.
+
+It behaves similarly to Mutex.
+
+---
+
+### Example
+
+Initially,
+
+```
+S = 1
+```
+
+P1 executes
+
+```
+wait()
+```
+
+Semaphore becomes
+
+```
+1 → 0
+```
+
+P2 executes
+
+```
+wait()
+```
+
+P2 waits because the semaphore value is 0.
+
+Only one process can execute.
+
+---
+
+# 2. Counting Semaphore
+
+Counting Semaphore can store any non-negative integer.
+
+Example:
+
+```cpp
+Semaphore S = 5;
+```
+
+Meaning,
+
+Five identical resources are available.
+
+Up to five processes can use the resources simultaneously.
+
+---
+
+### Example
+
+Parking Lot
+
+Suppose there are 50 parking spaces.
+
+Initially,
+
+```
+Semaphore = 50
+```
+
+Whenever a car enters,
+
+```
+wait()
+```
+
+Semaphore decreases.
+
+Whenever a car leaves,
+
+```
+signal()
+```
+
+Semaphore increases.
+
+Thus,
+
+the semaphore always represents the number of available parking spaces.
+
+---
+
+# Difference Between Binary Semaphore and Counting Semaphore
+
+| Binary Semaphore | Counting Semaphore |
+|------------------|--------------------|
+| Values are 0 or 1 | Values can be 0,1,2,3... |
+| Controls one resource | Controls multiple resources |
+| Similar to Mutex | Used for managing identical resources |
+
+---
+
+# Difference Between Mutex and Semaphore
+
+| Mutex | Semaphore |
+|--------|-----------|
+| Only one process enters | One or more processes may enter |
+| Uses `lock()` and `unlock()` | Uses `wait()` and `signal()` |
+| Has ownership | No ownership |
+| Only owner unlocks | Any process can execute `signal()` |
+| Mainly used for Mutual Exclusion | Used for Synchronization and Resource Management |
+
+---
+
+# Advantages of Semaphore
+
+### 1. Prevents Race Condition
+
+Shared resources are accessed safely.
+
+---
+
+### 2. Supports Multiple Resources
+
+Unlike Mutex,
+
+Semaphore can manage multiple identical resources.
+
+---
+
+### 3. Used to solve Synchronization Problems
+
+Semaphore is used in:
+
+- Producer-Consumer Problem
+- Reader-Writer Problem
+- Dining Philosophers Problem
+
+---
+
+### 4. Better Resource Utilization
+
+Allows multiple processes to use available resources efficiently.
+
+---
+
+# Disadvantages of Semaphore
+
+### 1. Difficult to Implement
+
+Incorrect use of `wait()` and `signal()` may cause synchronization errors.
+
+---
+
+### 2. Deadlock
+
+Improper ordering of resource requests may lead to Deadlock.
+
+---
+
+### 3. Starvation
+
+Some processes may wait for a long time if scheduling is unfair.
+
+---
+
+# Real-Life Examples
+
+Semaphore is used in:
+
+- Printer Management
+- Database Connection Pool
+- Parking Lot Management
+- Thread Synchronization
+- Resource Allocation
+
+---
+
+# Quick Revision
+
+- Semaphore is a synchronization mechanism.
+- It uses an integer variable.
+- It controls access to shared resources.
+- Main operations:
+  - `wait()`
+  - `signal()`
+- `wait()` decreases the semaphore value.
+- `signal()` increases the semaphore value.
+- Two types:
+  - Binary Semaphore
+  - Counting Semaphore
+- Binary Semaphore → One resource.
+- Counting Semaphore → Multiple resources.
+- Semaphore does not have ownership.
+- Used in Producer-Consumer, Reader-Writer and Dining Philosophers.
+
+---
+
+# Interview Questions
+
+### What is a Semaphore?
+
+Semaphore is a synchronization mechanism that uses an integer variable to control access to shared resources.
+
+---
+
+### What are the two operations of Semaphore?
+
+- `wait()` (Acquire)
+- `signal()` (Release)
+
+---
+
+### What is the difference between Binary Semaphore and Counting Semaphore?
+
+Binary Semaphore stores only 0 or 1.
+
+Counting Semaphore stores any non-negative integer and manages multiple resources.
+
+---
+
+### What is the difference between Mutex and Semaphore?
+
+Mutex has ownership and only one process can enter the Critical Section.
+
+Semaphore has no ownership and can manage one or multiple resources depending on its value.
+
+---
+
+### Why is Semaphore better than Mutex?
+
+Semaphore can manage multiple identical resources, while Mutex only protects one Critical Section at a time.
+
+---
+
+# Easy Way to Remember
+
+Think of a **parking lot**.
+
+- Number of empty parking spaces = Semaphore value.
+- Car enters → `wait()` → Empty spaces decrease.
+- Car leaves → `signal()` → Empty spaces increase.
+
+Remember:
+
+**Mutex = One Key 🔑**
+
+**Binary Semaphore = One Signal 🚦**
+
+**Counting Semaphore = Many Tickets 🎫**
