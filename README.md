@@ -5135,3 +5135,454 @@ This is exactly how **Round Robin Scheduling** works.
 Remember:
 
 **Round Robin = Equal Time for Everyone.**
+# Multilevel Queue (MLQ) Scheduling
+
+After learning FCFS, SJF, SRTF, Priority Scheduling and Round Robin, we know that all these algorithms assume that every process is present in a single Ready Queue.
+
+But in a real operating system, different types of processes have different requirements.
+
+For example:
+
+- Keyboard Input
+- Mouse Events
+- System Processes
+- Browser
+- Music Player
+- Background Backup
+- Antivirus Scan
+
+All these processes should not be treated equally.
+
+To solve this problem, the Operating System uses **Multilevel Queue (MLQ) Scheduling**.
+
+---
+
+# What is Multilevel Queue Scheduling?
+
+Multilevel Queue (MLQ) Scheduling is a CPU Scheduling Algorithm in which the **Ready Queue is divided into multiple separate queues**.
+
+Each queue contains a different category of processes.
+
+Each queue can also use a different scheduling algorithm.
+
+In simple words,
+
+> Instead of keeping every process in one queue, the OS divides similar processes into different queues.
+
+---
+
+# Why do we need MLQ?
+
+Suppose there is only one Ready Queue.
+
+```
+Ready Queue
+
+Chrome
+
+Keyboard Input
+
+Video Rendering
+
+Backup
+
+Antivirus
+```
+
+If a long process starts executing,
+
+important processes like Keyboard Input may have to wait.
+
+This reduces system responsiveness.
+
+So the OS creates separate queues.
+
+Example:
+
+```
+Ready Queue
+
+│
+
+├── System Queue
+
+├── Interactive Queue
+
+└── Batch Queue
+```
+
+Now similar processes are grouped together.
+
+---
+
+# Types of Queues
+
+A typical MLQ Scheduling system may have:
+
+### 1. System Queue
+
+Contains important system processes.
+
+Examples:
+
+- Device Drivers
+- Operating System Services
+- Interrupt Handling
+
+Scheduling Algorithm:
+
+Usually Priority Scheduling.
+
+---
+
+### 2. Interactive Queue
+
+Contains applications that require quick response.
+
+Examples:
+
+- Chrome
+- VS Code
+- Calculator
+- Browser
+
+Scheduling Algorithm:
+
+Usually Round Robin.
+
+---
+
+### 3. Batch Queue
+
+Contains background jobs.
+
+Examples:
+
+- Backup
+- Video Rendering
+- File Compression
+- Large Data Processing
+
+Scheduling Algorithm:
+
+Usually FCFS.
+
+---
+
+# How does MLQ Scheduling work?
+
+The scheduler performs scheduling in two steps.
+
+### Step 1
+
+Select which queue should get the CPU.
+
+### Step 2
+
+Apply that queue's scheduling algorithm.
+
+Example:
+
+Suppose the Interactive Queue gets the CPU.
+
+If the Interactive Queue uses Round Robin,
+
+then Round Robin Scheduling is applied only to the processes inside that queue.
+
+---
+
+# CPU Allocation Between Queues
+
+There are two common methods.
+
+---
+
+# 1. Fixed Priority Scheduling
+
+Each queue is assigned a priority.
+
+Example:
+
+```
+Queue 1 → Highest Priority
+
+Queue 2 → Medium Priority
+
+Queue 3 → Lowest Priority
+```
+
+The scheduler first checks Queue 1.
+
+If Queue 1 has any process,
+
+it gets the CPU.
+
+Only when Queue 1 becomes empty does Queue 2 get CPU.
+
+Similarly,
+
+Queue 3 gets CPU only when both higher-priority queues are empty.
+
+### Example
+
+```
+Queue 1
+
+Keyboard Input
+```
+
+```
+Queue 2
+
+Chrome
+
+VS Code
+```
+
+```
+Queue 3
+
+Backup
+```
+
+The CPU first executes Keyboard Input.
+
+Chrome and Backup have to wait.
+
+---
+
+# Problem with Fixed Priority
+
+If Queue 1 always contains processes,
+
+Queue 2 and Queue 3 may never get CPU time.
+
+This causes **Starvation**.
+
+---
+
+# 2. Time Slice Between Queues
+
+Instead of always giving priority,
+
+CPU time is divided among queues.
+
+Example:
+
+```
+System Queue → 50%
+
+Interactive Queue → 30%
+
+Batch Queue → 20%
+```
+
+Every queue gets some CPU time.
+
+This reduces the possibility of Starvation.
+
+---
+
+# Can a Process Move Between Queues?
+
+This is one of the most important interview questions.
+
+**No.**
+
+Once a process enters a queue,
+
+it remains in that queue until it finishes execution.
+
+Example:
+
+Chrome enters the Interactive Queue.
+
+It cannot later move to the Batch Queue.
+
+Queue assignment is fixed.
+
+---
+
+# Advantages of MLQ Scheduling
+
+### 1. Better Organization
+
+Processes are grouped according to their type.
+
+This makes scheduling easier.
+
+---
+
+### 2. Different Scheduling Algorithms
+
+Each queue can use the most suitable scheduling algorithm.
+
+Example:
+
+- Interactive → Round Robin
+- Batch → FCFS
+- System → Priority Scheduling
+
+---
+
+### 3. Fast Response for Important Processes
+
+Interactive and system processes receive CPU quickly.
+
+This improves user experience.
+
+---
+
+### 4. Efficient Process Management
+
+Different categories of processes are managed independently.
+
+---
+
+# Disadvantages of MLQ Scheduling
+
+### 1. Starvation
+
+If Fixed Priority Scheduling is used,
+
+lower-priority queues may never receive CPU time.
+
+---
+
+### 2. Fixed Queue Assignment
+
+Once assigned,
+
+a process cannot move to another queue.
+
+Even if its behavior changes,
+
+its queue remains the same.
+
+---
+
+### 3. Complex Implementation
+
+Maintaining multiple queues is more complicated than maintaining a single Ready Queue.
+
+---
+
+# Difference Between MLQ and Round Robin
+
+| Round Robin | Multilevel Queue |
+|--------------|------------------|
+| One Ready Queue | Multiple Ready Queues |
+| Same scheduling algorithm for all processes | Different scheduling algorithms for different queues |
+| Every process treated equally | Processes divided according to category |
+
+---
+
+# Difference Between Priority Scheduling and MLQ
+
+| Priority Scheduling | Multilevel Queue |
+|----------------------|------------------|
+| One Ready Queue | Multiple Ready Queues |
+| Priority among processes | Priority among queues and processes |
+| Usually one scheduling algorithm | Different scheduling algorithm for each queue |
+
+---
+
+# Real-Life Analogy
+
+Imagine a bank.
+
+There are different counters:
+
+- VIP Counter
+- Regular Counter
+- Business Counter
+
+Every customer joins the appropriate counter.
+
+VIP customers stay in the VIP queue.
+
+Regular customers stay in the Regular queue.
+
+Customers cannot switch between counters.
+
+Each counter may have different service rules.
+
+This is exactly how **Multilevel Queue Scheduling** works.
+
+---
+
+# Quick Revision
+
+- MLQ divides the Ready Queue into multiple queues.
+- Each queue contains a different category of processes.
+- Different queues can use different scheduling algorithms.
+- A process cannot move from one queue to another.
+- CPU can be allocated using:
+  - Fixed Priority
+  - Time Slice
+- Biggest disadvantage = Starvation (when Fixed Priority is used).
+
+---
+
+# Interview Questions
+
+### What is Multilevel Queue Scheduling?
+
+MLQ is a CPU Scheduling Algorithm in which the Ready Queue is divided into multiple queues based on process type or priority.
+
+---
+
+### Can different queues use different scheduling algorithms?
+
+Yes.
+
+Each queue can use its own scheduling algorithm.
+
+Example:
+
+- System → Priority Scheduling
+- Interactive → Round Robin
+- Batch → FCFS
+
+---
+
+### Can a process move from one queue to another?
+
+No.
+
+Once assigned, the process remains in the same queue until completion.
+
+---
+
+### What is the biggest disadvantage of MLQ?
+
+Starvation of lower-priority queues and fixed queue assignment.
+
+---
+
+### How is CPU allocated between queues?
+
+CPU can be allocated using:
+
+- Fixed Priority Scheduling
+- Time Slice Scheduling
+
+---
+
+# Easy Way to Remember
+
+Think of an airport.
+
+Passengers are divided into different queues:
+
+- Business Class
+- Economy Class
+- Staff
+
+Each queue follows different rules.
+
+Passengers stay in their assigned queue.
+
+Similarly,
+
+**MLQ divides processes into different queues based on their category, and each queue can have its own scheduling algorithm.**
