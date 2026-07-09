@@ -10326,3 +10326,451 @@ Remember:
 **One Writer ✔️**
 
 **Reader + Writer Together ❌**
+# Dining Philosophers Problem
+
+After learning the Producer-Consumer Problem and Reader-Writer Problem, we now study the last classic synchronization problem called the **Dining Philosophers Problem**.
+
+This problem explains how multiple processes compete for shared resources and how this competition can lead to **Deadlock** and **Starvation**.
+
+It is mainly used to understand resource allocation and synchronization.
+
+---
+
+# What is the Dining Philosophers Problem?
+
+The Dining Philosophers Problem is a synchronization problem in which several philosophers sit around a circular table.
+
+Each philosopher performs only two activities:
+
+- Thinking 🤔
+- Eating 🍝
+
+Between every two philosophers, there is one fork.
+
+To eat, every philosopher needs **two forks**:
+
+- Left Fork
+- Right Fork
+
+If a philosopher gets only one fork, they cannot eat and must wait.
+
+---
+
+# Why do we study this problem?
+
+The main purpose of this problem is to understand:
+
+- Resource Allocation
+- Deadlock
+- Starvation
+- Mutual Exclusion
+- Synchronization
+
+Instead of philosophers and forks, think of them as processes and shared resources.
+
+---
+
+# Representation
+
+Suppose there are:
+
+```
+5 Philosophers
+
+5 Forks
+```
+
+Arrangement:
+
+```
+          P0
+      F0      F1
+
+   P4            P1
+
+      F4      F2
+
+          P3
+           |
+          F3
+           |
+          P2
+```
+
+Each philosopher needs:
+
+```
+Left Fork
+
++
+
+Right Fork
+```
+
+to start eating.
+
+---
+
+# What do Philosophers and Forks represent?
+
+| Dining Philosophers Problem | Operating System |
+|-----------------------------|------------------|
+| Philosopher | Process / Thread |
+| Fork | Shared Resource |
+| Eating | Using Resource |
+| Thinking | Normal Execution |
+
+So,
+
+this problem actually represents multiple processes competing for shared resources.
+
+---
+
+# Working of the Problem
+
+Initially,
+
+all philosophers are thinking.
+
+```
+Thinking
+
+Thinking
+
+Thinking
+
+Thinking
+
+Thinking
+```
+
+Now,
+
+all philosophers become hungry at the same time.
+
+Each philosopher picks up the **left fork**.
+
+```
+P0 → Left Fork
+
+P1 → Left Fork
+
+P2 → Left Fork
+
+P3 → Left Fork
+
+P4 → Left Fork
+```
+
+Now everyone waits for the **right fork**.
+
+But,
+
+every right fork is already held by another philosopher.
+
+Result:
+
+No philosopher can continue.
+
+Everyone waits forever.
+
+This situation is called **Deadlock**.
+
+---
+
+# Deadlock in Dining Philosophers Problem
+
+Suppose,
+
+```
+P0 waits for P1
+
+P1 waits for P2
+
+P2 waits for P3
+
+P3 waits for P4
+
+P4 waits for P0
+```
+
+Every philosopher is waiting for another philosopher.
+
+Nobody releases the fork.
+
+Nobody can eat.
+
+This is called **Deadlock**.
+
+---
+
+# Why does Deadlock occur?
+
+Deadlock occurs because:
+
+- Every philosopher holds one fork.
+- Every philosopher waits for another fork.
+- No philosopher releases the fork.
+
+This creates a circular waiting chain.
+
+Later, in the Deadlock chapter, we will learn the four Coffman Conditions responsible for Deadlock.
+
+---
+
+# Can Starvation occur?
+
+Yes.
+
+Suppose,
+
+every time Philosopher P0 wants to eat,
+
+other philosophers always get the forks first.
+
+P0 keeps waiting forever.
+
+Other philosophers continue eating.
+
+This situation is called **Starvation**.
+
+---
+
+# Difference Between Deadlock and Starvation
+
+| Deadlock | Starvation |
+|-----------|------------|
+| Everyone waits forever. | One (or a few) processes wait forever. |
+| No process makes progress. | Other processes continue to make progress. |
+| Entire system becomes blocked. | Only some processes suffer indefinite waiting. |
+
+---
+
+# Problems in Dining Philosophers Problem
+
+### 1. Deadlock
+
+All philosophers wait forever.
+
+No one can eat.
+
+---
+
+### 2. Starvation
+
+One philosopher never gets a chance to eat,
+
+while others continue eating.
+
+---
+
+### 3. Resource Contention
+
+Many philosophers compete for the same forks.
+
+---
+
+# Solutions to the Dining Philosophers Problem
+
+Several methods can prevent Deadlock.
+
+---
+
+## Solution 1: Allow Only Four Philosophers
+
+Suppose there are:
+
+```
+5 Philosophers
+
+5 Forks
+```
+
+Allow only **4 philosophers** to try eating simultaneously.
+
+At least one philosopher keeps thinking.
+
+Therefore,
+
+at least one fork remains free.
+
+Deadlock is avoided.
+
+---
+
+## Solution 2: Pick Forks in Different Order
+
+Normally,
+
+every philosopher picks:
+
+```
+Left Fork
+
+↓
+
+Right Fork
+```
+
+Instead,
+
+make one philosopher pick:
+
+```
+Right Fork
+
+↓
+
+Left Fork
+```
+
+This breaks the circular waiting condition.
+
+Deadlock is prevented.
+
+---
+
+## Solution 3: Use Semaphore
+
+Before picking up forks,
+
+every philosopher executes:
+
+```cpp
+wait(semaphore);
+```
+
+After finishing,
+
+```cpp
+signal(semaphore);
+```
+
+Semaphore controls how many philosophers can attempt to eat at the same time.
+
+---
+
+## Solution 4: Use Monitor
+
+Modern Operating Systems often use **Monitors**.
+
+A Monitor automatically synchronizes access to shared resources and helps prevent Deadlock.
+
+---
+
+# Real-Life Examples
+
+The Dining Philosophers Problem represents many real-world situations.
+
+Examples:
+
+- Multiple printers shared by users.
+- Threads competing for files.
+- Database locks.
+- Cloud resource allocation.
+- Multiple network connections.
+
+---
+
+# Advantages of Studying this Problem
+
+It helps us understand:
+
+- Deadlock
+- Starvation
+- Resource Allocation
+- Mutual Exclusion
+- Process Synchronization
+
+---
+
+# Quick Revision
+
+- Philosophers represent Processes or Threads.
+- Forks represent Shared Resources.
+- Every philosopher needs two forks to eat.
+- If everyone picks one fork and waits for another,
+  Deadlock occurs.
+- Starvation occurs when one philosopher never gets a chance to eat.
+- Deadlock can be prevented by:
+  - Allowing only four philosophers.
+  - Changing the order of picking forks.
+  - Using Semaphore.
+  - Using Monitor.
+
+---
+
+# Interview Questions
+
+### What is the Dining Philosophers Problem?
+
+It is a synchronization problem where multiple philosophers compete for shared forks, demonstrating Deadlock and Starvation.
+
+---
+
+### What does a philosopher represent?
+
+A Process or Thread.
+
+---
+
+### What does a fork represent?
+
+A Shared Resource.
+
+---
+
+### Why does Deadlock occur?
+
+Because every philosopher holds one fork and waits for another, creating a circular waiting condition.
+
+---
+
+### How can Deadlock be prevented?
+
+- Allow only four philosophers.
+- Pick forks in different order.
+- Use Semaphore.
+- Use Monitor.
+
+---
+
+### What is the difference between Deadlock and Starvation?
+
+Deadlock means all processes wait forever.
+
+Starvation means one or a few processes wait forever while others continue executing.
+
+---
+
+# Easy Way to Remember
+
+Imagine **five friends** sitting around a table with **five spoons**.
+
+Each friend needs **two spoons** to eat.
+
+Everyone picks up one spoon first.
+
+Now everyone waits for the second spoon.
+
+Nobody can eat.
+
+Nobody puts the spoon down.
+
+Everyone waits forever.
+
+This is **Deadlock**.
+
+If one friend never gets both spoons because others always take them first,
+
+that is **Starvation**.
+
+Remember:
+
+**Philosopher = Process**
+
+**Fork = Resource**
+
+**Eating = Using Resource**
+
+**Waiting Forever = Deadlock**
