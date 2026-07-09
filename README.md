@@ -9058,3 +9058,626 @@ Remember:
 **Binary Semaphore = One Signal 🚦**
 
 **Counting Semaphore = Many Tickets 🎫**
+# Producer-Consumer Problem (Bounded Buffer Problem)
+
+After learning Semaphore, we now study one of its most important applications: the **Producer-Consumer Problem**.
+
+This is a classic synchronization problem that explains how Producers and Consumers safely share a common buffer.
+
+It is also called the **Bounded Buffer Problem** because the shared buffer has a fixed size.
+
+---
+
+# What is the Producer-Consumer Problem?
+
+The Producer-Consumer Problem is a synchronization problem in which:
+
+- A **Producer** creates data and stores it in a shared buffer.
+- A **Consumer** removes data from the same shared buffer.
+
+Since both processes access the same buffer,
+
+proper synchronization is required to avoid errors.
+
+The Operating System must ensure that:
+
+- Producer should not insert data if the buffer is full.
+- Consumer should not remove data if the buffer is empty.
+- Producer and Consumer should not access the buffer simultaneously.
+
+---
+
+# What is a Buffer?
+
+A Buffer is a temporary storage area where data is stored before it is processed.
+
+Examples:
+
+- Printer Queue
+- Keyboard Buffer
+- Network Buffer
+- Video Streaming Buffer
+
+Think of it as a temporary waiting area for data.
+
+---
+
+# What is a Bounded Buffer?
+
+A Bounded Buffer is a buffer with a **fixed capacity**.
+
+Example:
+
+```
+Buffer Size = 5
+```
+
+```
++----+----+----+----+----+
+|    |    |    |    |    |
++----+----+----+----+----+
+```
+
+Only five items can be stored.
+
+If all five positions are occupied,
+
+the Producer must wait.
+
+---
+
+# Components of the Producer-Consumer Problem
+
+## 1. Producer
+
+A Producer creates or generates data.
+
+Examples:
+
+- Keyboard generating characters.
+- Camera producing images.
+- Sensor generating readings.
+- User uploading files.
+
+---
+
+## 2. Consumer
+
+A Consumer uses or processes the data.
+
+Examples:
+
+- Printer printing documents.
+- Video Player displaying frames.
+- Database storing records.
+- Application reading user input.
+
+---
+
+## 3. Shared Buffer
+
+The Producer stores data here,
+
+and the Consumer removes data from here.
+
+Since both access the same buffer,
+
+it becomes a **shared resource**.
+
+Therefore,
+
+Synchronization is necessary.
+
+---
+
+# Problems Without Synchronization
+
+### 1. Buffer Overflow
+
+Suppose,
+
+```
+Buffer Size = 5
+```
+
+Current Buffer:
+
+```
+★★★★★
+```
+
+The Producer tries to insert another item.
+
+There is no free space.
+
+Result:
+
+**Buffer Overflow**
+
+---
+
+### 2. Buffer Underflow
+
+Suppose,
+
+```
+Buffer = Empty
+```
+
+The Consumer tries to remove an item.
+
+No data is available.
+
+Result:
+
+**Buffer Underflow**
+
+---
+
+### 3. Race Condition
+
+If Producer and Consumer access the buffer simultaneously,
+
+the data inside the buffer may become inconsistent.
+
+---
+
+# Solution Using Semaphore
+
+Three synchronization variables are used.
+
+## 1. Mutex
+
+```
+mutex = 1
+```
+
+Purpose:
+
+Protects the Critical Section.
+
+Only one process can access the shared buffer at a time.
+
+---
+
+## 2. Empty Semaphore
+
+```
+empty = Buffer Size
+```
+
+Example:
+
+```
+Buffer Size = 5
+
+empty = 5
+```
+
+Purpose:
+
+Stores the number of empty slots in the buffer.
+
+If
+
+```
+empty = 0
+```
+
+the Producer must wait.
+
+---
+
+## 3. Full Semaphore
+
+```
+full = 0
+```
+
+Purpose:
+
+Stores the number of filled slots.
+
+Initially,
+
+the buffer is empty.
+
+Therefore,
+
+```
+full = 0
+```
+
+If
+
+```
+full = 0
+```
+
+the Consumer must wait.
+
+---
+
+# Initial Values
+
+For a buffer of size **N**,
+
+```
+mutex = 1
+
+empty = N
+
+full = 0
+```
+
+This is a very common interview question.
+
+---
+
+# Producer Algorithm
+
+```cpp
+wait(empty);
+
+wait(mutex);
+
+/* Insert Item */
+
+signal(mutex);
+
+signal(full);
+```
+
+### Step-by-Step
+
+### Step 1
+
+```cpp
+wait(empty);
+```
+
+Checks whether an empty slot is available.
+
+If no empty slot exists,
+
+the Producer waits.
+
+---
+
+### Step 2
+
+```cpp
+wait(mutex);
+```
+
+Acquires the lock.
+
+Now only one process can access the buffer.
+
+---
+
+### Step 3
+
+Insert the new item into the buffer.
+
+---
+
+### Step 4
+
+```cpp
+signal(mutex);
+```
+
+Release the lock.
+
+Another process may now access the buffer.
+
+---
+
+### Step 5
+
+```cpp
+signal(full);
+```
+
+Increase the number of filled slots.
+
+Consumer can now consume an item.
+
+---
+
+# Consumer Algorithm
+
+```cpp
+wait(full);
+
+wait(mutex);
+
+/* Remove Item */
+
+signal(mutex);
+
+signal(empty);
+```
+
+### Step-by-Step
+
+### Step 1
+
+```cpp
+wait(full);
+```
+
+Checks whether any item is available.
+
+If the buffer is empty,
+
+the Consumer waits.
+
+---
+
+### Step 2
+
+```cpp
+wait(mutex);
+```
+
+Acquires the lock.
+
+---
+
+### Step 3
+
+Remove one item from the buffer.
+
+---
+
+### Step 4
+
+```cpp
+signal(mutex);
+```
+
+Release the lock.
+
+---
+
+### Step 5
+
+```cpp
+signal(empty);
+```
+
+Increase the number of empty slots.
+
+Producer can now insert another item.
+
+---
+
+# Example
+
+Suppose,
+
+```
+Buffer Size = 3
+```
+
+Initially,
+
+```
+Buffer = [ _ _ _ ]
+
+empty = 3
+
+full = 0
+```
+
+---
+
+Producer inserts A.
+
+```
+Buffer = [ A _ _ ]
+
+empty = 2
+
+full = 1
+```
+
+---
+
+Producer inserts B.
+
+```
+Buffer = [ A B _ ]
+
+empty = 1
+
+full = 2
+```
+
+---
+
+Consumer removes A.
+
+```
+Buffer = [ _ B _ ]
+
+empty = 2
+
+full = 1
+```
+
+Notice:
+
+- Empty slots increase after consuming.
+- Filled slots increase after producing.
+
+Semaphore values always represent the current state of the buffer.
+
+---
+
+# Why are Three Semaphores Required?
+
+### Mutex
+
+Protects the Critical Section.
+
+Without Mutex,
+
+Producer and Consumer may access the buffer simultaneously.
+
+---
+
+### Empty
+
+Stops the Producer when the buffer becomes full.
+
+Prevents **Buffer Overflow**.
+
+---
+
+### Full
+
+Stops the Consumer when the buffer becomes empty.
+
+Prevents **Buffer Underflow**.
+
+---
+
+# Advantages
+
+### 1. Prevents Race Condition
+
+Only one process accesses the shared buffer at a time.
+
+---
+
+### 2. Prevents Buffer Overflow
+
+Producer waits when the buffer is full.
+
+---
+
+### 3. Prevents Buffer Underflow
+
+Consumer waits when the buffer is empty.
+
+---
+
+### 4. Efficient Resource Sharing
+
+Producer and Consumer can work independently without corrupting shared data.
+
+---
+
+# Real-Life Examples
+
+Producer-Consumer is used in:
+
+- Printer Spooling
+- Keyboard Buffer
+- Video Streaming
+- Network Packet Buffers
+- Message Queues
+- Data Pipelines
+
+---
+
+# Difference Between Producer and Consumer
+
+| Producer | Consumer |
+|----------|----------|
+| Produces data | Consumes data |
+| Inserts data into the buffer | Removes data from the buffer |
+| Waits if the buffer is full | Waits if the buffer is empty |
+
+---
+
+# Quick Revision
+
+- Producer creates data.
+- Consumer uses data.
+- Shared Buffer stores data temporarily.
+- Buffer has a fixed size (Bounded Buffer).
+- Three semaphores are used:
+  - `mutex = 1`
+  - `empty = Buffer Size`
+  - `full = 0`
+- Producer waits if the buffer is full.
+- Consumer waits if the buffer is empty.
+- Mutex protects the Critical Section.
+- Empty prevents Buffer Overflow.
+- Full prevents Buffer Underflow.
+
+---
+
+# Interview Questions
+
+### What is the Producer-Consumer Problem?
+
+It is a synchronization problem where Producers generate data and Consumers use that data through a shared buffer.
+
+---
+
+### Why is Mutex required?
+
+To ensure only one process accesses the shared buffer at a time.
+
+---
+
+### Why is the `empty` semaphore used?
+
+To prevent the Producer from inserting items when the buffer is full.
+
+---
+
+### Why is the `full` semaphore used?
+
+To prevent the Consumer from removing items when the buffer is empty.
+
+---
+
+### What are the initial values of the semaphores?
+
+For a buffer of size **N**:
+
+```
+mutex = 1
+
+empty = N
+
+full = 0
+```
+
+---
+
+### Why is it called the Bounded Buffer Problem?
+
+Because the buffer has a fixed size and cannot store unlimited data.
+
+---
+
+# Easy Way to Remember
+
+Think of a **restaurant**.
+
+- 👨‍🍳 Chef = Producer
+- 🍽️ Customer = Consumer
+- 🪑 Dining Table = Buffer
+
+If all tables are occupied,
+
+the Chef cannot serve more food.
+
+If there is no food on the tables,
+
+Customers cannot eat.
+
+The waiter (Mutex) ensures that serving happens in an organized way.
+
+Remember:
+
+- **Mutex → One person accesses the buffer at a time.**
+- **Empty → Free spaces in the buffer.**
+- **Full → Filled spaces in the buffer.**
