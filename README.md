@@ -7924,3 +7924,518 @@ Remember:
 **turn → Priority**
 
 Together, they prevent both processes from entering the Critical Section at the same time.
+# Mutex (Mutual Exclusion)
+
+After learning Peterson's Algorithm, we know that it can solve the Critical Section Problem.
+
+However, Peterson's Algorithm works only for **two processes** and is mainly used for understanding synchronization concepts.
+
+Modern Operating Systems use **Mutex** to protect shared resources.
+
+Mutex is one of the most commonly used synchronization mechanisms in Linux, Windows, Java, C++, Android, etc.
+
+---
+
+# What is Mutex?
+
+Mutex stands for **Mutual Exclusion**.
+
+It is a synchronization mechanism that allows **only one process or thread to enter the Critical Section at a time.**
+
+It works like a **lock**.
+
+If a process acquires the lock,
+
+it can enter the Critical Section.
+
+If another process tries to enter while the lock is already held,
+
+it must wait until the lock is released.
+
+In simple words,
+
+> **Mutex is a lock that protects shared resources from being accessed by multiple processes simultaneously.**
+
+---
+
+# Why do we need Mutex?
+
+Suppose two processes execute:
+
+```cpp
+count++;
+```
+
+Both processes modify the same shared variable.
+
+If both execute simultaneously,
+
+a Race Condition occurs,
+
+and the final value of `count` becomes incorrect.
+
+Mutex solves this problem by allowing only one process to modify the shared resource at a time.
+
+---
+
+# Why is it called Mutual Exclusion?
+
+Mutual Exclusion means:
+
+> **Only one process is allowed inside the Critical Section at any time.**
+
+All other processes are excluded until the current process finishes.
+
+This prevents Race Conditions.
+
+---
+
+# Real-Life Analogy
+
+Imagine there is only **one bathroom with one key**.
+
+Anyone who wants to use the bathroom must first take the key.
+
+If someone already has the key,
+
+everyone else waits.
+
+After finishing,
+
+the person returns the key.
+
+Now another person can use the bathroom.
+
+Here,
+
+- Bathroom → Critical Section
+- Key → Mutex
+- People → Processes
+
+---
+
+# How does Mutex work?
+
+Mutex has only two basic operations.
+
+---
+
+## 1. lock()
+
+Before entering the Critical Section,
+
+a process executes:
+
+```cpp
+lock();
+```
+
+Meaning:
+
+```
+"I want to use the shared resource."
+```
+
+If the Mutex is free,
+
+the process acquires the lock and enters.
+
+If another process already owns the lock,
+
+the process waits.
+
+---
+
+## 2. unlock()
+
+After finishing the Critical Section,
+
+the process executes:
+
+```cpp
+unlock();
+```
+
+Meaning:
+
+```
+"I have finished using the shared resource."
+```
+
+The lock becomes free,
+
+and another waiting process can now acquire it.
+
+---
+
+# Program Structure
+
+```cpp
+lock();
+
+/* Critical Section */
+
+unlock();
+
+/* Remainder Section */
+```
+
+Only the Critical Section is protected.
+
+The Remainder Section can be executed freely.
+
+---
+
+# Example
+
+Suppose two processes want to increment the same variable.
+
+### Process P1
+
+```cpp
+lock();
+
+count++;
+
+unlock();
+```
+
+### Process P2
+
+```cpp
+lock();
+
+count++;
+
+unlock();
+```
+
+Initially,
+
+Mutex is free.
+
+P1 executes:
+
+```cpp
+lock();
+```
+
+P1 acquires the lock.
+
+Now,
+
+Mutex becomes **Locked**.
+
+P1 enters the Critical Section.
+
+Meanwhile,
+
+P2 executes:
+
+```cpp
+lock();
+```
+
+But the Mutex is already locked.
+
+Therefore,
+
+P2 waits.
+
+After P1 finishes,
+
+it executes:
+
+```cpp
+unlock();
+```
+
+Mutex becomes free.
+
+Now,
+
+P2 acquires the lock and enters the Critical Section.
+
+Thus,
+
+only one process accesses the shared variable at a time.
+
+Race Condition is prevented.
+
+---
+
+# States of a Mutex
+
+A Mutex has only two states.
+
+## 1. Locked
+
+```
+Mutex = Locked
+```
+
+A process is using the shared resource.
+
+Other processes must wait.
+
+---
+
+## 2. Unlocked
+
+```
+Mutex = Unlocked
+```
+
+No process is using the shared resource.
+
+Any waiting process can acquire the lock.
+
+---
+
+# Ownership of Mutex
+
+This is one of the most common interview questions.
+
+When a process successfully executes
+
+```cpp
+lock();
+```
+
+it becomes the **owner** of the Mutex.
+
+Only the owner is allowed to execute
+
+```cpp
+unlock();
+```
+
+Example:
+
+P1 executes
+
+```cpp
+lock();
+```
+
+Now P1 owns the Mutex.
+
+Only P1 can execute
+
+```cpp
+unlock();
+```
+
+P2 cannot release P1's lock.
+
+This is called **Mutex Ownership**.
+
+---
+
+# Why is Ownership important?
+
+Imagine you lock your house.
+
+Should another person unlock your house?
+
+No.
+
+Similarly,
+
+only the process that locked the Mutex should unlock it.
+
+This prevents incorrect synchronization.
+
+---
+
+# Advantages of Mutex
+
+### 1. Prevents Race Condition
+
+Only one process accesses the shared resource at a time.
+
+---
+
+### 2. Ensures Mutual Exclusion
+
+Critical Section remains protected.
+
+---
+
+### 3. Simple to use
+
+Only two operations:
+
+- lock()
+- unlock()
+
+---
+
+### 4. Used in Real Operating Systems
+
+Unlike Peterson's Algorithm,
+
+Mutex is widely used in Linux, Windows, Java, POSIX Threads and many other systems.
+
+---
+
+# Disadvantages of Mutex
+
+### 1. Deadlock
+
+Suppose,
+
+P1 locks Resource A.
+
+P2 locks Resource B.
+
+Now,
+
+P1 waits for Resource B.
+
+P2 waits for Resource A.
+
+Neither can continue.
+
+This situation is called **Deadlock**.
+
+---
+
+### 2. Starvation
+
+If scheduling is unfair,
+
+a process may wait for a long time before getting the lock.
+
+---
+
+### 3. Forgetting to Unlock
+
+If a process forgets to execute
+
+```cpp
+unlock();
+```
+
+the Mutex remains locked forever.
+
+Other processes remain blocked.
+
+---
+
+# Difference Between Peterson's Algorithm and Mutex
+
+| Peterson's Algorithm | Mutex |
+|----------------------|-------|
+| Software solution | Practical synchronization mechanism |
+| Works only for two processes | Works for multiple processes and threads |
+| Uses `flag[]` and `turn` | Uses `lock()` and `unlock()` |
+| Mainly for learning | Used in real Operating Systems |
+
+---
+
+# Difference Between Mutex and Binary Semaphore
+
+| Mutex | Binary Semaphore |
+|--------|------------------|
+| Has ownership | No ownership |
+| Only owner can unlock | Any process can perform `signal()` |
+| Mainly used for Mutual Exclusion | Used for Synchronization and Mutual Exclusion |
+
+(We will study Binary Semaphore in the next topic.)
+
+---
+
+# Real-Life Examples
+
+Mutex is commonly used in:
+
+- Printer Access
+- Shared File Access
+- Database Transactions
+- Banking Applications
+- Multi-threaded Programs
+- Shared Memory
+
+---
+
+# Quick Revision
+
+- Mutex stands for **Mutual Exclusion**.
+- It is a synchronization mechanism used to protect the Critical Section.
+- Only one process can access the shared resource at a time.
+- Two operations:
+  - `lock()`
+  - `unlock()`
+- A Mutex has two states:
+  - Locked
+  - Unlocked
+- Only the owner can unlock the Mutex.
+- Main advantage:
+  - Prevents Race Condition.
+- Main disadvantages:
+  - Deadlock
+  - Starvation
+  - Forgetting to unlock.
+
+---
+
+# Interview Questions
+
+### What is Mutex?
+
+Mutex is a synchronization mechanism that ensures only one process or thread accesses the Critical Section at a time.
+
+---
+
+### Why is Mutex used?
+
+To prevent Race Conditions and ensure Mutual Exclusion.
+
+---
+
+### What are the two operations of Mutex?
+
+- `lock()`
+- `unlock()`
+
+---
+
+### What is Mutex Ownership?
+
+The process that acquires the Mutex becomes its owner.
+
+Only the owner is allowed to release the Mutex.
+
+---
+
+### Can one thread unlock another thread's Mutex?
+
+No.
+
+Only the thread that locked the Mutex can unlock it.
+
+---
+
+### What happens if a process forgets to unlock the Mutex?
+
+The Mutex remains locked.
+
+Other waiting processes cannot enter the Critical Section.
+
+This may lead to Deadlock or indefinite waiting.
+
+---
+
+# Easy Way to Remember
+
+Think of a **library study room** with only **one key**.
+
+- Whoever takes the key enters the room.
+- Others wait outside.
+- After finishing, the person returns the key.
+- The next person can now enter.
+
+Remember:
+
+**Mutex = One Key → One Person → One Critical Section**
