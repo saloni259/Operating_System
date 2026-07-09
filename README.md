@@ -3264,3 +3264,362 @@ The cashier has to decide **who should be served next**.
 That decision is exactly like **CPU Scheduling**.
 
 The customers are processes, the cashier is the CPU, and the bank manager deciding the order is the CPU Scheduler.
+# FCFS (First Come First Serve) Scheduling
+
+FCFS is the simplest CPU Scheduling algorithm.
+
+As the name suggests,
+
+**First Come → First Serve**
+
+The process that arrives first in the Ready Queue gets the CPU first.
+
+No priority is given to any process.
+
+No process can jump the queue.
+
+---
+
+# Why do we need FCFS?
+
+Suppose three processes are waiting for the CPU.
+
+```
+P1
+P2
+P3
+```
+
+The CPU can execute only one process at a time.
+
+Now the OS has to decide:
+
+**Which process should execute first?**
+
+FCFS follows a very simple rule:
+
+> The process that arrives first gets the CPU first.
+
+---
+
+# What is FCFS?
+
+FCFS (First Come First Serve) is a **Non-Preemptive CPU Scheduling Algorithm** in which processes are executed according to their arrival time.
+
+The process that enters the Ready Queue first gets the CPU first.
+
+---
+
+# Why is FCFS called Non-Preemptive?
+
+Once a process gets the CPU,
+
+the OS cannot take the CPU back until:
+
+- the process finishes execution, or
+- the process goes into Waiting State (I/O).
+
+Example:
+
+```
+P1 = 10 sec
+P2 = 2 sec
+```
+
+If P1 starts first,
+
+P2 has to wait for the complete 10 seconds.
+
+Even though P2 needs only 2 seconds,
+
+the OS cannot interrupt P1.
+
+Therefore FCFS is a **Non-Preemptive Scheduling Algorithm**.
+
+---
+
+# How does FCFS work?
+
+Let's take an example.
+
+| Process | Arrival Time | Burst Time |
+|----------|--------------|------------|
+| P1 | 0 | 5 |
+| P2 | 1 | 3 |
+| P3 | 2 | 2 |
+
+### Step 1: Arrange processes according to Arrival Time
+
+```
+P1 → P2 → P3
+```
+
+### Step 2: Execute them in the same order
+
+```
+P1 → P2 → P3
+```
+
+### Step 3: Draw the Gantt Chart
+
+```
+0        5        8       10
+|   P1   |   P2   |   P3   |
+```
+
+---
+
+# Completion Time (CT)
+
+Completion Time means the time at which a process finishes execution.
+
+From the Gantt Chart,
+
+| Process | CT |
+|----------|----|
+| P1 | 5 |
+| P2 | 8 |
+| P3 | 10 |
+
+---
+
+# Turnaround Time (TAT)
+
+Turnaround Time tells us how much total time a process spends in the system.
+
+Formula:
+
+```
+TAT = Completion Time - Arrival Time
+```
+
+Calculation:
+
+P1 = 5 - 0 = 5
+
+P2 = 8 - 1 = 7
+
+P3 = 10 - 2 = 8
+
+| Process | TAT |
+|----------|-----|
+| P1 | 5 |
+| P2 | 7 |
+| P3 | 8 |
+
+---
+
+# Waiting Time (WT)
+
+Waiting Time is the time a process waits in the Ready Queue before getting the CPU.
+
+Formula:
+
+```
+WT = Turnaround Time - Burst Time
+```
+
+Calculation:
+
+P1 = 5 - 5 = 0
+
+P2 = 7 - 3 = 4
+
+P3 = 8 - 2 = 6
+
+| Process | WT |
+|----------|----|
+| P1 | 0 |
+| P2 | 4 |
+| P3 | 6 |
+
+---
+
+# Average Waiting Time
+
+Formula:
+
+```
+Average WT = (Sum of all Waiting Times) / Number of Processes
+```
+
+Calculation:
+
+```
+(0 + 4 + 6) / 3
+
+= 10 / 3
+
+= 3.33
+```
+
+---
+
+# Average Turnaround Time
+
+Formula:
+
+```
+Average TAT = (Sum of all Turnaround Times) / Number of Processes
+```
+
+Calculation:
+
+```
+(5 + 7 + 8) / 3
+
+= 20 / 3
+
+= 6.67
+```
+
+---
+
+# Advantages of FCFS
+
+### 1. Easy to understand
+
+FCFS is the simplest scheduling algorithm.
+
+---
+
+### 2. Easy to implement
+
+Processes are simply executed according to their arrival time.
+
+---
+
+### 3. Fair Scheduling
+
+Every process gets the CPU in the same order in which it arrives.
+
+No process is skipped.
+
+---
+
+### 4. No Starvation
+
+Every process will eventually get CPU time.
+
+No process waits forever.
+
+---
+
+# Disadvantages of FCFS
+
+### 1. Convoy Effect (Most Important)
+
+This is the biggest disadvantage of FCFS.
+
+Example:
+
+| Process | Burst Time |
+|----------|------------|
+| P1 | 20 |
+| P2 | 2 |
+| P3 | 1 |
+
+Execution:
+
+```
+P1 → P2 → P3
+```
+
+Although P2 and P3 require very little CPU time,
+
+they must wait until P1 finishes.
+
+This unnecessary waiting is called the **Convoy Effect**.
+
+Think of a slow truck on a one-lane road.
+
+All vehicles behind it must also move slowly.
+
+---
+
+### 2. High Waiting Time
+
+If a long process comes first,
+
+all smaller processes have to wait.
+
+This increases the average waiting time.
+
+---
+
+### 3. Poor Response Time
+
+Small or interactive processes cannot start quickly if a large process is already running.
+
+Therefore FCFS is not suitable for interactive systems.
+
+---
+
+# Where is FCFS used?
+
+FCFS is mainly used where simplicity is more important than speed.
+
+Examples:
+
+- Printer Queue
+- Batch Processing Systems
+- Simple Job Scheduling
+
+---
+
+# Quick Revision
+
+- FCFS = First Come First Serve.
+- Processes are executed according to Arrival Time.
+- It is a Non-Preemptive Scheduling Algorithm.
+- Once CPU is allocated, it cannot be taken back until the process finishes or waits for I/O.
+- Biggest disadvantage = Convoy Effect.
+- No Starvation because every process eventually gets CPU time.
+
+---
+
+# Interview Questions
+
+### What is FCFS Scheduling?
+
+FCFS is a Non-Preemptive Scheduling Algorithm in which the process that arrives first gets the CPU first.
+
+---
+
+### Why is FCFS called Non-Preemptive?
+
+Because once a process gets the CPU, the OS cannot interrupt it until it finishes execution or enters the Waiting State.
+
+---
+
+### What is the Convoy Effect?
+
+When a long process executes before shorter processes, forcing them to wait for a long time, it is called the Convoy Effect.
+
+---
+
+### Does Starvation occur in FCFS?
+
+No.
+
+Every process gets CPU time according to its arrival order.
+
+---
+
+### Is FCFS suitable for interactive systems?
+
+No.
+
+Because small processes may have to wait behind long processes, leading to poor response time.
+
+---
+
+# Easy Way to Remember
+
+Imagine standing in a queue at a railway ticket counter.
+
+The person who comes first gets the ticket first.
+
+Nobody can skip the queue.
+
+This is exactly how FCFS Scheduling works.
