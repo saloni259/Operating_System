@@ -9681,3 +9681,648 @@ Remember:
 - **Mutex → One person accesses the buffer at a time.**
 - **Empty → Free spaces in the buffer.**
 - **Full → Filled spaces in the buffer.**
+# Reader-Writer Problem
+
+After learning the Producer-Consumer Problem, we now study another classic synchronization problem called the **Reader-Writer Problem**.
+
+In this problem, multiple processes share the same data.
+
+Some processes only **read** the data,
+
+while others **modify** it.
+
+The Operating System must synchronize them so that data remains correct and consistent.
+
+---
+
+# What is the Reader-Writer Problem?
+
+The Reader-Writer Problem is a synchronization problem in which multiple processes access the same shared resource.
+
+There are two types of processes:
+
+- Reader → Reads the data.
+- Writer → Modifies or updates the data.
+
+The Operating System must ensure:
+
+- Multiple Readers can read simultaneously.
+- Only one Writer can write at a time.
+- No Reader is allowed to read while a Writer is writing.
+
+---
+
+# Why do we need the Reader-Writer Problem?
+
+Suppose a college database stores students' marks.
+
+Many students are viewing their marks.
+
+At the same time,
+
+the administrator updates one student's marks.
+
+If students read the database while it is being updated,
+
+they may get incorrect or partially updated information.
+
+Therefore,
+
+proper synchronization is required.
+
+---
+
+# Who is a Reader?
+
+A Reader is a process that **only reads** the shared data.
+
+It never changes the data.
+
+Examples:
+
+- Viewing bank balance.
+- Reading student marks.
+- Opening a PDF.
+- Searching a database.
+
+Since reading does not modify the data,
+
+multiple Readers can work simultaneously.
+
+---
+
+# Who is a Writer?
+
+A Writer is a process that **modifies** the shared data.
+
+Examples:
+
+- Updating marks.
+- Editing a document.
+- Depositing money into a bank account.
+- Updating a database.
+
+Since writing changes the data,
+
+only one Writer is allowed at a time.
+
+---
+
+# Rules of the Reader-Writer Problem
+
+### Rule 1
+
+Multiple Readers can read simultaneously.
+
+Example:
+
+```
+Reader 1 → Reading
+
+Reader 2 → Reading
+
+Reader 3 → Reading
+```
+
+This is safe because no one is changing the data.
+
+---
+
+### Rule 2
+
+Only one Writer can write at a time.
+
+Example:
+
+```
+Writer 1 → Writing
+
+Writer 2 → Waiting
+```
+
+Two Writers cannot update the same data together.
+
+---
+
+### Rule 3
+
+Readers and Writers cannot access the shared data simultaneously.
+
+Example:
+
+```
+Reader → Reading
+
+Writer → Writing
+```
+
+This is **not allowed** because Readers may see inconsistent or partially updated data.
+
+---
+
+# Why are multiple Readers allowed?
+
+Suppose three students are reading the same book.
+
+Nobody is writing or changing the book.
+
+All three students can read together without any problem.
+
+Similarly,
+
+multiple Readers can access shared data together because reading does not modify the data.
+
+---
+
+# Why is only one Writer allowed?
+
+Suppose two teachers update the same student's marks.
+
+Teacher A writes:
+
+```
+80
+```
+
+Teacher B writes:
+
+```
+90
+```
+
+If both update the marks simultaneously,
+
+the final result becomes unpredictable.
+
+This causes a Race Condition.
+
+Therefore,
+
+only one Writer is allowed.
+
+---
+
+# Why can't Readers read while a Writer is writing?
+
+Suppose the database contains:
+
+```
+Balance = ₹1000
+```
+
+The Writer starts updating it to:
+
+```
+Balance = ₹1500
+```
+
+Before the update is completed,
+
+a Reader reads the balance.
+
+The Reader may get:
+
+- Old value
+- New value
+- Incomplete or inconsistent data
+
+Therefore,
+
+Readers must wait while a Writer is writing.
+
+---
+
+# Solution Using Semaphore
+
+The solution uses three shared variables.
+
+## 1. mutex
+
+```
+mutex = 1
+```
+
+Purpose:
+
+Protects the variable `readCount`.
+
+Only one Reader can update `readCount` at a time.
+
+---
+
+## 2. wrt (Write Semaphore)
+
+```
+wrt = 1
+```
+
+Purpose:
+
+Allows only one Writer to access the shared data.
+
+It also blocks Readers while writing is in progress.
+
+---
+
+## 3. readCount
+
+```
+readCount = 0
+```
+
+Purpose:
+
+Stores the number of Readers currently reading.
+
+Initially,
+
+```
+readCount = 0
+```
+
+because no Reader is reading.
+
+---
+
+# Initial Values
+
+Initially,
+
+```
+mutex = 1
+
+wrt = 1
+
+readCount = 0
+```
+
+This is a common interview question.
+
+---
+
+# Reader Algorithm
+
+```cpp
+wait(mutex);
+
+readCount++;
+
+if(readCount == 1)
+    wait(wrt);
+
+signal(mutex);
+
+/* Reading */
+
+wait(mutex);
+
+readCount--;
+
+if(readCount == 0)
+    signal(wrt);
+
+signal(mutex);
+```
+
+---
+
+# Step-by-Step Working of Reader
+
+### Step 1
+
+Acquire `mutex`.
+
+This protects `readCount`.
+
+---
+
+### Step 2
+
+Increase
+
+```cpp
+readCount++;
+```
+
+---
+
+### Step 3
+
+If this is the first Reader,
+
+lock `wrt`.
+
+This prevents Writers from entering.
+
+---
+
+### Step 4
+
+Reader starts reading.
+
+Other Readers can also enter simultaneously.
+
+---
+
+### Step 5
+
+After reading,
+
+decrease
+
+```cpp
+readCount--;
+```
+
+---
+
+### Step 6
+
+If this is the last Reader,
+
+release `wrt`.
+
+Now Writers are allowed to write.
+
+---
+
+# Writer Algorithm
+
+```cpp
+wait(wrt);
+
+/* Writing */
+
+signal(wrt);
+```
+
+The Writer first acquires the write semaphore.
+
+Now,
+
+no other Writer or Reader can access the shared data.
+
+After writing,
+
+the Writer releases the semaphore.
+
+---
+
+# Example
+
+Initially,
+
+```
+readCount = 0
+```
+
+Reader 1 arrives.
+
+```
+readCount = 1
+```
+
+Since this is the first Reader,
+
+`wrt` is locked.
+
+---
+
+Reader 2 arrives.
+
+```
+readCount = 2
+```
+
+Reader 2 also starts reading.
+
+Both Readers read together.
+
+---
+
+Now,
+
+a Writer arrives.
+
+Since `wrt` is locked,
+
+the Writer waits.
+
+---
+
+Reader 1 finishes.
+
+```
+readCount = 1
+```
+
+Writer still waits.
+
+---
+
+Reader 2 finishes.
+
+```
+readCount = 0
+```
+
+Now,
+
+`wrt` is released.
+
+The Writer starts writing.
+
+---
+
+# Types of Reader-Writer Problem
+
+## 1. First Reader-Writer Problem
+
+Readers get higher priority.
+
+Readers never wait unless a Writer is already writing.
+
+Disadvantage:
+
+Writer Starvation may occur.
+
+---
+
+## 2. Second Reader-Writer Problem
+
+Writers get higher priority.
+
+If a Writer is waiting,
+
+new Readers are also forced to wait.
+
+Disadvantage:
+
+Readers may wait longer.
+
+---
+
+## 3. Fair Reader-Writer Problem
+
+Both Readers and Writers get fair opportunities.
+
+Neither Readers nor Writers suffer from Starvation.
+
+This approach is preferred in modern systems.
+
+---
+
+# Advantages
+
+### 1. Better Performance
+
+Multiple Readers can work simultaneously.
+
+---
+
+### 2. Efficient Resource Sharing
+
+Reading operations do not block each other.
+
+---
+
+### 3. Data Consistency
+
+Writers always get exclusive access while modifying data.
+
+---
+
+### 4. Prevents Race Condition
+
+Readers never read partially updated data.
+
+---
+
+# Disadvantages
+
+### 1. Starvation
+
+Depending on the implementation,
+
+Readers or Writers may wait for a long time.
+
+---
+
+### 2. Complex Synchronization
+
+More complicated than Producer-Consumer because different rules exist for Readers and Writers.
+
+---
+
+# Real-Life Examples
+
+Reader-Writer synchronization is used in:
+
+- Database Systems
+- Banking Applications
+- Library Management Systems
+- Cloud Storage
+- Shared Files
+- Configuration Files
+
+---
+
+# Difference Between Reader and Writer
+
+| Reader | Writer |
+|---------|---------|
+| Reads data | Modifies data |
+| Multiple Readers allowed together | Only one Writer allowed |
+| Does not change shared data | Changes shared data |
+
+---
+
+# Quick Revision
+
+- Reader only reads the shared data.
+- Writer modifies the shared data.
+- Multiple Readers can read simultaneously.
+- Only one Writer can write at a time.
+- Readers and Writers cannot access shared data together.
+- Three shared variables are used:
+  - `mutex`
+  - `wrt`
+  - `readCount`
+- First Reader locks `wrt`.
+- Last Reader unlocks `wrt`.
+
+---
+
+# Interview Questions
+
+### What is the Reader-Writer Problem?
+
+It is a synchronization problem where multiple Readers can read shared data simultaneously, but Writers require exclusive access.
+
+---
+
+### Can multiple Readers read simultaneously?
+
+Yes.
+
+Reading does not modify shared data.
+
+---
+
+### Can multiple Writers write simultaneously?
+
+No.
+
+Only one Writer is allowed to modify shared data at a time.
+
+---
+
+### Can a Reader read while a Writer is writing?
+
+No.
+
+The Reader may read inconsistent or partially updated data.
+
+---
+
+### Why is `readCount` required?
+
+It keeps track of the number of active Readers.
+
+The first Reader blocks Writers,
+
+and the last Reader allows Writers to proceed.
+
+---
+
+### What are the initial values?
+
+```
+mutex = 1
+
+wrt = 1
+
+readCount = 0
+```
+
+---
+
+# Easy Way to Remember
+
+Think of a **library**.
+
+📚 Students = Readers
+
+✍️ Librarian updating records = Writer
+
+- Many students can read books together.
+- Only one librarian updates records.
+- While the librarian is updating, students must wait.
+
+Remember:
+
+**Many Readers ✔️**
+
+**One Writer ✔️**
+
+**Reader + Writer Together ❌**
