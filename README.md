@@ -2894,3 +2894,373 @@ Child continues execution.
 Always running.
 
 Always ready to provide services.
+# CPU Scheduling (Introduction)
+
+Before learning scheduling algorithms like FCFS, SJF, Priority, or Round Robin, we first need to understand **what CPU Scheduling is** and **why it is needed**.
+
+---
+
+# Why do we need CPU Scheduling?
+
+A computer may have many processes running at the same time.
+
+Example:
+- Chrome
+- VS Code
+- Spotify
+- WhatsApp
+
+But in a single CPU system, the CPU can execute **only one process at a time**.
+
+Now the question is,
+
+**Which process should get the CPU first?**
+
+The Operating System needs a way to decide this.
+
+This decision-making process is called **CPU Scheduling**.
+
+---
+
+# What is CPU Scheduling?
+
+CPU Scheduling is the process of selecting **one process from the Ready Queue** and allocating the CPU to it.
+
+In simple words,
+
+> CPU Scheduling decides **which ready process should execute next.**
+
+The process selected by the scheduler moves from the **Ready State** to the **Running State**.
+
+---
+
+# Who performs CPU Scheduling?
+
+CPU Scheduling is performed by the **Short-Term Scheduler**, also called the **CPU Scheduler**.
+
+Its job is simple:
+
+```
+Ready Queue
+     │
+     ▼
+CPU Scheduler
+     │
+     ▼
+Running Process
+```
+
+Whenever the CPU becomes free, the scheduler selects one process from the Ready Queue.
+
+---
+
+# Why is CPU Scheduling important?
+
+If CPU Scheduling did not exist,
+
+the OS would not know which process should execute first.
+
+Some processes might never get CPU time, while others could keep using the CPU forever.
+
+A good scheduling algorithm helps in:
+
+- Better CPU utilization.
+- Faster execution.
+- Fair allocation of CPU.
+- Better user experience.
+
+---
+
+# Goals of CPU Scheduling
+
+A good scheduling algorithm tries to achieve the following goals.
+
+---
+
+## 1. Maximum CPU Utilization
+
+CPU is the most important resource in a computer.
+
+The scheduler should keep the CPU busy as much as possible.
+
+Example:
+
+Suppose Process P1 is waiting for a disk operation.
+
+Instead of keeping the CPU idle, the OS gives the CPU to Process P2.
+
+This increases CPU utilization.
+
+---
+
+## 2. Maximum Throughput
+
+Throughput means the number of processes completed in a given amount of time.
+
+Formula:
+
+Throughput = Number of Completed Processes / Time
+
+Example:
+
+System A completes 20 processes in one minute.
+
+System B completes 10 processes in one minute.
+
+System A has better throughput.
+
+Higher throughput means better system performance.
+
+---
+
+## 3. Minimum Turnaround Time (TAT)
+
+Turnaround Time tells us how much total time a process spends in the system.
+
+Formula:
+
+Turnaround Time = Completion Time − Arrival Time
+
+Example:
+
+Arrival Time = 2 sec
+
+Completion Time = 12 sec
+
+Turnaround Time = 10 sec
+
+Smaller Turnaround Time means processes finish faster.
+
+---
+
+## 4. Minimum Waiting Time
+
+Waiting Time is the time a process spends waiting in the Ready Queue before getting the CPU.
+
+Example:
+
+A process arrives at 10:00 AM.
+
+It gets the CPU at 10:05 AM.
+
+Waiting Time = 5 minutes.
+
+A good scheduler always tries to reduce Waiting Time.
+
+---
+
+## 5. Minimum Response Time
+
+Response Time is the time taken by the system to give the **first response** to the user.
+
+Example:
+
+When you click Chrome,
+
+if the Chrome window opens immediately, the Response Time is good.
+
+This is very important for interactive applications.
+
+---
+
+## 6. Fairness
+
+Every process should get a fair chance to execute.
+
+One process should not keep the CPU forever.
+
+Otherwise, other processes may keep waiting indefinitely.
+
+This situation is called **Starvation**, which we will study later.
+
+---
+
+# When does CPU Scheduling happen?
+
+The scheduler runs whenever the CPU becomes free or needs to be assigned to another process.
+
+Common situations are:
+
+### 1. Running → Waiting
+
+Example:
+
+The running process requests a file from the disk.
+
+Since it cannot continue, the CPU becomes free.
+
+The scheduler selects another process.
+
+---
+
+### 2. Running → Ready
+
+Example:
+
+The process has used its allotted time (Time Quantum).
+
+The OS moves it back to the Ready Queue and selects another process.
+
+---
+
+### 3. Waiting → Ready
+
+Example:
+
+A disk operation is completed.
+
+The waiting process becomes ready again.
+
+Now it joins the Ready Queue.
+
+---
+
+### 4. Process Terminates
+
+When a process finishes execution, the CPU becomes free.
+
+The scheduler selects the next process from the Ready Queue.
+
+---
+
+# Types of CPU Scheduling
+
+There are two types of CPU Scheduling.
+
+---
+
+## 1. Non-Preemptive Scheduling
+
+Once a process gets the CPU, it keeps the CPU until:
+
+- It finishes execution, or
+- It goes into the Waiting State.
+
+The OS cannot forcibly take the CPU away.
+
+### Example
+
+P1 needs 10 seconds.
+
+P2 needs 2 seconds.
+
+If P1 gets the CPU first,
+
+P2 has to wait until P1 finishes.
+
+---
+
+## 2. Preemptive Scheduling
+
+In Preemptive Scheduling, the OS can take the CPU away from a running process whenever needed.
+
+This usually happens when:
+
+- Time Quantum expires.
+- A higher-priority process arrives.
+
+### Example
+
+Suppose P1 is running.
+
+Suddenly, a high-priority process P2 arrives.
+
+The OS pauses P1 and immediately gives the CPU to P2.
+
+---
+
+# Difference Between Preemptive and Non-Preemptive Scheduling
+
+| Non-Preemptive | Preemptive |
+|---------------|------------|
+| CPU cannot be taken away until the process finishes or waits for I/O. | CPU can be taken away whenever required. |
+| Simpler to implement. | More complex. |
+| Less Context Switching. | More Context Switching. |
+| Lower overhead. | Higher overhead. |
+| Poor response time. | Better response time. |
+
+---
+
+# Common CPU Scheduling Algorithms
+
+The Operating System can use different algorithms to decide which process gets the CPU.
+
+The most important algorithms are:
+
+- FCFS (First Come First Serve)
+- SJF (Shortest Job First)
+- SRTF (Shortest Remaining Time First)
+- Priority Scheduling
+- Round Robin
+- Multilevel Queue Scheduling
+- Multilevel Feedback Queue Scheduling
+
+We will study each algorithm separately with numerical examples.
+
+---
+
+# Quick Revision
+
+- CPU can execute only one process at a time.
+- CPU Scheduling decides which Ready process gets the CPU.
+- CPU Scheduling is performed by the Short-Term Scheduler.
+- Main goals:
+  - Maximum CPU Utilization
+  - Maximum Throughput
+  - Minimum Turnaround Time
+  - Minimum Waiting Time
+  - Minimum Response Time
+  - Fairness
+
+---
+
+# Interview Questions
+
+### What is CPU Scheduling?
+
+CPU Scheduling is the process of selecting one process from the Ready Queue and allocating the CPU to it.
+
+---
+
+### Which scheduler performs CPU Scheduling?
+
+The Short-Term Scheduler (CPU Scheduler).
+
+---
+
+### Why do we need CPU Scheduling?
+
+Because multiple processes compete for a single CPU, and the OS needs a rule to decide which process should execute next.
+
+---
+
+### What are the goals of CPU Scheduling?
+
+- Maximum CPU Utilization
+- Maximum Throughput
+- Minimum Turnaround Time
+- Minimum Waiting Time
+- Minimum Response Time
+- Fairness
+
+---
+
+### What is the difference between Preemptive and Non-Preemptive Scheduling?
+
+**Non-Preemptive:** Once a process gets the CPU, it cannot be interrupted.
+
+**Preemptive:** The OS can interrupt a running process and allocate the CPU to another process.
+
+---
+
+# Easy Way to Remember
+
+Imagine there is only one cashier in a bank.
+
+Many customers are waiting in line.
+
+The cashier has to decide **who should be served next**.
+
+That decision is exactly like **CPU Scheduling**.
+
+The customers are processes, the cashier is the CPU, and the bank manager deciding the order is the CPU Scheduler.
