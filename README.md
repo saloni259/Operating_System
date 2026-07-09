@@ -4689,3 +4689,449 @@ Emergency treatment = **Priority Scheduling**
 Giving a chance to the waiting patient later = **Aging**
 
 This analogy helps remember both **Priority Scheduling** and **Starvation** together.
+# Round Robin (RR) Scheduling
+
+After studying FCFS, SJF, SRTF and Priority Scheduling, we learned that some algorithms may cause **Starvation** or poor **Response Time**.
+
+To solve these problems, the Operating System uses **Round Robin (RR) Scheduling**.
+
+It is one of the most commonly used CPU Scheduling algorithms in modern Time-Sharing Operating Systems.
+
+---
+
+# What is Round Robin Scheduling?
+
+Round Robin (RR) is a **Preemptive CPU Scheduling Algorithm**.
+
+In this algorithm, every process gets the CPU for a fixed amount of time called the **Time Quantum (Time Slice).**
+
+If the process finishes within the Time Quantum, it leaves the CPU.
+
+Otherwise, the OS interrupts it and places it at the end of the Ready Queue.
+
+The next process then gets the CPU.
+
+In simple words,
+
+> Every process gets an equal chance to execute for a fixed amount of time.
+
+---
+
+# Why do we need Round Robin?
+
+Suppose three processes are waiting.
+
+| Process | Burst Time |
+|----------|------------|
+| P1 | 20 |
+| P2 | 3 |
+| P3 | 2 |
+
+If FCFS is used,
+
+```
+P1 → P2 → P3
+```
+
+P2 and P3 must wait until P1 finishes.
+
+This gives poor Response Time.
+
+Round Robin solves this problem by giving each process a small amount of CPU time before moving to the next process.
+
+---
+
+# What is Time Quantum?
+
+Time Quantum is the **maximum amount of CPU time** given to a process in one turn.
+
+Example:
+
+```
+Time Quantum = 2 ms
+```
+
+This means every process can execute for at most **2 ms** before the CPU is assigned to another process.
+
+Time Quantum is the most important concept in Round Robin Scheduling.
+
+---
+
+# Why is Round Robin called Preemptive?
+
+Round Robin is a **Preemptive Scheduling Algorithm** because the OS can interrupt a running process.
+
+When the Time Quantum expires,
+
+the OS immediately takes the CPU away from the running process.
+
+If the process is not completed,
+
+it is placed at the end of the Ready Queue.
+
+The next process then gets the CPU.
+
+---
+
+# How does Round Robin work?
+
+Example:
+
+Time Quantum = **2**
+
+| Process | Arrival Time | Burst Time |
+|----------|--------------|------------|
+| P1 | 0 | 5 |
+| P2 | 0 | 4 |
+| P3 | 0 | 2 |
+
+Initially,
+
+Ready Queue:
+
+```
+P1 → P2 → P3
+```
+
+### Step 1
+
+CPU executes P1 for 2 units.
+
+Remaining Burst Time:
+
+```
+5 − 2 = 3
+```
+
+P1 is moved to the end of the Ready Queue.
+
+Queue becomes:
+
+```
+P2 → P3 → P1
+```
+
+---
+
+### Step 2
+
+CPU executes P2 for 2 units.
+
+Remaining Burst Time:
+
+```
+4 − 2 = 2
+```
+
+P2 moves to the end.
+
+Queue becomes:
+
+```
+P3 → P1 → P2
+```
+
+---
+
+### Step 3
+
+CPU executes P3.
+
+Burst Time = 2
+
+P3 completes execution.
+
+Queue becomes:
+
+```
+P1 → P2
+```
+
+---
+
+### Step 4
+
+CPU executes P1 again.
+
+Remaining Burst Time:
+
+```
+3 − 2 = 1
+```
+
+P1 moves to the end.
+
+Queue becomes:
+
+```
+P2 → P1
+```
+
+---
+
+### Step 5
+
+CPU executes P2.
+
+Remaining Burst Time:
+
+```
+2 − 2 = 0
+```
+
+P2 finishes.
+
+Queue becomes:
+
+```
+P1
+```
+
+---
+
+### Step 6
+
+CPU executes P1.
+
+Remaining Burst Time:
+
+```
+1 − 1 = 0
+```
+
+P1 also finishes.
+
+---
+
+# Gantt Chart
+
+```
+0     2     4     6     8     10    11
+
+| P1 | P2 | P3 | P1 | P2 | P1 |
+```
+
+Observe that every process gets the CPU for only **2 units** before the next process gets a turn.
+
+---
+
+# Advantages of Round Robin
+
+### 1. Fair Scheduling
+
+Every process gets an equal opportunity to execute.
+
+No process can occupy the CPU forever.
+
+---
+
+### 2. Better Response Time
+
+Since every process gets CPU quickly,
+
+users feel that all applications are running simultaneously.
+
+This makes Round Robin suitable for interactive systems.
+
+---
+
+### 3. No Starvation
+
+Every process eventually gets CPU time.
+
+No process waits forever.
+
+---
+
+### 4. Suitable for Time-Sharing Systems
+
+Many users can share the CPU efficiently because every process gets a fixed Time Quantum.
+
+---
+
+# Disadvantages of Round Robin
+
+### 1. More Context Switching
+
+Every Time Quantum expiry causes a Context Switch.
+
+Frequent Context Switching increases overhead and reduces CPU efficiency.
+
+---
+
+### 2. Performance depends on Time Quantum
+
+Choosing the correct Time Quantum is very important.
+
+If it is too small or too large,
+
+system performance decreases.
+
+---
+
+# Effect of Time Quantum
+
+## Case 1: Time Quantum is too Small
+
+Example:
+
+```
+Time Quantum = 1 ms
+```
+
+The CPU switches processes very frequently.
+
+Result:
+
+- More Context Switching
+- Higher Overhead
+- Lower Performance
+
+---
+
+## Case 2: Time Quantum is too Large
+
+Example:
+
+```
+Time Quantum = 1000 ms
+```
+
+Most processes finish before the Time Quantum expires.
+
+Round Robin behaves almost like **FCFS**.
+
+Response Time becomes poor.
+
+---
+
+## Ideal Time Quantum
+
+A good Time Quantum should be:
+
+- Not too small
+- Not too large
+
+It should provide a balance between:
+
+- Good Response Time
+- Less Context Switching
+- Better CPU Utilization
+
+---
+
+# Difference Between FCFS and Round Robin
+
+| FCFS | Round Robin |
+|------|-------------|
+| Non-Preemptive | Preemptive |
+| Executes one process completely | Executes each process for a fixed Time Quantum |
+| No Time Quantum | Uses Time Quantum |
+| Poor Response Time | Better Response Time |
+| Simpler | Slightly more complex |
+
+---
+
+# Difference Between SJF and Round Robin
+
+| SJF | Round Robin |
+|------|-------------|
+| Based on Burst Time | Based on Time Quantum |
+| Lower Average Waiting Time | Better Response Time |
+| Starvation possible | No Starvation |
+
+---
+
+# Where is Round Robin used?
+
+Round Robin is commonly used in:
+
+- Time-Sharing Operating Systems
+- Interactive Systems
+- Multi-user Systems
+
+Examples:
+
+- Linux
+- UNIX
+- Windows (combined with Priority Scheduling)
+
+---
+
+# Quick Revision
+
+- Round Robin = Preemptive Scheduling Algorithm.
+- Every process gets CPU for a fixed **Time Quantum**.
+- If the process is incomplete, it goes to the end of the Ready Queue.
+- Main advantage = Fair Scheduling.
+- No Starvation.
+- Main disadvantage = High Context Switching Overhead.
+- Choosing the correct Time Quantum is very important.
+
+---
+
+# Interview Questions
+
+### What is Round Robin Scheduling?
+
+Round Robin is a Preemptive CPU Scheduling Algorithm in which every process gets CPU for a fixed Time Quantum.
+
+---
+
+### What is Time Quantum?
+
+Time Quantum is the maximum CPU time allocated to a process in one turn.
+
+---
+
+### Why is Round Robin called Preemptive?
+
+Because the OS interrupts the running process after the Time Quantum expires.
+
+---
+
+### What happens if the Time Quantum is too small?
+
+- Too many Context Switches.
+- High Overhead.
+- Reduced Performance.
+
+---
+
+### What happens if the Time Quantum is too large?
+
+Round Robin behaves almost like FCFS and Response Time becomes poor.
+
+---
+
+### Can Starvation occur in Round Robin?
+
+No.
+
+Every process eventually gets CPU time.
+
+---
+
+### Why is Round Robin suitable for Time-Sharing Systems?
+
+Because every process gets a fair and equal opportunity to execute, providing quick response to all users.
+
+---
+
+# Easy Way to Remember
+
+Imagine four friends sharing one cricket bat.
+
+The rule is:
+
+Each player can bat for **2 minutes**.
+
+After 2 minutes, whether the player is out or not, the bat is passed to the next player.
+
+Later, the first player gets another turn.
+
+This is exactly how **Round Robin Scheduling** works.
+
+Remember:
+
+**Round Robin = Equal Time for Everyone.**
