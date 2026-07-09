@@ -5586,3 +5586,396 @@ Passengers stay in their assigned queue.
 Similarly,
 
 **MLQ divides processes into different queues based on their category, and each queue can have its own scheduling algorithm.**
+# Multilevel Feedback Queue (MLFQ) Scheduling
+
+After studying Multilevel Queue (MLQ), we learned that the Ready Queue is divided into multiple queues.
+
+However, MLQ has one major drawback.
+
+Once a process enters a queue, it can **never move to another queue**, even if its behavior changes.
+
+To solve this problem, the Operating System uses **Multilevel Feedback Queue (MLFQ) Scheduling**.
+
+---
+
+# What is Multilevel Feedback Queue (MLFQ)?
+
+MLFQ is an advanced CPU Scheduling Algorithm in which the Ready Queue is divided into multiple queues.
+
+Unlike MLQ,
+
+**a process can move from one queue to another depending on its behavior.**
+
+This movement of processes between queues is called **Feedback**.
+
+In simple words,
+
+> MLFQ continuously observes a process and changes its priority by moving it to different queues.
+
+---
+
+# Why is it called "Feedback Queue"?
+
+The scheduler continuously watches the behavior of every process.
+
+If a process uses the CPU for a long time,
+
+its priority is reduced.
+
+If a process waits for a long time,
+
+its priority is increased.
+
+This continuous observation and adjustment is called **Feedback**.
+
+Hence the name **Multilevel Feedback Queue**.
+
+---
+
+# Structure of MLFQ
+
+Suppose the Operating System creates three queues.
+
+```
+Queue 1 (Highest Priority)
+Time Quantum = 2 ms
+
+↓
+
+Queue 2 (Medium Priority)
+Time Quantum = 4 ms
+
+↓
+
+Queue 3 (Lowest Priority)
+FCFS
+```
+
+Notice that:
+
+- Higher-priority queues usually have smaller Time Quantum.
+- Lower-priority queues have larger Time Quantum or may use FCFS.
+
+---
+
+# How does MLFQ work?
+
+Suppose a new process P1 arrives.
+
+Initially,
+
+every new process enters the **highest-priority queue (Queue 1).**
+
+### Step 1
+
+P1 starts executing in Queue 1.
+
+Time Quantum = 2 ms.
+
+Suppose Burst Time = 8 ms.
+
+After 2 ms,
+
+P1 is still not completed.
+
+Therefore,
+
+P1 is moved (demoted) to Queue 2.
+
+---
+
+### Step 2
+
+Queue 2 has Time Quantum = 4 ms.
+
+P1 executes for another 4 ms.
+
+Remaining Burst Time becomes:
+
+```
+8 − 2 − 4 = 2 ms
+```
+
+Since P1 is still incomplete,
+
+it is moved to Queue 3.
+
+---
+
+### Step 3
+
+Queue 3 uses FCFS.
+
+P1 completes its remaining execution here.
+
+---
+
+# Process Movement
+
+```
+Queue 1
+     │
+     ▼
+Queue 2
+     │
+     ▼
+Queue 3
+```
+
+Unlike MLQ,
+
+processes are allowed to move between queues.
+
+This is the biggest feature of MLFQ.
+
+---
+
+# Promotion in MLFQ
+
+Suppose a process waits for a very long time in Queue 3.
+
+The scheduler increases its priority.
+
+The process is promoted.
+
+Example:
+
+```
+Queue 3
+
+↓
+
+Queue 2
+
+↓
+
+Queue 1
+```
+
+This promotion helps prevent **Starvation**.
+
+---
+
+# Demotion in MLFQ
+
+If a process keeps using the CPU for a long time,
+
+the scheduler assumes that it is a CPU-intensive process.
+
+Its priority is reduced,
+
+and it is moved to a lower-priority queue.
+
+This allows short and interactive processes to get CPU quickly.
+
+---
+
+# Why is MLFQ considered intelligent?
+
+MLFQ automatically identifies the type of process based on its behavior.
+
+### Interactive Processes
+
+Examples:
+
+- Chrome
+- Calculator
+- VS Code
+- Text Editor
+
+These usually finish quickly.
+
+Therefore,
+
+they remain in higher-priority queues.
+
+---
+
+### CPU-Intensive Processes
+
+Examples:
+
+- Video Rendering
+- File Compression
+- Scientific Computation
+
+These require CPU for a long time.
+
+Therefore,
+
+they gradually move to lower-priority queues.
+
+---
+
+# Advantages of MLFQ
+
+### 1. Better Response Time
+
+Interactive processes get CPU quickly.
+
+---
+
+### 2. Prevents Starvation
+
+Processes waiting for a long time are promoted using Aging.
+
+---
+
+### 3. Adaptive Scheduling
+
+Processes can change queues depending on their behavior.
+
+Unlike MLQ,
+
+queue assignment is not fixed.
+
+---
+
+### 4. Suitable for Mixed Workloads
+
+MLFQ handles both:
+
+- Interactive Processes
+- CPU-intensive Processes
+
+efficiently.
+
+---
+
+# Disadvantages of MLFQ
+
+### 1. Complex Algorithm
+
+MLFQ is much more complicated than FCFS, SJF or Round Robin.
+
+---
+
+### 2. Difficult to Configure
+
+The Operating System has to decide:
+
+- Number of Queues
+- Time Quantum for each Queue
+- Promotion Rules
+- Demotion Rules
+
+Choosing these values correctly is difficult.
+
+---
+
+### 3. More Scheduling Overhead
+
+Maintaining multiple queues and frequently moving processes between them increases scheduling overhead.
+
+---
+
+# Difference Between MLQ and MLFQ
+
+| MLQ | MLFQ |
+|------|------|
+| Fixed Queue Assignment | Dynamic Queue Assignment |
+| Process cannot move between queues | Process can move between queues |
+| Simpler | More complex |
+| Higher chance of Starvation | Starvation is greatly reduced |
+| No Feedback | Uses Feedback based on process behavior |
+
+---
+
+# Difference Between Round Robin and MLFQ
+
+| Round Robin | MLFQ |
+|--------------|------|
+| Single Ready Queue | Multiple Ready Queues |
+| Same Time Quantum for all processes | Different Time Quantum for different queues |
+| No priority levels | Multiple priority levels |
+| No queue movement | Processes move between queues |
+
+---
+
+# Real-Life Analogy
+
+Imagine a school.
+
+Students are divided into three classes:
+
+- Advanced
+- Intermediate
+- Beginner
+
+If a student performs poorly,
+
+they move to a lower class.
+
+If a student improves,
+
+they move back to a higher class.
+
+The teacher keeps changing their class based on their performance.
+
+This is exactly how **Multilevel Feedback Queue Scheduling** works.
+
+---
+
+# Quick Revision
+
+- MLFQ = Multilevel Feedback Queue Scheduling.
+- Ready Queue is divided into multiple queues.
+- Processes can move between queues.
+- New processes always enter the highest-priority queue.
+- Long-running processes move to lower-priority queues.
+- Waiting processes may move to higher-priority queues using Aging.
+- Better Response Time.
+- Starvation is greatly reduced.
+- More complex than MLQ.
+
+---
+
+# Interview Questions
+
+### What is Multilevel Feedback Queue Scheduling?
+
+MLFQ is a CPU Scheduling Algorithm in which multiple queues are used and processes can move between queues depending on their behavior.
+
+---
+
+### Why is it called Feedback Queue?
+
+Because the scheduler continuously observes process behavior and changes its queue accordingly.
+
+---
+
+### What is the biggest difference between MLQ and MLFQ?
+
+**MLQ:** Processes cannot move between queues.
+
+**MLFQ:** Processes can move between queues based on feedback.
+
+---
+
+### How does MLFQ reduce Starvation?
+
+By promoting processes that have been waiting for a long time using Aging.
+
+---
+
+### Why are new processes placed in the highest-priority queue?
+
+Because most new processes are short or interactive, giving them higher priority improves response time.
+
+---
+
+# Easy Way to Remember
+
+Think of a school.
+
+Students are promoted or demoted based on their performance.
+
+Similarly,
+
+MLFQ promotes or demotes processes based on how they behave while using the CPU.
+
+Remember:
+
+**MLQ = Fixed Queue**
+
+**MLFQ = Moving Queue (Feedback)**
