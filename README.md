@@ -6899,3 +6899,465 @@ This is called a **Race Condition**.
 # One-Line Interview Answer
 
 **Race Condition is a situation where multiple processes or threads access and modify the same shared resource simultaneously, causing unpredictable or incorrect results due to the lack of proper synchronization.**
+# Critical Section Problem
+
+After learning about Race Condition, we know that problems occur when multiple processes access the same shared resource at the same time.
+
+The Operating System solves this problem using the concept of the **Critical Section**.
+
+This is one of the most important concepts in Process Synchronization because almost every synchronization technique (Mutex, Semaphore, Monitor, etc.) is based on it.
+
+---
+
+# What is a Critical Section?
+
+A **Critical Section** is the part of a program where a process accesses or modifies a **shared resource**.
+
+Examples of shared resources:
+
+- Shared Variable
+- Shared Memory
+- File
+- Printer
+- Database
+- Counter
+
+Since these resources are shared by multiple processes, only one process should access them at a time.
+
+In simple words,
+
+> A Critical Section is the part of a program where shared data is used and therefore needs protection.
+
+---
+
+# Why do we need a Critical Section?
+
+Suppose two processes execute:
+
+```cpp
+count++;
+```
+
+Both processes use the same shared variable `count`.
+
+If both execute this statement simultaneously,
+
+the final value of `count` may become incorrect.
+
+This is called a **Race Condition**.
+
+To avoid this,
+
+the Operating System allows only one process at a time to execute the Critical Section.
+
+---
+
+# Real-Life Analogy
+
+Imagine there is only **one ATM machine**.
+
+Two customers arrive together.
+
+Customer A wants to withdraw money.
+
+Customer B wants to deposit money.
+
+If both use the ATM at the same time,
+
+the bank balance may become incorrect.
+
+Therefore,
+
+the bank allows only **one customer inside the ATM room** at a time.
+
+Here,
+
+- ATM Room → Critical Section
+- Bank Account → Shared Resource
+- Customers → Processes
+
+---
+
+# Structure of a Process
+
+Every process can be divided into four sections.
+
+```
++----------------------+
+| Entry Section        |
++----------------------+
+| Critical Section     |
++----------------------+
+| Exit Section         |
++----------------------+
+| Remainder Section    |
++----------------------+
+```
+
+---
+
+# 1. Entry Section
+
+Before entering the Critical Section,
+
+the process requests permission from the Operating System.
+
+If the shared resource is free,
+
+the process enters.
+
+Otherwise,
+
+it waits until the resource becomes available.
+
+Example:
+
+A process wants to use the printer.
+
+It first checks whether another process is already using it.
+
+---
+
+# 2. Critical Section
+
+This is the part where the process actually accesses the shared resource.
+
+Examples:
+
+```cpp
+count++;
+```
+
+```cpp
+balance = balance + 500;
+```
+
+```cpp
+file.write(data);
+```
+
+Only **one process** is allowed inside the Critical Section at any time.
+
+---
+
+# 3. Exit Section
+
+After completing the Critical Section,
+
+the process informs the Operating System that it has finished using the shared resource.
+
+Now another waiting process can enter the Critical Section.
+
+---
+
+# 4. Remainder Section
+
+This contains the remaining part of the program.
+
+No shared resources are accessed here.
+
+Examples:
+
+```cpp
+printf("Hello");
+```
+
+```cpp
+int x = 10;
+```
+
+Multiple processes can execute the Remainder Section simultaneously because it does not affect shared data.
+
+---
+
+# Example Program
+
+```cpp
+while(true)
+{
+    // Entry Section
+
+    // Critical Section
+    count++;
+
+    // Exit Section
+
+    // Remainder Section
+    printf("Working...");
+}
+```
+
+Only the statement
+
+```cpp
+count++;
+```
+
+needs protection because it modifies shared data.
+
+---
+
+# What is the Critical Section Problem?
+
+The Critical Section Problem is the problem of designing a system that allows multiple processes to share resources **safely** without causing a Race Condition.
+
+The Operating System must ensure that:
+
+- Shared data remains correct.
+- Race Conditions do not occur.
+- Every process gets a fair chance to execute.
+
+---
+
+# Requirements of a Good Critical Section Solution
+
+A correct solution must satisfy **three conditions**.
+
+These are among the most frequently asked interview questions.
+
+---
+
+# 1. Mutual Exclusion (Most Important)
+
+Mutual Exclusion means:
+
+> If one process is executing inside the Critical Section, no other process can enter it at the same time.
+
+Example:
+
+Suppose P1 enters the Critical Section.
+
+```
+P1 → Inside Critical Section
+
+P2 → Waiting
+```
+
+Only after P1 leaves,
+
+P2 is allowed to enter.
+
+This prevents Race Conditions.
+
+---
+
+# Real-Life Example of Mutual Exclusion
+
+There is only one washroom with one key.
+
+Only one person can use it at a time.
+
+Others must wait outside.
+
+---
+
+# 2. Progress
+
+Progress means:
+
+If no process is inside the Critical Section,
+
+and one or more processes want to enter,
+
+the Operating System should select one of them **without unnecessary delay**.
+
+Processes that are not interested in entering the Critical Section should not block the decision.
+
+Example:
+
+P1 is doing some normal calculation.
+
+P2 wants to access the printer.
+
+Since P1 is not using the printer,
+
+P2 should be allowed to enter immediately.
+
+---
+
+# 3. Bounded Waiting
+
+Bounded Waiting means:
+
+Every process waiting for the Critical Section should eventually get a chance.
+
+No process should wait forever.
+
+This prevents **Starvation**.
+
+Example:
+
+Three processes:
+
+```
+P1 (Waiting)
+
+P2
+
+P3
+```
+
+Correct order:
+
+```
+P2
+
+↓
+
+P3
+
+↓
+
+P1
+```
+
+Wrong order:
+
+```
+P2
+
+↓
+
+P3
+
+↓
+
+P2
+
+↓
+
+P3
+
+↓
+
+P2
+
+↓
+
+P3
+```
+
+Here,
+
+P1 never gets a chance.
+
+This violates the Bounded Waiting condition.
+
+---
+
+# Why is the Critical Section important?
+
+Without protecting the Critical Section,
+
+the following problems may occur:
+
+- Race Condition
+- Incorrect Calculations
+- Corrupted Files
+- Wrong Bank Balance
+- Database Errors
+- Unpredictable Program Output
+
+Therefore,
+
+every Operating System protects the Critical Section using synchronization techniques.
+
+---
+
+# How is the Critical Section protected?
+
+The Operating System uses synchronization mechanisms such as:
+
+- Peterson's Algorithm
+- Mutex
+- Semaphore
+- Monitor
+
+These techniques ensure that only one process enters the Critical Section at a time.
+
+---
+
+# Difference Between Race Condition and Critical Section
+
+| Race Condition | Critical Section |
+|----------------|------------------|
+| It is a problem. | It is a part of a program. |
+| Occurs due to simultaneous access to shared data. | Contains code that accesses shared resources. |
+| Produces incorrect results. | Needs protection to prevent Race Condition. |
+
+---
+
+# Quick Revision
+
+- Critical Section = Part of the program that accesses shared resources.
+- Only one process should execute the Critical Section at a time.
+- Critical Section Problem = How to allow safe access to shared resources.
+- A correct solution must satisfy:
+  - Mutual Exclusion
+  - Progress
+  - Bounded Waiting
+- Race Condition occurs if the Critical Section is not protected.
+
+---
+
+# Interview Questions
+
+### What is a Critical Section?
+
+A Critical Section is the part of a program where shared resources are accessed or modified.
+
+---
+
+### What is the Critical Section Problem?
+
+It is the problem of designing a synchronization mechanism that allows safe access to shared resources while preventing Race Conditions.
+
+---
+
+### What are the three requirements of a good Critical Section solution?
+
+1. Mutual Exclusion
+2. Progress
+3. Bounded Waiting
+
+---
+
+### What is Mutual Exclusion?
+
+It ensures that only one process can execute the Critical Section at a time.
+
+---
+
+### What is Progress?
+
+If the Critical Section is free, one of the waiting processes should be allowed to enter without unnecessary delay.
+
+---
+
+### What is Bounded Waiting?
+
+Every waiting process should get a chance to enter the Critical Section after a limited number of turns, preventing Starvation.
+
+---
+
+### What is the difference between Race Condition and Critical Section?
+
+Race Condition is the problem caused by simultaneous access to shared data.
+
+Critical Section is the part of the program where shared data is accessed.
+
+---
+
+# Easy Way to Remember
+
+Think of a **public washroom with only one key**.
+
+- Washroom → Critical Section
+- Key → Permission to enter
+- One person inside → Mutual Exclusion
+- If the washroom is empty, the next person should get the key immediately → Progress
+- Everyone waiting in line should eventually get the key → Bounded Waiting
+
+Remember this line:
+
+**Critical Section is the place where Race Condition can occur, and Mutual Exclusion is the rule that prevents it.**
