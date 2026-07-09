@@ -7361,3 +7361,566 @@ Think of a **public washroom with only one key**.
 Remember this line:
 
 **Critical Section is the place where Race Condition can occur, and Mutual Exclusion is the rule that prevents it.**
+# Peterson's Algorithm
+
+After learning about the Critical Section Problem, we know that the Operating System must ensure that only one process enters the Critical Section at a time.
+
+One of the earliest software solutions to solve this problem is **Peterson's Algorithm**.
+
+Although modern operating systems do not use Peterson's Algorithm directly, it is very important because it explains the basic concept of Process Synchronization.
+
+---
+
+# What is Peterson's Algorithm?
+
+Peterson's Algorithm is a **software-based solution** for the Critical Section Problem.
+
+It prevents Race Conditions by ensuring that only one process enters the Critical Section at a time.
+
+It satisfies all three conditions of a good Critical Section solution:
+
+- Mutual Exclusion
+- Progress
+- Bounded Waiting
+
+**Important:**
+
+Peterson's Algorithm works only for **two processes**.
+
+---
+
+# Why do we need Peterson's Algorithm?
+
+Suppose two processes want to access the same shared variable.
+
+Example:
+
+```cpp
+count++;
+```
+
+If both execute this statement simultaneously,
+
+the final value of `count` may become incorrect because of a Race Condition.
+
+Peterson's Algorithm coordinates both processes so that only one process enters the Critical Section at a time.
+
+---
+
+# Variables used in Peterson's Algorithm
+
+Peterson's Algorithm uses only two shared variables.
+
+## 1. flag[ ]
+
+```cpp
+bool flag[2];
+```
+
+This variable tells whether a process wants to enter the Critical Section.
+
+Initially,
+
+```cpp
+flag[0] = false;
+flag[1] = false;
+```
+
+Meaning:
+
+Neither process wants to enter.
+
+If
+
+```cpp
+flag[0] = true;
+```
+
+it means
+
+```
+Process P0 wants to enter the Critical Section.
+```
+
+Similarly,
+
+```cpp
+flag[1] = true;
+```
+
+means
+
+```
+Process P1 wants to enter the Critical Section.
+```
+
+---
+
+## 2. turn
+
+```cpp
+int turn;
+```
+
+This variable decides whose turn it is to enter the Critical Section when both processes want to enter simultaneously.
+
+Example:
+
+```cpp
+turn = 0;
+```
+
+means
+
+```
+Give preference to Process P0.
+```
+
+```cpp
+turn = 1;
+```
+
+means
+
+```
+Give preference to Process P1.
+```
+
+---
+
+# Peterson's Algorithm
+
+## Code for Process P0
+
+```cpp
+flag[0] = true;
+turn = 1;
+
+while(flag[1] && turn == 1);
+
+/* Critical Section */
+
+flag[0] = false;
+
+/* Remainder Section */
+```
+
+---
+
+## Code for Process P1
+
+```cpp
+flag[1] = true;
+turn = 0;
+
+while(flag[0] && turn == 0);
+
+/* Critical Section */
+
+flag[1] = false;
+
+/* Remainder Section */
+```
+
+---
+
+# Step-by-Step Working
+
+Suppose Process P0 wants to enter the Critical Section.
+
+### Step 1
+
+```cpp
+flag[0] = true;
+```
+
+Meaning:
+
+```
+P0 informs the Operating System:
+
+"I want to enter the Critical Section."
+```
+
+---
+
+### Step 2
+
+```cpp
+turn = 1;
+```
+
+Meaning:
+
+```
+"If both of us want to enter together,
+
+I am giving Process P1 the first chance."
+```
+
+---
+
+### Step 3
+
+```cpp
+while(flag[1] && turn == 1);
+```
+
+The process checks two conditions.
+
+### Condition 1
+
+Is P1 interested?
+
+```
+flag[1] == true
+```
+
+### Condition 2
+
+Is it P1's turn?
+
+```
+turn == 1
+```
+
+If both conditions are true,
+
+P0 waits.
+
+Otherwise,
+
+P0 enters the Critical Section.
+
+---
+
+### Step 4
+
+P0 executes the Critical Section.
+
+During this time,
+
+P1 cannot enter.
+
+---
+
+### Step 5
+
+After finishing,
+
+```cpp
+flag[0] = false;
+```
+
+Meaning:
+
+```
+P0 says,
+
+"I have finished.
+
+Now another process can enter."
+```
+
+---
+
+# Example 1
+
+Initially,
+
+```cpp
+flag[0] = false;
+flag[1] = false;
+```
+
+Only P0 wants to enter.
+
+P0 executes
+
+```cpp
+flag[0] = true;
+turn = 1;
+```
+
+Since
+
+```cpp
+flag[1] = false;
+```
+
+the while condition becomes false.
+
+Therefore,
+
+P0 enters the Critical Section immediately.
+
+---
+
+# Example 2
+
+Suppose both processes want to enter at the same time.
+
+```
+flag[0] = true
+
+flag[1] = true
+```
+
+P0 sets
+
+```
+turn = 1
+```
+
+P1 sets
+
+```
+turn = 0
+```
+
+Whichever process updates `turn` last decides who gets the CPU first.
+
+Suppose finally
+
+```
+turn = 0
+```
+
+Then,
+
+P0 enters the Critical Section.
+
+P1 waits.
+
+After P0 exits,
+
+P1 enters.
+
+Thus,
+
+only one process is inside the Critical Section at any time.
+
+---
+
+# Why does Peterson's Algorithm work?
+
+Because it satisfies all three conditions.
+
+---
+
+## 1. Mutual Exclusion
+
+Only one process can enter the Critical Section at a time.
+
+Therefore,
+
+Race Condition does not occur.
+
+---
+
+## 2. Progress
+
+If the Critical Section is empty,
+
+one of the waiting processes enters immediately.
+
+No unnecessary waiting occurs.
+
+---
+
+## 3. Bounded Waiting
+
+Every process eventually gets a chance to enter.
+
+No process waits forever.
+
+Hence,
+
+Starvation does not occur.
+
+---
+
+# Advantages
+
+### 1. Simple to understand
+
+Only two variables are used.
+
+---
+
+### 2. Prevents Race Condition
+
+Only one process enters the Critical Section.
+
+---
+
+### 3. Satisfies all three Critical Section requirements
+
+- Mutual Exclusion
+- Progress
+- Bounded Waiting
+
+---
+
+### 4. Pure Software Solution
+
+No special hardware support is required.
+
+---
+
+# Disadvantages
+
+### 1. Works only for Two Processes
+
+This is the biggest limitation.
+
+Modern Operating Systems execute thousands of processes.
+
+---
+
+### 2. Busy Waiting
+
+The waiting process continuously executes
+
+```cpp
+while(flag[1] && turn == 1);
+```
+
+This wastes CPU time.
+
+---
+
+### 3. Not used in Modern Operating Systems
+
+Modern systems use
+
+- Mutex
+- Semaphore
+- Spinlock
+- Atomic Hardware Instructions
+
+instead of Peterson's Algorithm.
+
+---
+
+# Real-Life Analogy
+
+Imagine two students want to enter the principal's office.
+
+Both raise their hands.
+
+Both say,
+
+"I want to go."
+
+If both want to enter together,
+
+they decide:
+
+"You go first."
+
+One student enters.
+
+The other waits.
+
+After the first student comes out,
+
+the second student enters.
+
+This is exactly how Peterson's Algorithm works.
+
+---
+
+# Difference Between Peterson's Algorithm and Mutex
+
+| Peterson's Algorithm | Mutex |
+|----------------------|-------|
+| Software Solution | OS/Hardware Supported Mechanism |
+| Works only for 2 Processes | Works for Multiple Processes/Threads |
+| Uses `flag` and `turn` | Uses Lock and Unlock Operations |
+| Mainly used for learning | Used in real Operating Systems |
+
+---
+
+# Quick Revision
+
+- Peterson's Algorithm is a software solution for the Critical Section Problem.
+- It works only for **two processes**.
+- It uses two shared variables:
+  - `flag[]`
+  - `turn`
+- `flag[]` tells whether a process wants to enter the Critical Section.
+- `turn` decides which process gets priority when both want to enter simultaneously.
+- It satisfies:
+  - Mutual Exclusion
+  - Progress
+  - Bounded Waiting
+- Main disadvantages:
+  - Only two processes
+  - Busy Waiting
+  - Not used in modern operating systems
+
+---
+
+# Interview Questions
+
+### What is Peterson's Algorithm?
+
+Peterson's Algorithm is a software solution to the Critical Section Problem that allows only one of two processes to enter the Critical Section at a time.
+
+---
+
+### Which variables are used in Peterson's Algorithm?
+
+- `flag[]`
+- `turn`
+
+---
+
+### What is the purpose of `flag[]`?
+
+It indicates whether a process wants to enter the Critical Section.
+
+---
+
+### What is the purpose of `turn`?
+
+It decides which process gets priority if both processes want to enter the Critical Section simultaneously.
+
+---
+
+### Does Peterson's Algorithm satisfy all three Critical Section requirements?
+
+Yes.
+
+It satisfies:
+
+- Mutual Exclusion
+- Progress
+- Bounded Waiting
+
+---
+
+### What is the biggest limitation of Peterson's Algorithm?
+
+It works only for **two processes** and uses **Busy Waiting**, so it is not suitable for modern operating systems.
+
+---
+
+# Easy Way to Remember
+
+Think of **two friends standing outside a room**.
+
+- `flag[]` = "I want to enter."
+- `turn` = "You go first."
+- One friend enters.
+- The other waits.
+- After the first friend comes out, the second friend enters.
+
+Remember:
+
+**flag → Interest**
+
+**turn → Priority**
+
+Together, they prevent both processes from entering the Critical Section at the same time.
