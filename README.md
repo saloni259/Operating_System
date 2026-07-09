@@ -5979,3 +5979,434 @@ Remember:
 **MLQ = Fixed Queue**
 
 **MLFQ = Moving Queue (Feedback)**
+# Introduction to Concurrency & Process Synchronization
+
+After completing CPU Scheduling, the next important topic is **Process Synchronization**.
+
+Before learning Mutex, Semaphore, Critical Section, Producer-Consumer Problem, etc., we first need to understand **Concurrency**.
+
+Without understanding Concurrency, the remaining synchronization topics become difficult.
+
+---
+
+# Why do we need Concurrency?
+
+Nowadays, a computer performs many tasks simultaneously.
+
+Example:
+
+- Chrome is downloading a file.
+- Spotify is playing music.
+- VS Code is compiling code.
+- Gmail is receiving emails.
+- Antivirus is scanning files.
+
+As a user, it looks like everything is running at the same time.
+
+This ability of the Operating System to handle multiple tasks together is called **Concurrency**.
+
+---
+
+# What is Concurrency?
+
+Concurrency is the ability of an Operating System to manage multiple processes or threads so that they **make progress during the same period of time**.
+
+Important point:
+
+**Concurrency does not always mean that multiple processes execute at the exact same instant.**
+
+Instead, the Operating System rapidly switches the CPU between processes using **Context Switching**.
+
+Because this switching is very fast, users feel that all programs are running together.
+
+In simple words,
+
+> **Concurrency means multiple tasks are in progress at the same time.**
+
+---
+
+# Example of Concurrency
+
+Suppose there is only one CPU.
+
+Three processes are ready.
+
+```
+P1
+
+P2
+
+P3
+```
+
+The CPU executes them like this:
+
+```
+P1
+
+↓
+
+P2
+
+↓
+
+P3
+
+↓
+
+P1
+
+↓
+
+P2
+
+↓
+
+P3
+```
+
+Only one process is running at any instant.
+
+However,
+
+all processes continue making progress.
+
+This is called **Concurrency**.
+
+---
+
+# What is Parallelism?
+
+Parallelism means executing multiple processes **at the exact same time**.
+
+This is possible only when the computer has multiple CPU cores.
+
+Example:
+
+Suppose a computer has four CPU cores.
+
+```
+Core 1 → Chrome
+
+Core 2 → VS Code
+
+Core 3 → Spotify
+
+Core 4 → Antivirus
+```
+
+All four processes execute simultaneously.
+
+This is called **Parallelism**.
+
+---
+
+# Difference Between Concurrency and Parallelism
+
+| Concurrency | Parallelism |
+|--------------|-------------|
+| Multiple tasks make progress together. | Multiple tasks execute at the exact same time. |
+| Achieved using Context Switching. | Achieved using multiple CPU cores. |
+| Possible even on a Single-Core CPU. | Requires Multi-Core CPU. |
+| Focuses on task management. | Focuses on simultaneous execution. |
+
+---
+
+# Concurrency on Single-Core CPU
+
+A Single-Core CPU can execute only one process at a time.
+
+So the Operating System quickly switches between processes.
+
+Example:
+
+```
+Time →
+
+P1 → P2 → P3 → P1 → P2 → P3
+```
+
+Because Context Switching is very fast,
+
+the user feels that all programs are running together.
+
+---
+
+# Parallelism on Multi-Core CPU
+
+Suppose the computer has four CPU cores.
+
+```
+Core 1 → P1
+
+Core 2 → P2
+
+Core 3 → P3
+
+Core 4 → P4
+```
+
+Each process executes simultaneously.
+
+This is **Parallelism**.
+
+---
+
+# Why is Concurrency Important?
+
+### 1. Better CPU Utilization
+
+If one process is waiting for I/O,
+
+the CPU can execute another process.
+
+Thus, CPU remains busy.
+
+---
+
+### 2. Better User Experience
+
+Users can perform multiple tasks without waiting.
+
+Example:
+
+- Watching YouTube
+- Downloading Files
+- Browsing Internet
+
+at the same time.
+
+---
+
+### 3. Better Throughput
+
+More work can be completed in less time.
+
+---
+
+### 4. Better Resource Sharing
+
+Multiple processes can efficiently use shared hardware resources.
+
+Example:
+
+- Printer
+- Memory
+- Files
+- Database
+
+---
+
+# Problem with Concurrency
+
+Suppose two students are editing the same Google Docs file.
+
+Student A writes:
+
+```
+Operating System
+```
+
+Student B writes:
+
+```
+Computer Networks
+```
+
+If both save their changes at the same time,
+
+the final data may become incorrect.
+
+Similarly,
+
+if multiple processes access the same shared resource simultaneously,
+
+incorrect results may occur.
+
+To solve this problem,
+
+the Operating System uses **Process Synchronization**.
+
+---
+
+# What is Process Synchronization?
+
+Process Synchronization is the technique used by the Operating System to coordinate multiple processes or threads that access shared resources.
+
+Its main purpose is to ensure:
+
+- Correct execution.
+- Correct data.
+- No interference between processes.
+- Safe access to shared resources.
+
+---
+
+# What is a Shared Resource?
+
+A Shared Resource is any resource that can be accessed by more than one process or thread.
+
+Examples:
+
+- Shared Variable
+- Shared Memory
+- Printer
+- File
+- Database
+- Network Connection
+
+Since multiple processes use these resources,
+
+proper synchronization becomes necessary.
+
+---
+
+# Advantages of Concurrency
+
+### 1. Better CPU Utilization
+
+CPU does not remain idle while one process waits for I/O.
+
+---
+
+### 2. Better Throughput
+
+More processes complete in less time.
+
+---
+
+### 3. Better Responsiveness
+
+Interactive applications respond faster.
+
+---
+
+### 4. Efficient Resource Sharing
+
+Multiple processes can share system resources efficiently.
+
+---
+
+# Problems Caused by Concurrency
+
+### 1. Race Condition
+
+Multiple processes modify shared data simultaneously, causing incorrect results.
+
+---
+
+### 2. Deadlock
+
+Processes keep waiting for each other forever.
+
+---
+
+### 3. Starvation
+
+Some processes may never get the required resource.
+
+---
+
+### 4. Complex Programming
+
+Concurrent programs are more difficult to design and debug.
+
+---
+
+# Real-Life Analogy
+
+Imagine one chef preparing three dishes.
+
+He first chops vegetables for Dish A,
+
+then stirs Dish B,
+
+then checks Dish C,
+
+and keeps switching between them.
+
+All dishes continue progressing.
+
+This is **Concurrency**.
+
+Now imagine three chefs,
+
+each preparing one dish simultaneously.
+
+This is **Parallelism**.
+
+---
+
+# Quick Revision
+
+- Concurrency = Multiple processes make progress during the same time period.
+- Parallelism = Multiple processes execute simultaneously.
+- Concurrency is possible even on a Single-Core CPU.
+- Parallelism requires Multiple CPU Cores.
+- Concurrency is achieved using Context Switching.
+- Shared Resources require Process Synchronization.
+- Synchronization ensures correct and safe access to shared resources.
+
+---
+
+# Interview Questions
+
+### What is Concurrency?
+
+Concurrency is the ability of an Operating System to manage multiple processes or threads so that they make progress during the same period of time.
+
+---
+
+### What is Parallelism?
+
+Parallelism is the simultaneous execution of multiple processes using multiple CPU cores.
+
+---
+
+### What is the difference between Concurrency and Parallelism?
+
+Concurrency means multiple tasks make progress together.
+
+Parallelism means multiple tasks execute at the exact same time.
+
+---
+
+### Can Concurrency exist without Parallelism?
+
+Yes.
+
+A Single-Core CPU achieves Concurrency using Context Switching.
+
+---
+
+### Why is Process Synchronization required?
+
+Because multiple processes may access shared resources simultaneously, leading to incorrect results if not coordinated properly.
+
+---
+
+### What is a Shared Resource?
+
+A resource that can be accessed by multiple processes or threads.
+
+Examples:
+
+Memory, Printer, File, Database, Shared Variable.
+
+---
+
+# Easy Way to Remember
+
+**One Chef → Three Dishes → Concurrency**
+
+The chef switches between dishes, so all of them make progress.
+
+**Three Chefs → Three Dishes → Parallelism**
+
+Each chef cooks one dish at the same time.
+
+Remember:
+
+**Concurrency = Switching**
+
+**Parallelism = Simultaneous Execution**
