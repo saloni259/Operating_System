@@ -11661,3 +11661,478 @@ C → Circular Wait
 **All 4 Conditions Present → Deadlock Possible**
 
 **Any 1 Condition Removed → Deadlock Impossible**
+# Resource Allocation Graph (RAG)
+
+After learning the four Coffman Conditions for Deadlock, we now study a graphical method to represent resource allocation called the **Resource Allocation Graph (RAG)**.
+
+A Resource Allocation Graph helps us understand:
+
+- Which process is using which resource.
+- Which process is waiting for which resource.
+- Whether the system may enter a Deadlock state.
+
+It is one of the most important topics in the Deadlock chapter.
+
+---
+
+# What is a Resource Allocation Graph?
+
+A **Resource Allocation Graph (RAG)** is a directed graph used to represent the relationship between **processes** and **resources**.
+
+It shows:
+
+- Resource allocation.
+- Resource requests.
+- Possible Deadlock situations.
+
+In simple words,
+
+> **RAG is a graphical representation of how resources are allocated to processes and which resources are being requested.**
+
+---
+
+# Why do we need RAG?
+
+Suppose a system has many processes and many resources.
+
+Keeping track of them using tables becomes difficult.
+
+A Resource Allocation Graph provides a simple visual representation that makes Deadlock analysis easier.
+
+---
+
+# Components of a Resource Allocation Graph
+
+A RAG consists of three components.
+
+---
+
+# 1. Process
+
+Processes are represented using **circles**.
+
+Example:
+
+```
+(P1)
+
+(P2)
+
+(P3)
+```
+
+Each circle represents one process.
+
+---
+
+# 2. Resource
+
+Resources are represented using **rectangles (or squares)**.
+
+Example:
+
+```
+[Printer]
+
+[Scanner]
+
+[File]
+```
+
+Each rectangle represents one resource.
+
+If a resource has multiple instances,
+
+multiple small dots are shown inside the rectangle.
+
+Example:
+
+```
++---------+
+| •   •   |
+| Printer |
++---------+
+```
+
+This means the printer has **2 instances**.
+
+---
+
+# 3. Edges
+
+Edges show the relationship between processes and resources.
+
+There are two types of edges.
+
+---
+
+## Request Edge
+
+A Request Edge means:
+
+A process is requesting a resource.
+
+Direction:
+
+```
+Process → Resource
+```
+
+Example:
+
+```
+(P1) ---------> [Printer]
+```
+
+Meaning:
+
+P1 wants the Printer.
+
+The Printer has not yet been allocated.
+
+---
+
+## Assignment Edge
+
+An Assignment Edge means:
+
+A resource has already been allocated to a process.
+
+Direction:
+
+```
+Resource → Process
+```
+
+Example:
+
+```
+[Printer] ---------> (P1)
+```
+
+Meaning:
+
+The Printer is currently allocated to P1.
+
+---
+
+# Example 1 (No Deadlock)
+
+Suppose,
+
+Printer is allocated to P1.
+
+P2 is waiting for the Printer.
+
+Graph:
+
+```
+[Printer] -------> (P1)
+
+(P2) -----------> [Printer]
+```
+
+Meaning:
+
+- P1 is using the Printer.
+- P2 is waiting.
+- Once P1 finishes and releases the Printer,
+  P2 can use it.
+
+Therefore,
+
+**No Deadlock exists.**
+
+---
+
+# Example 2 (Deadlock)
+
+Suppose,
+
+P1 holds the Printer and needs the Scanner.
+
+P2 holds the Scanner and needs the Printer.
+
+Graph:
+
+```
+[Printer] -------> (P1)
+
+(P1) -----------> [Scanner]
+
+[Scanner] -------> (P2)
+
+(P2) -----------> [Printer]
+```
+
+This creates the cycle:
+
+```
+P1
+
+↓
+
+Scanner
+
+↓
+
+P2
+
+↓
+
+Printer
+
+↓
+
+P1
+```
+
+Both processes wait forever.
+
+This is **Deadlock** (when each resource has only one instance).
+
+---
+
+# How to Analyze a RAG
+
+### Step 1
+
+Identify all Processes (Circles).
+
+---
+
+### Step 2
+
+Identify all Resources (Rectangles).
+
+---
+
+### Step 3
+
+Check Assignment Edges.
+
+These show which process currently owns which resource.
+
+---
+
+### Step 4
+
+Check Request Edges.
+
+These show which process is waiting for a resource.
+
+---
+
+### Step 5
+
+Look for Cycles.
+
+Cycles help identify possible Deadlock.
+
+---
+
+# Does a Cycle Always Mean Deadlock?
+
+This is one of the most common interview questions.
+
+### Case 1
+
+If every resource has only **one instance**,
+
+then
+
+```
+Cycle = Deadlock
+```
+
+Example:
+
+```
+Printer → P1
+
+P1 → Scanner
+
+Scanner → P2
+
+P2 → Printer
+```
+
+A cycle exists.
+
+Deadlock exists.
+
+---
+
+### Case 2
+
+If one or more resources have **multiple instances**,
+
+then
+
+```
+Cycle ≠ Always Deadlock
+```
+
+A cycle only indicates that Deadlock **may** occur.
+
+The system may still continue if another free resource instance is available.
+
+---
+
+# Example of Multiple Instances
+
+Suppose,
+
+Printer has **2 instances**.
+
+One Printer is allocated to P1.
+
+Another Printer is still free.
+
+P2 requests a Printer.
+
+Since another Printer is available,
+
+P2 gets it immediately.
+
+Therefore,
+
+no Deadlock occurs,
+
+even if a cycle appears.
+
+---
+
+# Advantages of Resource Allocation Graph
+
+### 1. Easy Visualization
+
+Shows processes and resources clearly.
+
+---
+
+### 2. Helps Detect Deadlock
+
+Cycles help identify Deadlock situations.
+
+---
+
+### 3. Easy to Understand
+
+More intuitive than complex resource allocation tables.
+
+---
+
+# Limitations of Resource Allocation Graph
+
+### 1. Large Systems
+
+For systems with many processes and resources,
+
+the graph becomes difficult to read.
+
+---
+
+### 2. Multiple Resource Instances
+
+A cycle does not always indicate Deadlock.
+
+Further analysis is required.
+
+---
+
+# Real-Life Analogy
+
+Imagine a library.
+
+Students = Processes
+
+Books = Resources
+
+If
+
+Student A has Book 1 and wants Book 2,
+
+Student B has Book 2 and wants Book 1,
+
+both wait forever.
+
+Drawing arrows between students and books gives a Resource Allocation Graph.
+
+---
+
+# Quick Revision
+
+- RAG = Graphical representation of Processes and Resources.
+- Circle → Process.
+- Rectangle → Resource.
+- Process → Resource = Request Edge.
+- Resource → Process = Assignment Edge.
+- Cycle with single-instance resources = Deadlock.
+- Cycle with multiple-instance resources = Deadlock may or may not occur.
+
+---
+
+# Interview Questions
+
+### What is a Resource Allocation Graph?
+
+A Resource Allocation Graph is a directed graph that represents processes, resources, resource allocation and resource requests.
+
+---
+
+### What does a circle represent?
+
+A Process.
+
+---
+
+### What does a rectangle represent?
+
+A Resource.
+
+---
+
+### What is a Request Edge?
+
+A directed edge from a Process to a Resource, showing that the process is requesting the resource.
+
+---
+
+### What is an Assignment Edge?
+
+A directed edge from a Resource to a Process, showing that the resource has been allocated to the process.
+
+---
+
+### Does a cycle always indicate Deadlock?
+
+No.
+
+- If every resource has only one instance, a cycle indicates Deadlock.
+- If resources have multiple instances, a cycle only indicates the possibility of Deadlock.
+
+---
+
+# Easy Way to Remember
+
+Think of a **library**.
+
+📚 Books = Resources
+
+👨‍🎓 Students = Processes
+
+- Student → Book = Wants the book.
+- Book → Student = Book is already issued.
+
+Remember:
+
+**Process → Resource = Request**
+
+**Resource → Process = Allocation**
+
+And remember the golden interview rule:
+
+**Single Instance + Cycle = Deadlock**
+
+**Multiple Instances + Cycle = Deadlock may or may not occur**
