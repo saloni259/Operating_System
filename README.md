@@ -10774,3 +10774,446 @@ Remember:
 **Eating = Using Resource**
 
 **Waiting Forever = Deadlock**
+# Introduction to Deadlock
+
+After completing Process Synchronization, we now study another very important Operating System topic called **Deadlock**.
+
+Deadlock is one of the most frequently asked interview topics because it explains what happens when multiple processes compete for shared resources.
+
+Understanding Deadlock is necessary before learning Deadlock Prevention, Avoidance, Detection and Recovery.
+
+---
+
+# What is Deadlock?
+
+A **Deadlock** is a situation where **two or more processes are permanently blocked because each process is waiting for a resource that is held by another process.**
+
+As a result,
+
+none of the processes can continue,
+
+and they keep waiting forever.
+
+In simple words,
+
+> **Deadlock occurs when every process waits for another process, and no process can proceed.**
+
+---
+
+# Why does Deadlock occur?
+
+Deadlock occurs when multiple processes need the same shared resources.
+
+Suppose,
+
+Process P1 needs:
+
+- Printer
+- Scanner
+
+Process P2 also needs:
+
+- Printer
+- Scanner
+
+If both processes acquire one resource each and wait for the other,
+
+neither process can continue.
+
+This creates a Deadlock.
+
+---
+
+# Example
+
+Suppose,
+
+### Process P1
+
+Already has:
+
+```
+Printer
+```
+
+Needs:
+
+```
+Scanner
+```
+
+---
+
+### Process P2
+
+Already has:
+
+```
+Scanner
+```
+
+Needs:
+
+```
+Printer
+```
+
+Current situation:
+
+```
+P1 → Holds Printer → Waiting for Scanner
+
+P2 → Holds Scanner → Waiting for Printer
+```
+
+Both processes are waiting.
+
+Neither releases its resource.
+
+Neither process can continue.
+
+This situation is called **Deadlock**.
+
+---
+
+# Resource Allocation Diagram
+
+```
+Printer --------> P1
+
+P1 -------------> Scanner
+
+Scanner --------> P2
+
+P2 -------------> Printer
+```
+
+Notice that a circular waiting chain is formed.
+
+Every process is waiting for another process.
+
+---
+
+# Step-by-Step Working
+
+### Step 1
+
+P1 acquires the Printer.
+
+---
+
+### Step 2
+
+P2 acquires the Scanner.
+
+---
+
+### Step 3
+
+P1 requests the Scanner.
+
+But,
+
+the Scanner is already with P2.
+
+Therefore,
+
+P1 waits.
+
+---
+
+### Step 4
+
+P2 requests the Printer.
+
+But,
+
+the Printer is already with P1.
+
+Therefore,
+
+P2 also waits.
+
+---
+
+### Final Situation
+
+```
+P1 waits for P2
+
+↓
+
+P2 waits for P1
+```
+
+No process can continue.
+
+No resource is released.
+
+This is Deadlock.
+
+---
+
+# Real-Life Analogy
+
+Imagine two friends.
+
+Friend A has a **Pen**.
+
+Friend B has a **Notebook**.
+
+Friend A says,
+
+"I'll give you my pen after you give me your notebook."
+
+Friend B says,
+
+"I'll give you my notebook after you give me your pen."
+
+Both keep waiting.
+
+Neither gives up their resource.
+
+This is exactly a Deadlock.
+
+---
+
+# Another Real-Life Example
+
+Imagine a traffic intersection.
+
+Four cars enter from four directions.
+
+Each car blocks the next one.
+
+Nobody can move.
+
+Everyone keeps waiting.
+
+This is a Deadlock.
+
+---
+
+# Why is Deadlock dangerous?
+
+Deadlock creates many problems.
+
+- Processes stop executing.
+- Resources remain occupied forever.
+- CPU utilization decreases.
+- System performance becomes poor.
+- Applications may stop responding.
+- Users experience system hang or freeze.
+
+---
+
+# Characteristics of Deadlock
+
+A Deadlock usually has these characteristics:
+
+### 1. Processes already hold some resources.
+
+Example:
+
+P1 holds Printer.
+
+P2 holds Scanner.
+
+---
+
+### 2. Processes request additional resources.
+
+Example:
+
+P1 requests Scanner.
+
+P2 requests Printer.
+
+---
+
+### 3. Resources are not released.
+
+Processes continue holding their resources while waiting.
+
+---
+
+### 4. No process makes progress.
+
+Everyone waits forever.
+
+---
+
+# Deadlock vs Starvation
+
+| Deadlock | Starvation |
+|-----------|------------|
+| All involved processes wait forever. | One or a few processes wait for a very long time. |
+| No process makes progress. | Other processes continue executing. |
+| Usually caused by circular waiting. | Usually caused by unfair scheduling or resource allocation. |
+| Entire group of waiting processes is blocked. | Only some processes are affected. |
+
+---
+
+# Real-Life Examples of Deadlock
+
+### 1. Traffic Junction
+
+Four vehicles block each other.
+
+Nobody can move.
+
+---
+
+### 2. Database Transactions
+
+Transaction T1 locks Table A and requests Table B.
+
+Transaction T2 locks Table B and requests Table A.
+
+Both wait forever.
+
+---
+
+### 3. File Sharing
+
+Process P1 locks File A.
+
+Process P2 locks File B.
+
+Each process waits for the other file.
+
+Deadlock occurs.
+
+---
+
+# Can Deadlock be prevented?
+
+Yes.
+
+Operating Systems use four techniques.
+
+- Deadlock Prevention
+- Deadlock Avoidance
+- Deadlock Detection
+- Deadlock Recovery
+
+These topics will be studied later in this chapter.
+
+---
+
+# Important Terms
+
+### Process
+
+A program that is currently executing.
+
+---
+
+### Resource
+
+Anything required by a process to complete its work.
+
+Examples:
+
+- CPU
+- Memory
+- Printer
+- Scanner
+- File
+- Database
+
+---
+
+### Waiting
+
+A process cannot continue because the required resource is unavailable.
+
+---
+
+### Resource Allocation
+
+The Operating System assigns available resources to processes.
+
+---
+
+# Quick Revision
+
+- Deadlock occurs when two or more processes wait forever for resources held by each other.
+- No process can continue.
+- Resources remain occupied.
+- System performance decreases.
+- Deadlock is different from Starvation.
+- Deadlock can be handled using:
+  - Prevention
+  - Avoidance
+  - Detection
+  - Recovery
+
+---
+
+# Interview Questions
+
+### What is Deadlock?
+
+Deadlock is a situation where two or more processes wait indefinitely for resources held by each other, so none of them can continue.
+
+---
+
+### Why does Deadlock occur?
+
+Deadlock occurs because each process holds one resource while waiting for another resource that is already allocated to another process.
+
+---
+
+### Give a real-life example of Deadlock.
+
+Two friends each hold one item and refuse to give it until they receive the other person's item.
+
+Example:
+
+One has a pen.
+
+The other has a notebook.
+
+Both wait forever.
+
+---
+
+### What is the difference between Deadlock and Starvation?
+
+Deadlock blocks all involved processes permanently.
+
+Starvation affects one or a few processes, while other processes continue executing.
+
+---
+
+### Can Deadlock be solved?
+
+Yes.
+
+Using:
+
+- Deadlock Prevention
+- Deadlock Avoidance
+- Deadlock Detection
+- Deadlock Recovery
+
+---
+
+# Easy Way to Remember
+
+Imagine **two children exchanging toys**.
+
+Child A has a toy car and wants a robot.
+
+Child B has a robot and wants the toy car.
+
+Neither gives up their toy first.
+
+Both wait forever.
+
+This is **Deadlock**.
+
+Remember:
+
+**"Hold One Resource + Wait for Another = Deadlock."**
