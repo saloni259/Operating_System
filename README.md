@@ -12136,3 +12136,484 @@ And remember the golden interview rule:
 **Single Instance + Cycle = Deadlock**
 
 **Multiple Instances + Cycle = Deadlock may or may not occur**
+# Deadlock Prevention
+
+After learning the four Coffman Conditions, we know that **Deadlock occurs only when all four conditions are present at the same time.**
+
+Now the question is,
+
+**Can we stop Deadlock before it happens?**
+
+Yes.
+
+The Operating System can prevent Deadlock by ensuring that **at least one Coffman Condition is never satisfied.**
+
+This technique is called **Deadlock Prevention**.
+
+---
+
+# What is Deadlock Prevention?
+
+**Deadlock Prevention** is a technique used by the Operating System to ensure that Deadlock never occurs.
+
+It works by **breaking one or more of the four Coffman Conditions**.
+
+Since all four conditions are required for Deadlock,
+
+breaking even one condition makes Deadlock impossible.
+
+In simple words,
+
+> **Deadlock Prevention prevents Deadlock by ensuring that at least one Coffman Condition never becomes true.**
+
+---
+
+# Why do we need Deadlock Prevention?
+
+Suppose,
+
+two processes require the same resources.
+
+If both keep waiting for each other,
+
+Deadlock occurs.
+
+Instead of solving Deadlock later,
+
+the Operating System prevents it from happening in the first place.
+
+This makes the system safer.
+
+---
+
+# Four Methods of Deadlock Prevention
+
+Since Deadlock depends on four Coffman Conditions,
+
+there are four methods to prevent it.
+
+1. Break Mutual Exclusion
+2. Break Hold and Wait
+3. Break No Preemption
+4. Break Circular Wait
+
+---
+
+# 1. Breaking Mutual Exclusion
+
+### Idea
+
+Make resources **shareable** whenever possible.
+
+If multiple processes can use the same resource together,
+
+Mutual Exclusion no longer exists.
+
+Therefore,
+
+Deadlock cannot occur.
+
+---
+
+### Example
+
+Instead of allowing only one process to access the printer directly,
+
+the Operating System uses **Printer Spooling**.
+
+Processes place print jobs into a queue,
+
+and the printer prints them one by one.
+
+Processes do not directly own the printer.
+
+---
+
+### Can Mutual Exclusion always be removed?
+
+No.
+
+Some resources are naturally non-shareable.
+
+Examples:
+
+- Printer
+- Scanner
+- Tape Drive
+
+Therefore,
+
+this method cannot always be used.
+
+---
+
+# 2. Breaking Hold and Wait
+
+### Idea
+
+A process should never hold one resource while waiting for another.
+
+There are two common approaches.
+
+---
+
+## Method 1
+
+Request **all required resources together** before execution begins.
+
+If every resource is available,
+
+the process starts.
+
+Otherwise,
+
+it waits without holding any resource.
+
+---
+
+### Example
+
+Suppose P1 needs:
+
+- Printer
+- Scanner
+
+Instead of requesting:
+
+```
+Printer
+
+↓
+
+Scanner
+```
+
+P1 requests:
+
+```
+Printer + Scanner
+```
+
+at the same time.
+
+If both are available,
+
+P1 starts.
+
+Otherwise,
+
+P1 waits.
+
+---
+
+## Method 2
+
+If a process needs a new resource,
+
+it must first release all currently held resources.
+
+Then,
+
+it requests all required resources again.
+
+---
+
+### Disadvantage
+
+Sometimes,
+
+a process may reserve resources that it does not immediately use.
+
+This reduces resource utilization.
+
+---
+
+# 3. Breaking No Preemption
+
+### Idea
+
+Allow the Operating System to **take resources back** from a process.
+
+If a process is waiting for another resource,
+
+the OS removes the resources it already holds.
+
+These resources become available for other processes.
+
+Later,
+
+when all required resources become available,
+
+the process receives them again.
+
+---
+
+### Example
+
+Suppose,
+
+P1 holds the Printer.
+
+Now,
+
+P1 requests the Scanner.
+
+Scanner is unavailable.
+
+Instead of making P1 wait while holding the Printer,
+
+the OS takes back the Printer.
+
+Now,
+
+another process may use it.
+
+Later,
+
+when both Printer and Scanner become available,
+
+P1 receives both resources together.
+
+---
+
+### Can every resource be preempted?
+
+No.
+
+Some resources cannot be taken away safely.
+
+Examples:
+
+- Printer while printing
+- DVD Writer
+- Network Transmission
+
+---
+
+# 4. Breaking Circular Wait
+
+### Idea
+
+Assign a fixed order (number) to every resource.
+
+Processes must request resources only in that order.
+
+This prevents Circular Waiting.
+
+---
+
+### Example
+
+Suppose,
+
+the Operating System assigns:
+
+```
+Printer → 1
+
+Scanner → 2
+
+File → 3
+```
+
+Every process must request resources like this:
+
+```
+Printer
+
+↓
+
+Scanner
+
+↓
+
+File
+```
+
+A process is **not allowed** to request:
+
+```
+Scanner
+
+↓
+
+Printer
+```
+
+Because every process follows the same order,
+
+a circular chain can never form.
+
+Therefore,
+
+Deadlock is prevented.
+
+---
+
+# Summary Table
+
+| Coffman Condition | Prevention Method |
+|-------------------|-------------------|
+| Mutual Exclusion | Make resources shareable whenever possible. |
+| Hold and Wait | Request all resources together or release held resources before requesting more. |
+| No Preemption | Allow the Operating System to take resources back. |
+| Circular Wait | Request resources in a fixed order. |
+
+---
+
+# Advantages of Deadlock Prevention
+
+### 1. Deadlock Never Occurs
+
+The system guarantees that Deadlock is impossible.
+
+---
+
+### 2. Simple Concept
+
+It directly breaks one or more Coffman Conditions.
+
+---
+
+### 3. Reliable System
+
+Processes never become permanently blocked due to Deadlock.
+
+---
+
+# Disadvantages of Deadlock Prevention
+
+### 1. Poor Resource Utilization
+
+Processes may reserve resources even when they are not immediately required.
+
+---
+
+### 2. Lower System Performance
+
+Processes may wait longer before execution starts.
+
+---
+
+### 3. Some Methods are Not Practical
+
+Certain resources cannot be shared or preempted.
+
+Therefore,
+
+some prevention techniques cannot always be applied.
+
+---
+
+# Deadlock Prevention vs Deadlock Avoidance
+
+| Deadlock Prevention | Deadlock Avoidance |
+|----------------------|--------------------|
+| Prevents Deadlock by breaking Coffman Conditions. | Avoids Deadlock by checking if the system remains in a safe state before allocating resources. |
+| More restrictive. | More flexible. |
+| Lower resource utilization. | Better resource utilization. |
+| Does not require future resource information. | Requires information about future maximum resource requirements. |
+
+---
+
+# Real-Life Example
+
+Imagine a restaurant.
+
+A customer needs:
+
+- Table
+- Waiter
+- Food
+
+Instead of providing them one by one,
+
+the restaurant provides everything together.
+
+If everything is not available,
+
+the customer waits.
+
+This prevents situations where customers occupy tables while waiting for food.
+
+---
+
+# Quick Revision
+
+- Deadlock Prevention stops Deadlock before it occurs.
+- It works by breaking at least one Coffman Condition.
+- Four prevention methods:
+  - Break Mutual Exclusion
+  - Break Hold and Wait
+  - Break No Preemption
+  - Break Circular Wait
+- Breaking even one condition prevents Deadlock.
+- Prevention guarantees that Deadlock never occurs.
+
+---
+
+# Interview Questions
+
+### What is Deadlock Prevention?
+
+Deadlock Prevention is a technique that prevents Deadlock by ensuring that at least one Coffman Condition is never satisfied.
+
+---
+
+### How many methods are used in Deadlock Prevention?
+
+Four methods, one for each Coffman Condition.
+
+---
+
+### Can Mutual Exclusion always be removed?
+
+No.
+
+Some resources such as printers and scanners are naturally non-shareable.
+
+---
+
+### Which Coffman Condition is easiest to break?
+
+Circular Wait,
+
+by assigning a fixed ordering to resources.
+
+---
+
+### What is the biggest disadvantage of Deadlock Prevention?
+
+Poor resource utilization and lower system performance.
+
+---
+
+### What is the difference between Deadlock Prevention and Deadlock Avoidance?
+
+Deadlock Prevention breaks Coffman Conditions.
+
+Deadlock Avoidance allocates resources only if the system remains in a safe state.
+
+---
+
+# Easy Way to Remember
+
+Think of the four Coffman Conditions as **four legs of a table**.
+
+If all four legs are present,
+
+the table stands.
+
+If even one leg is removed,
+
+the table falls.
+
+Similarly,
+
+Deadlock occurs only when **all four Coffman Conditions are present**.
+
+Removing even one condition prevents Deadlock.
+
+Remember:
+
+**Break Any One Condition → No Deadlock**
