@@ -15122,3 +15122,461 @@ Ways to clear it:
 Remember:
 
 **Detect → Recover → Continue Execution**
+# Introduction to Memory Management
+
+After completing the Deadlock chapter, we now begin **Memory Management**, one of the most important topics in Operating Systems.
+
+Every program needs memory to execute.
+
+Since the computer's RAM is limited,
+
+the Operating System must manage memory efficiently.
+
+This responsibility is called **Memory Management**.
+
+---
+
+# What is Memory Management?
+
+**Memory Management** is the function of the Operating System that manages the computer's main memory (RAM).
+
+It keeps track of memory usage,
+
+allocates memory to processes,
+
+protects process memory,
+
+and frees memory after the process finishes.
+
+In simple words,
+
+> **Memory Management is the process of allocating, managing, protecting and deallocating memory for processes.**
+
+---
+
+# Why do we need Memory Management?
+
+Every running program needs RAM.
+
+Suppose,
+
+you open:
+
+- Chrome
+- VS Code
+- Spotify
+
+All three applications require memory.
+
+However,
+
+RAM has limited space.
+
+If memory is not managed properly,
+
+- Programs may overwrite each other's data.
+- Memory may be wasted.
+- Some programs may not execute.
+
+Therefore,
+
+the Operating System manages memory efficiently.
+
+---
+
+# What is Main Memory?
+
+Main Memory is also called **RAM (Random Access Memory).**
+
+It stores:
+
+- Operating System
+- Running Programs
+- Process Data
+
+RAM is:
+
+- Fast
+- Temporary (Volatile)
+
+When the power is turned off,
+
+all data stored in RAM is lost.
+
+---
+
+# Example
+
+Suppose your computer has:
+
+```
+RAM = 8 GB
+```
+
+Currently,
+
+```
+Chrome → 2 GB
+
+VS Code → 1 GB
+
+Game → 4 GB
+```
+
+Total memory used:
+
+```
+7 GB
+```
+
+Only:
+
+```
+1 GB
+```
+
+is free.
+
+If another application requests **3 GB**,
+
+the Operating System cannot allocate it immediately.
+
+Therefore,
+
+memory must be managed properly.
+
+---
+
+# Responsibilities of Memory Management
+
+The Operating System performs several important tasks.
+
+---
+
+# 1. Memory Allocation
+
+When a process starts,
+
+the Operating System allocates memory to it.
+
+Example:
+
+```
+P1 → 200 MB
+
+P2 → 500 MB
+
+P3 → 100 MB
+```
+
+Each process receives the memory it needs.
+
+---
+
+# 2. Memory Deallocation
+
+When a process finishes,
+
+its memory is released.
+
+Example:
+
+```
+P2 finishes.
+
+↓
+
+500 MB becomes free.
+```
+
+Another process can now use that memory.
+
+---
+
+# 3. Memory Protection
+
+Every process should have its own memory space.
+
+One process should not access another process's memory.
+
+Example:
+
+```
+P1 Memory
+
+↓
+
+P2 cannot access it.
+```
+
+This protects programs from errors and security issues.
+
+---
+
+# 4. Memory Sharing
+
+Sometimes,
+
+multiple processes need the same program.
+
+Instead of loading multiple copies,
+
+the Operating System allows them to share common code.
+
+Example:
+
+Many students open the same PDF.
+
+The PDF is loaded once,
+
+and all users share it.
+
+This saves memory.
+
+---
+
+# 5. Efficient Memory Utilization
+
+The Operating System tries to use RAM efficiently.
+
+Unused memory should not remain idle,
+
+and memory should not be wasted.
+
+This improves system performance.
+
+---
+
+# Goals of Memory Management
+
+The main goals are:
+
+### 1. Efficient Memory Usage
+
+Use RAM effectively without wasting space.
+
+---
+
+### 2. Fast Process Execution
+
+Allocate memory quickly so that processes start faster.
+
+---
+
+### 3. Process Protection
+
+Prevent one process from modifying another process's memory.
+
+---
+
+### 4. Better CPU Utilization
+
+Keep enough processes in memory so the CPU remains busy.
+
+---
+
+### 5. Support Multiprogramming
+
+Allow multiple programs to execute at the same time.
+
+---
+
+# What is Swapping?
+
+Sometimes,
+
+RAM becomes full.
+
+The Operating System temporarily moves inactive processes from RAM to the Hard Disk.
+
+This process is called **Swapping**.
+
+Later,
+
+when required,
+
+the process is brought back into RAM.
+
+Example:
+
+```
+RAM Full
+
+↓
+
+Move P2 to Disk
+
+↓
+
+Load P4 into RAM
+```
+
+Swapping allows more processes to run,
+
+but accessing the Hard Disk is much slower than RAM.
+
+---
+
+# Memory Hierarchy
+
+Memory is arranged from fastest to slowest.
+
+```
+Registers
+
+↓
+
+Cache
+
+↓
+
+RAM (Main Memory)
+
+↓
+
+SSD / Hard Disk
+
+↓
+
+Backup Storage
+```
+
+- Registers → Fastest, smallest capacity.
+- Cache → Very fast memory.
+- RAM → Fast and temporary.
+- Disk → Slower but permanent.
+
+---
+
+# Real-Life Example
+
+Imagine a study table.
+
+- Study Table = RAM
+- Books = Processes
+- Cupboard = Hard Disk
+
+Only a few books can fit on the table.
+
+If the table becomes full,
+
+you place one book back in the cupboard,
+
+then bring another book to the table.
+
+This is exactly how Memory Management and Swapping work.
+
+---
+
+# Advantages of Memory Management
+
+### 1. Efficient RAM Usage
+
+Memory is allocated only when needed.
+
+---
+
+### 2. Supports Multiprogramming
+
+Multiple programs can run simultaneously.
+
+---
+
+### 3. Protects Processes
+
+Processes cannot access each other's memory.
+
+---
+
+### 4. Improves System Performance
+
+Efficient memory usage increases overall system speed.
+
+---
+
+# Difference Between RAM and Hard Disk
+
+| RAM | Hard Disk |
+|-----|-----------|
+| Temporary (Volatile) | Permanent (Non-Volatile) |
+| Faster | Slower |
+| Stores running programs | Stores files and software |
+| Data is lost when power is off | Data remains even after power is off |
+
+---
+
+# Quick Revision
+
+- Memory Management manages RAM.
+- It allocates, protects and deallocates memory.
+- RAM stores running programs and process data.
+- RAM is volatile memory.
+- Swapping moves processes between RAM and Hard Disk.
+- Main responsibilities:
+  - Memory Allocation
+  - Memory Deallocation
+  - Memory Protection
+  - Memory Sharing
+  - Efficient Memory Utilization
+
+---
+
+# Interview Questions
+
+### What is Memory Management?
+
+Memory Management is the function of the Operating System that allocates, manages, protects and deallocates main memory for processes.
+
+---
+
+### Why is Memory Management required?
+
+Because RAM is limited and multiple processes require memory simultaneously.
+
+---
+
+### What are the responsibilities of Memory Management?
+
+- Memory Allocation
+- Memory Deallocation
+- Memory Protection
+- Memory Sharing
+- Efficient Memory Utilization
+
+---
+
+### What is Main Memory?
+
+Main Memory (RAM) is the primary memory that stores the Operating System, running programs and process data.
+
+---
+
+### What is Swapping?
+
+Swapping is the process of temporarily moving processes between RAM and Hard Disk to free memory.
+
+---
+
+### Why is RAM called volatile memory?
+
+Because its contents are lost when the power supply is turned off.
+
+---
+
+# Easy Way to Remember
+
+Imagine your **study table**.
+
+📚 Study Table = RAM
+
+📦 Cupboard = Hard Disk
+
+- Keep the books you are currently reading on the table.
+- Store the remaining books in the cupboard.
+- When the table becomes full, move one book back to the cupboard and bring another book to the table.
+
+This is exactly how **Memory Management** works.
+
+Remember:
+
+**Memory Management = Allocate → Protect → Share → Free Memory**
