@@ -14251,3 +14251,470 @@ Available = Available + Allocation
 ```
 
 These three formulas are enough to solve almost every Banker's Algorithm numerical problem.
+# Deadlock Detection
+
+After learning Deadlock Prevention and Deadlock Avoidance, we now study another approach called **Deadlock Detection**.
+
+Unlike Prevention and Avoidance,
+
+Deadlock Detection does **not** try to stop Deadlock before it happens.
+
+Instead,
+
+the Operating System allows processes to execute normally.
+
+If Deadlock occurs,
+
+the Operating System detects it and then starts the recovery process.
+
+---
+
+# What is Deadlock Detection?
+
+**Deadlock Detection** is a technique in which the Operating System allows Deadlock to occur and periodically checks whether the system has entered a Deadlock state.
+
+If Deadlock is detected,
+
+the Operating System recovers from it.
+
+In simple words,
+
+> **Deadlock Detection allows Deadlock to occur first and then detects it.**
+
+---
+
+# Why do we need Deadlock Detection?
+
+Deadlock Prevention and Deadlock Avoidance have some disadvantages.
+
+- They reduce resource utilization.
+- They may delay processes unnecessarily.
+- Deadlock Avoidance requires maximum resource requirements in advance.
+
+To avoid these limitations,
+
+some Operating Systems allow resources to be allocated freely.
+
+Later,
+
+they check whether Deadlock has occurred.
+
+This approach is called Deadlock Detection.
+
+---
+
+# Basic Idea
+
+Processes execute normally.
+
+The Operating System does not stop every resource request.
+
+After some time,
+
+it checks:
+
+> "Is any process waiting forever?"
+
+If yes,
+
+Deadlock has occurred.
+
+Otherwise,
+
+the system continues normally.
+
+---
+
+# When is Deadlock Detection Used?
+
+Deadlock Detection is useful when:
+
+- Deadlock occurs rarely.
+- Better resource utilization is required.
+- The cost of periodic checking is acceptable.
+
+Many database systems use this approach.
+
+---
+
+# Deadlock Detection for Single Instance Resources
+
+Suppose every resource has only **one instance**.
+
+Examples:
+
+- One Printer
+- One Scanner
+- One Tape Drive
+
+In this case,
+
+the Operating System uses a **Wait-For Graph (WFG)**.
+
+---
+
+# Wait-For Graph (WFG)
+
+A **Wait-For Graph** is obtained from the Resource Allocation Graph (RAG) by removing all resource nodes.
+
+Only processes remain in the graph.
+
+If
+
+```
+P1 → P2
+```
+
+it means:
+
+P1 is waiting for a resource currently held by P2.
+
+---
+
+# Example
+
+Suppose,
+
+```
+P1 waits for P2
+
+P2 waits for P3
+
+P3 waits for P1
+```
+
+Graph:
+
+```
+P1
+
+↓
+
+P2
+
+↓
+
+P3
+
+↓
+
+P1
+```
+
+A cycle is formed.
+
+Therefore,
+
+Deadlock exists.
+
+---
+
+# Rule for Wait-For Graph
+
+### If a cycle exists,
+
+Deadlock exists.
+
+### If no cycle exists,
+
+Deadlock does not exist.
+
+This rule is valid **only when every resource has one instance**.
+
+---
+
+# Deadlock Detection for Multiple Instance Resources
+
+Suppose resources have multiple instances.
+
+Example:
+
+```
+Printer = 3
+
+Scanner = 2
+```
+
+A Wait-For Graph is not sufficient.
+
+The Operating System uses a **Deadlock Detection Algorithm**.
+
+This algorithm is similar to the Safety Algorithm used in Banker's Algorithm.
+
+---
+
+# Data Structures Used
+
+The Detection Algorithm uses:
+
+- Available Vector
+- Allocation Matrix
+- Request Matrix
+
+---
+
+# Working of Detection Algorithm
+
+### Step 1
+
+Check whether:
+
+```
+Request ≤ Available
+```
+
+If true,
+
+the process can execute.
+
+---
+
+### Step 2
+
+Execute the process.
+
+---
+
+### Step 3
+
+After completion,
+
+the process releases its allocated resources.
+
+Update:
+
+```
+Available
+
+=
+
+Available
+
++
+
+Allocation
+```
+
+---
+
+### Step 4
+
+Repeat the same steps for the remaining processes.
+
+If all processes finish,
+
+there is **No Deadlock**.
+
+If some processes can never execute,
+
+Deadlock exists.
+
+---
+
+# Example
+
+Suppose,
+
+Available:
+
+```
+A = 1
+
+B = 2
+```
+
+P1 Request:
+
+```
+1 1
+```
+
+Since,
+
+```
+Request ≤ Available
+```
+
+P1 executes.
+
+After completion,
+
+P1 releases its allocated resources.
+
+Available increases.
+
+Repeat the same process for other processes.
+
+If every process completes,
+
+the system is not in Deadlock.
+
+---
+
+# Difference Between Deadlock Avoidance and Deadlock Detection
+
+| Deadlock Avoidance | Deadlock Detection |
+|--------------------|--------------------|
+| Prevents Deadlock before allocation. | Allows Deadlock and detects it later. |
+| Uses Banker's Algorithm. | Uses Wait-For Graph or Detection Algorithm. |
+| Requires maximum resource requirement. | Does not require future resource information. |
+| Checks safety before allocation. | Checks for Deadlock after allocation. |
+
+---
+
+# Advantages of Deadlock Detection
+
+### 1. Better Resource Utilization
+
+Resources are allocated without unnecessary restrictions.
+
+---
+
+### 2. Less Restrictive
+
+Processes do not wait unless Deadlock actually occurs.
+
+---
+
+### 3. No Need for Maximum Resource Requirement
+
+Unlike Banker's Algorithm,
+
+future resource requirements are not required.
+
+---
+
+# Disadvantages of Deadlock Detection
+
+### 1. Deadlock Can Occur
+
+The system may actually enter a Deadlock state.
+
+---
+
+### 2. Recovery is Required
+
+After detecting Deadlock,
+
+the Operating System must recover from it.
+
+---
+
+### 3. Periodic Checking
+
+The Operating System must repeatedly check for Deadlock,
+
+which increases overhead.
+
+---
+
+# Real-Life Example
+
+Imagine traffic in a city.
+
+Instead of stopping every vehicle,
+
+the traffic police allows vehicles to move normally.
+
+If a traffic jam occurs,
+
+the police detect it and clear the road.
+
+Similarly,
+
+the Operating System allows processes to execute normally.
+
+If Deadlock occurs,
+
+it detects it and then recovers.
+
+---
+
+# Quick Revision
+
+- Deadlock Detection allows Deadlock to occur.
+- Later, the Operating System checks whether Deadlock exists.
+- Single-instance resources → Wait-For Graph (WFG).
+- Multiple-instance resources → Detection Algorithm.
+- In a WFG:
+  - Cycle exists → Deadlock.
+  - No cycle → No Deadlock.
+- Detection Algorithm checks:
+  - `Request ≤ Available`
+  - Updates `Available = Available + Allocation`
+- If all processes finish → No Deadlock.
+- Otherwise → Deadlock exists.
+
+---
+
+# Interview Questions
+
+### What is Deadlock Detection?
+
+Deadlock Detection is a technique in which the Operating System allows Deadlock to occur and later detects it.
+
+---
+
+### Which graph is used for single-instance resources?
+
+Wait-For Graph (WFG).
+
+---
+
+### What is a Wait-For Graph?
+
+A graph containing only processes, where an edge from one process to another indicates that the first process is waiting for a resource held by the second process.
+
+---
+
+### How is Deadlock detected in a Wait-For Graph?
+
+If a cycle exists,
+
+Deadlock exists.
+
+---
+
+### Which algorithm is used for multiple-instance resources?
+
+Deadlock Detection Algorithm.
+
+---
+
+### What condition is checked in the Detection Algorithm?
+
+```
+Request ≤ Available
+```
+
+---
+
+### What happens after a process completes?
+
+Its allocated resources are returned to the Available Vector.
+
+```
+Available = Available + Allocation
+```
+
+---
+
+# Easy Way to Remember
+
+Think of a **doctor**.
+
+- Vaccination prevents a disease.
+- Medical tests detect a disease after it occurs.
+
+Similarly,
+
+- **Deadlock Prevention/Avoidance** prevents Deadlock.
+- **Deadlock Detection** finds Deadlock after it has occurred.
+
+Remember:
+
+**Single Instance → Wait-For Graph**
+
+**Multiple Instances → Detection Algorithm**
+
+**Cycle in WFG = Deadlock**
