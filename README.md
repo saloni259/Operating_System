@@ -12920,3 +12920,567 @@ The process waits until the request can be safely satisfied.
 ### 1. Better Resource Utilization
 
 Resources are allocated whenever it is safe
+# Banker's Algorithm
+
+After learning Deadlock Avoidance, we know that the Operating System should allocate resources only if the system remains in a **Safe State**.
+
+Now the question is,
+
+**How does the Operating System check whether the system is safe or not?**
+
+The answer is **Banker's Algorithm**.
+
+It is the most important Deadlock Avoidance algorithm and is frequently asked in interviews and university exams.
+
+---
+
+# Why is it called Banker's Algorithm?
+
+Imagine a bank.
+
+Customers come to the bank requesting loans.
+
+The bank does not approve every loan immediately.
+
+Before approving,
+
+the bank checks:
+
+> "If I give this loan, will I still have enough money for other customers?"
+
+If the answer is **Yes**,
+
+the loan is approved.
+
+Otherwise,
+
+the loan request is delayed.
+
+Similarly,
+
+before allocating resources,
+
+the Operating System checks:
+
+> "If I allocate these resources, will every process still be able to complete successfully?"
+
+If yes,
+
+resources are allocated.
+
+Otherwise,
+
+the request is postponed.
+
+This is why it is called the **Banker's Algorithm**.
+
+---
+
+# What is Banker's Algorithm?
+
+**Banker's Algorithm** is a **Deadlock Avoidance Algorithm** used by the Operating System.
+
+Before allocating resources,
+
+it checks whether the system will remain in a **Safe State**.
+
+If the system remains safe,
+
+the request is granted.
+
+Otherwise,
+
+the process must wait.
+
+In simple words,
+
+> **Banker's Algorithm allocates resources only when the system remains in a Safe State.**
+
+---
+
+# Why do we need Banker's Algorithm?
+
+Suppose a process requests a resource.
+
+Instead of giving the resource immediately,
+
+the Operating System first checks whether granting the request could lead to Deadlock.
+
+If allocating the resource is safe,
+
+the process receives it.
+
+Otherwise,
+
+the request is delayed.
+
+This helps avoid Deadlock while improving resource utilization.
+
+---
+
+# Assumptions of Banker's Algorithm
+
+The algorithm works under these assumptions.
+
+### 1. Maximum Resource Requirement is Known
+
+Every process tells the Operating System its maximum resource requirement before execution.
+
+Example:
+
+```
+P1 may need at most 5 Printers.
+```
+
+---
+
+### 2. Total Resources are Fixed
+
+The total number of resources in the system does not change.
+
+Example:
+
+```
+Total Printers = 5
+```
+
+---
+
+### 3. Resources are Released After Completion
+
+After finishing execution,
+
+every process releases all allocated resources.
+
+---
+
+# Data Structures Used
+
+Banker's Algorithm uses four important matrices and one vector.
+
+---
+
+# 1. Available Vector
+
+Stores the number of resources currently available in the system.
+
+Example:
+
+```
+Available
+
+Printer = 2
+
+Scanner = 1
+```
+
+Meaning:
+
+- Two Printers are free.
+- One Scanner is free.
+
+---
+
+# 2. Allocation Matrix
+
+Stores the resources currently allocated to each process.
+
+Example:
+
+| Process | Printer | Scanner |
+|----------|----------|----------|
+| P1 | 1 | 0 |
+| P2 | 2 | 1 |
+
+Meaning:
+
+P1 currently owns:
+
+- 1 Printer
+- 0 Scanner
+
+P2 currently owns:
+
+- 2 Printers
+- 1 Scanner
+
+---
+
+# 3. Maximum Matrix
+
+Stores the maximum number of resources each process may need during execution.
+
+Example:
+
+| Process | Printer | Scanner |
+|----------|----------|----------|
+| P1 | 3 | 1 |
+| P2 | 2 | 2 |
+
+Meaning:
+
+P1 may require at most:
+
+- 3 Printers
+- 1 Scanner
+
+---
+
+# 4. Need Matrix
+
+This is the most important matrix.
+
+It tells how many more resources a process still requires to complete.
+
+Formula:
+
+```
+Need = Maximum − Allocation
+```
+
+Example:
+
+Suppose,
+
+Maximum:
+
+```
+Printer = 5
+```
+
+Allocation:
+
+```
+Printer = 2
+```
+
+Then,
+
+```
+Need = 5 − 2 = 3
+```
+
+Meaning,
+
+the process still requires **3 more Printers**.
+
+---
+
+# Example of Need Matrix
+
+| Process | Maximum | Allocation | Need |
+|----------|----------|------------|------|
+| P1 | 5 | 2 | 3 |
+| P2 | 4 | 1 | 3 |
+
+Always remember:
+
+```
+Need = Maximum − Allocation
+```
+
+This formula is one of the most commonly asked interview questions.
+
+---
+
+# Working of Banker's Algorithm
+
+Whenever a process requests resources,
+
+the Operating System performs the following steps.
+
+### Step 1
+
+Temporarily allocate the requested resources.
+
+---
+
+### Step 2
+
+Update:
+
+- Available Vector
+- Allocation Matrix
+- Need Matrix
+
+---
+
+### Step 3
+
+Check whether the system is still in a Safe State.
+
+---
+
+### Step 4
+
+If a Safe Sequence exists,
+
+grant the request permanently.
+
+Otherwise,
+
+cancel the temporary allocation,
+
+and the process waits.
+
+---
+
+# Safety Algorithm
+
+The Safety Algorithm checks whether the current system state is safe.
+
+### Step 1
+
+Find a process whose:
+
+```
+Need ≤ Available
+```
+
+---
+
+### Step 2
+
+Execute that process.
+
+---
+
+### Step 3
+
+After completion,
+
+the process releases all its allocated resources.
+
+Update:
+
+```
+Available
+
+=
+
+Available
+
++
+
+Allocation
+```
+
+---
+
+### Step 4
+
+Repeat the same steps for the remaining processes.
+
+If all processes complete,
+
+the system is in a Safe State.
+
+If no process can execute,
+
+the system is in an Unsafe State.
+
+---
+
+# Advantages of Banker's Algorithm
+
+### 1. Prevents Deadlock
+
+Resources are allocated only when the system remains safe.
+
+---
+
+### 2. Better Resource Utilization
+
+Resources are not unnecessarily blocked.
+
+---
+
+### 3. Safe Resource Allocation
+
+Every allocation is checked before approval.
+
+---
+
+# Disadvantages of Banker's Algorithm
+
+### 1. Maximum Resource Requirement Must Be Known
+
+Every process must declare its maximum requirement in advance.
+
+---
+
+### 2. High Computational Cost
+
+The Operating System must repeatedly check for a Safe Sequence.
+
+---
+
+### 3. Not Suitable for Dynamic Systems
+
+If resource requirements change frequently,
+
+the algorithm becomes difficult to use.
+
+---
+
+# Real-Life Example
+
+Imagine a bank.
+
+Customers request loans.
+
+Before approving,
+
+the bank checks:
+
+"If I approve this loan,
+
+will I still have enough money for other customers?"
+
+If yes,
+
+the loan is approved.
+
+Otherwise,
+
+it is rejected or delayed.
+
+The Operating System works exactly the same way while allocating resources.
+
+---
+
+# Difference Between Safe State and Banker's Algorithm
+
+| Safe State | Banker's Algorithm |
+|------------|--------------------|
+| A condition where at least one Safe Sequence exists. | Algorithm used to check whether the system remains in a Safe State. |
+
+---
+
+# Quick Revision
+
+- Banker's Algorithm is a Deadlock Avoidance Algorithm.
+- It allocates resources only if the system remains in a Safe State.
+- Four important data structures:
+  - Available Vector
+  - Allocation Matrix
+  - Maximum Matrix
+  - Need Matrix
+- Formula:
+
+```
+Need = Maximum − Allocation
+```
+
+- Safety condition:
+
+```
+Need ≤ Available
+```
+
+- If a Safe Sequence exists,
+  resources are allocated.
+
+- Otherwise,
+  the request is postponed.
+
+---
+
+# Interview Questions
+
+### What is Banker's Algorithm?
+
+Banker's Algorithm is a Deadlock Avoidance Algorithm that allocates resources only when the system remains in a Safe State.
+
+---
+
+### Why is it called Banker's Algorithm?
+
+Because it works like a bank that approves loans only if it can safely satisfy all customers.
+
+---
+
+### What are the four important matrices?
+
+- Available Vector
+- Allocation Matrix
+- Maximum Matrix
+- Need Matrix
+
+---
+
+### What is the formula for Need?
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+### What is the purpose of the Need Matrix?
+
+It stores the additional resources each process still requires to complete execution.
+
+---
+
+### What condition is checked before executing a process?
+
+```
+Need ≤ Available
+```
+
+---
+
+### What happens if no Safe Sequence exists?
+
+The request is not granted because the system may enter an Unsafe State.
+
+---
+
+# Easy Way to Remember
+
+Think of a **bank**.
+
+🏦 Bank = Operating System
+
+👤 Customer = Process
+
+💰 Loan = Resource
+
+Before approving a loan,
+
+the bank asks:
+
+> "Can I still satisfy all other customers?"
+
+If yes,
+
+approve the loan.
+
+If no,
+
+delay the loan.
+
+Similarly,
+
+before allocating resources,
+
+the Operating System asks:
+
+> "Will the system remain in a Safe State?"
+
+If yes,
+
+allocate the resource.
+
+Remember these two most important formulas:
+
+```
+Need = Maximum − Allocation
+```
+
+```
+Need ≤ Available
+```
+
+These are the heart of the Banker's Algorithm.
