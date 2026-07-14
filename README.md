@@ -12617,3 +12617,306 @@ Removing even one condition prevents Deadlock.
 Remember:
 
 **Break Any One Condition → No Deadlock**
+# Deadlock Avoidance
+
+After learning Deadlock Prevention, we know that the Operating System can prevent Deadlock by breaking one or more Coffman Conditions.
+
+However,
+
+Deadlock Prevention is very restrictive.
+
+Sometimes,
+
+resources remain unused even though they could have been allocated safely.
+
+To improve resource utilization,
+
+Operating Systems use **Deadlock Avoidance**.
+
+Instead of preventing every possible Deadlock,
+
+the Operating System checks whether granting a resource request will keep the system in a **Safe State**.
+
+If the system remains safe,
+
+the request is granted.
+
+Otherwise,
+
+the process must wait.
+
+---
+
+# What is Deadlock Avoidance?
+
+**Deadlock Avoidance** is a technique in which the Operating System allocates resources **only if the allocation keeps the system in a Safe State.**
+
+Before giving any resource,
+
+the OS checks whether the allocation can eventually allow every process to complete successfully.
+
+In simple words,
+
+> **Deadlock Avoidance avoids Deadlock by allocating resources only when the system remains in a Safe State.**
+
+---
+
+# Why do we need Deadlock Avoidance?
+
+Suppose,
+
+a process requests a Printer.
+
+Instead of immediately giving the Printer,
+
+the Operating System first checks:
+
+"If I allocate this Printer,
+
+will every process still be able to complete?"
+
+If the answer is **Yes**,
+
+the resource is allocated.
+
+Otherwise,
+
+the request is delayed.
+
+This prevents the system from entering Deadlock while still utilizing resources efficiently.
+
+---
+
+# Difference Between Deadlock Prevention and Deadlock Avoidance
+
+### Deadlock Prevention
+
+- Breaks one or more Coffman Conditions.
+- Guarantees that Deadlock never occurs.
+- Very restrictive.
+- Resource utilization is lower.
+
+---
+
+### Deadlock Avoidance
+
+- Allows all Coffman Conditions.
+- Checks whether the system remains in a Safe State.
+- More flexible.
+- Better resource utilization.
+
+---
+
+# Important Concepts
+
+Before studying the Banker's Algorithm,
+
+we must understand three important terms.
+
+1. Safe State
+2. Safe Sequence
+3. Unsafe State
+
+---
+
+# Safe State
+
+### Definition
+
+A **Safe State** is a state in which **at least one Safe Sequence exists.**
+
+This means the Operating System can allocate resources in some order so that every process finishes successfully.
+
+In simple words,
+
+> **Safe State means all processes can complete without causing Deadlock.**
+
+---
+
+### Example
+
+Suppose,
+
+```
+Available Resources = 3
+```
+
+Processes:
+
+```
+P1 needs 1 resource.
+
+P2 needs 2 resources.
+```
+
+The OS first gives 1 resource to P1.
+
+P1 finishes and releases its resource.
+
+Now,
+
+```
+Available = 4
+```
+
+The OS gives 2 resources to P2.
+
+P2 also finishes.
+
+Safe Sequence:
+
+```
+P1 → P2
+```
+
+Since every process completes,
+
+the system is in a **Safe State**.
+
+---
+
+# Safe Sequence
+
+### Definition
+
+A **Safe Sequence** is an order in which all processes can execute and finish successfully without causing Deadlock.
+
+Example:
+
+```
+P2
+
+↓
+
+P1
+
+↓
+
+P3
+
+↓
+
+P4
+```
+
+All processes complete in this order.
+
+This is a Safe Sequence.
+
+A system may have **more than one Safe Sequence**.
+
+---
+
+# Unsafe State
+
+### Definition
+
+An **Unsafe State** is a state in which the Operating System **cannot guarantee** that every process will complete successfully.
+
+There may not be any Safe Sequence.
+
+The system is at risk of entering Deadlock.
+
+In simple words,
+
+> **Unsafe State means Deadlock has not occurred yet, but it may occur in the future.**
+
+---
+
+# Important Interview Point
+
+### Does Unsafe State always mean Deadlock?
+
+**No.**
+
+Remember the relationship:
+
+```
+Safe State
+
+↓
+
+Unsafe State
+
+↓
+
+Deadlock
+```
+
+- Every Deadlock state is an Unsafe State.
+- But every Unsafe State is **not** Deadlock.
+
+An Unsafe State only means that Deadlock is **possible**, not certain.
+
+---
+
+# Example
+
+Suppose,
+
+two processes need:
+
+- Printer
+- Scanner
+
+The OS allocates resources without checking safety.
+
+Now,
+
+no Safe Sequence exists.
+
+The system becomes Unsafe.
+
+However,
+
+if one process releases its resource before requesting another,
+
+Deadlock may still be avoided.
+
+Therefore,
+
+Unsafe State does **not** always mean Deadlock.
+
+---
+
+# How Deadlock Avoidance Works
+
+Whenever a process requests a resource,
+
+the Operating System follows these steps.
+
+### Step 1
+
+Temporarily assume that the requested resource is allocated.
+
+---
+
+### Step 2
+
+Check whether the system remains in a Safe State.
+
+---
+
+### Step 3
+
+If the system is Safe,
+
+grant the request.
+
+---
+
+### Step 4
+
+If the system becomes Unsafe,
+
+do not grant the request.
+
+The process waits until the request can be safely satisfied.
+
+---
+
+# Advantages of Deadlock Avoidance
+
+### 1. Better Resource Utilization
+
+Resources are allocated whenever it is safe
