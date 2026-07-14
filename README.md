@@ -16539,3 +16539,651 @@ Remember this simple rule:
 **MMU → Physical Address**
 
 **RAM → Uses Physical Address**
+# Contiguous Memory Allocation
+
+After learning Logical Address and Physical Address, we now study how the Operating System allocates memory to processes.
+
+One simple approach is to allocate one continuous block of memory to each process.
+
+This method is called **Contiguous Memory Allocation**.
+
+---
+
+# What is Contiguous Memory Allocation?
+
+**Contiguous Memory Allocation** is a memory management technique in which **each process is stored in one continuous (adjacent) block of memory.**
+
+The entire process occupies consecutive memory locations.
+
+In simple words,
+
+> **Contiguous Memory Allocation means a process is loaded into one single continuous block of RAM.**
+
+---
+
+# Why do we need Contiguous Memory Allocation?
+
+Every process requires memory to execute.
+
+The Operating System must decide where to place the process in RAM.
+
+A simple solution is to allocate one continuous memory block to each process.
+
+This makes memory access simple and fast.
+
+---
+
+# Example
+
+Suppose RAM looks like this:
+
+```
++----------------------+
+| Operating System     |
++----------------------+
+| P1                   |
++----------------------+
+| P2                   |
++----------------------+
+| P3                   |
++----------------------+
+| Free Memory          |
++----------------------+
+```
+
+Each process occupies one continuous block.
+
+---
+
+# Types of Contiguous Memory Allocation
+
+There are two types.
+
+1. Fixed Partitioning
+2. Variable Partitioning
+
+---
+
+# 1. Fixed Partitioning
+
+### Definition
+
+In Fixed Partitioning,
+
+the Operating System divides RAM into **fixed-size partitions** before execution.
+
+Each partition can hold only one process.
+
+---
+
+### Example
+
+Suppose,
+
+RAM = **16 GB**
+
+It is divided into four equal partitions.
+
+```
++-------------+
+| Partition 1 |
++-------------+
+| Partition 2 |
++-------------+
+| Partition 3 |
++-------------+
+| Partition 4 |
++-------------+
+```
+
+Each partition stores only one process.
+
+---
+
+### Example
+
+Suppose,
+
+Each partition = **4 GB**
+
+Processes:
+
+```
+P1 = 2 GB
+
+P2 = 3 GB
+
+P3 = 4 GB
+```
+
+Allocation:
+
+```
+Partition 1 → P1
+
+Partition 2 → P2
+
+Partition 3 → P3
+```
+
+Although P1 uses only **2 GB**,
+
+the remaining **2 GB** inside the partition cannot be used by another process.
+
+This unused space is called **Internal Fragmentation**.
+
+---
+
+# Advantages of Fixed Partitioning
+
+- Simple to implement.
+- Fast memory allocation.
+- Easy to manage.
+
+---
+
+# Disadvantages of Fixed Partitioning
+
+- Wastes memory.
+- Number of processes is limited by the number of partitions.
+- Causes Internal Fragmentation.
+
+---
+
+# What is Internal Fragmentation?
+
+### Definition
+
+**Internal Fragmentation** is the unused memory **inside an allocated partition.**
+
+The partition is allocated,
+
+but part of it remains unused.
+
+---
+
+### Example
+
+Partition size:
+
+```
+4 GB
+```
+
+Process size:
+
+```
+2 GB
+```
+
+Unused memory:
+
+```
+2 GB
+```
+
+This unused memory inside the partition is called **Internal Fragmentation**.
+
+---
+
+### Easy Trick
+
+**Inside the allocated partition = Internal Fragmentation**
+
+---
+
+# 2. Variable Partitioning
+
+### Definition
+
+In Variable Partitioning,
+
+memory is **not divided in advance**.
+
+The Operating System creates partitions according to the size of each process.
+
+---
+
+### Example
+
+Processes:
+
+```
+P1 = 2 GB
+
+P2 = 3 GB
+
+P3 = 1 GB
+```
+
+Memory Layout:
+
+```
++----------------------+
+| Operating System     |
++----------------------+
+| P1 (2 GB)            |
++----------------------+
+| P2 (3 GB)            |
++----------------------+
+| P3 (1 GB)            |
++----------------------+
+| Free Memory          |
++----------------------+
+```
+
+Each process gets exactly the amount of memory it needs.
+
+---
+
+# Advantages of Variable Partitioning
+
+- Better memory utilization.
+- No Internal Fragmentation.
+- Memory is allocated according to process size.
+
+---
+
+# Disadvantages of Variable Partitioning
+
+After many processes are loaded and removed,
+
+small free spaces appear between allocated blocks.
+
+This causes **External Fragmentation**.
+
+---
+
+# What is External Fragmentation?
+
+### Definition
+
+**External Fragmentation** is the unused memory **between allocated memory blocks.**
+
+The total free memory may be enough,
+
+but it is scattered into small pieces.
+
+As a result,
+
+a large process cannot be allocated.
+
+---
+
+### Example
+
+```
++----------+
+| P1       |
++----------+
+| Free 2MB |
++----------+
+| P2       |
++----------+
+| Free 3MB |
++----------+
+| P3       |
++----------+
+| Free 1MB |
++----------+
+```
+
+Total free memory:
+
+```
+2 + 3 + 1 = 6 MB
+```
+
+Suppose a new process requires **5 MB**.
+
+It cannot be allocated because there is no **single continuous block** of 5 MB.
+
+This is **External Fragmentation**.
+
+---
+
+### Easy Trick
+
+**Outside allocated blocks = External Fragmentation**
+
+---
+
+# Memory Allocation Strategies
+
+In Variable Partitioning,
+
+the Operating System must decide which free block should be allocated.
+
+Three common strategies are used.
+
+---
+
+# 1. First Fit
+
+### Definition
+
+Allocate the **first free block** that is large enough.
+
+---
+
+### Example
+
+Free Blocks:
+
+```
+100 KB
+
+500 KB
+
+200 KB
+
+300 KB
+```
+
+Process:
+
+```
+180 KB
+```
+
+The first suitable block is:
+
+```
+500 KB
+```
+
+The process is allocated there.
+
+---
+
+### Advantages
+
+- Fast.
+- Easy to implement.
+
+---
+
+### Disadvantages
+
+May create many small fragments.
+
+---
+
+# 2. Best Fit
+
+### Definition
+
+Allocate the **smallest free block** that is large enough.
+
+---
+
+### Example
+
+Free Blocks:
+
+```
+100 KB
+
+500 KB
+
+200 KB
+
+300 KB
+```
+
+Process:
+
+```
+180 KB
+```
+
+Best Fit chooses:
+
+```
+200 KB
+```
+
+This minimizes immediate memory waste.
+
+---
+
+### Advantages
+
+- Less unused space after allocation.
+
+---
+
+### Disadvantages
+
+- Slower because all free blocks must be checked.
+- May create many tiny unusable fragments.
+
+---
+
+# 3. Worst Fit
+
+### Definition
+
+Allocate the **largest available free block**.
+
+---
+
+### Example
+
+Free Blocks:
+
+```
+100 KB
+
+500 KB
+
+200 KB
+
+300 KB
+```
+
+Process:
+
+```
+180 KB
+```
+
+Worst Fit chooses:
+
+```
+500 KB
+```
+
+The remaining large block may still be useful for future allocations.
+
+---
+
+### Advantages
+
+Large free blocks remain available.
+
+---
+
+### Disadvantages
+
+Large memory blocks may be wasted.
+
+---
+
+# Comparison of Allocation Strategies
+
+| Strategy | Selects |
+|----------|---------|
+| First Fit | First suitable free block |
+| Best Fit | Smallest suitable free block |
+| Worst Fit | Largest available free block |
+
+---
+
+# Difference Between Internal and External Fragmentation
+
+| Internal Fragmentation | External Fragmentation |
+|------------------------|------------------------|
+| Unused memory inside an allocated partition | Unused memory between allocated partitions |
+| Occurs in Fixed Partitioning | Occurs in Variable Partitioning |
+| Memory inside the partition is wasted | Total free memory exists but is scattered |
+
+---
+
+# Advantages of Contiguous Memory Allocation
+
+### 1. Simple Implementation
+
+Easy to understand and implement.
+
+---
+
+### 2. Fast Memory Access
+
+Since memory is continuous,
+
+address calculation is simple.
+
+---
+
+### 3. Easy Memory Management
+
+The Operating System can easily allocate and deallocate memory.
+
+---
+
+# Disadvantages of Contiguous Memory Allocation
+
+### 1. Internal Fragmentation
+
+Occurs in Fixed Partitioning.
+
+---
+
+### 2. External Fragmentation
+
+Occurs in Variable Partitioning.
+
+---
+
+### 3. Difficult to Allocate Large Processes
+
+Large continuous blocks may not be available even if enough total memory exists.
+
+---
+
+# Real-Life Example
+
+Imagine a parking lot.
+
+### Fixed Parking Slots
+
+Each parking space has the same size.
+
+A small car occupies a large parking slot.
+
+The unused space inside the parking slot is **Internal Fragmentation**.
+
+---
+
+### Variable Parking Slots
+
+Parking spaces are created according to vehicle size.
+
+After many vehicles leave,
+
+small empty spaces remain between parked vehicles.
+
+A bus cannot park because no large continuous space exists.
+
+This is **External Fragmentation**.
+
+---
+
+# Quick Revision
+
+- Contiguous Memory Allocation stores each process in one continuous memory block.
+- Two types:
+  - Fixed Partitioning
+  - Variable Partitioning
+- Fixed Partitioning causes Internal Fragmentation.
+- Variable Partitioning causes External Fragmentation.
+- Allocation strategies:
+  - First Fit
+  - Best Fit
+  - Worst Fit
+
+---
+
+# Interview Questions
+
+### What is Contiguous Memory Allocation?
+
+A memory management technique in which each process is allocated one continuous block of memory.
+
+---
+
+### What are the two types of Contiguous Memory Allocation?
+
+- Fixed Partitioning
+- Variable Partitioning
+
+---
+
+### What is Internal Fragmentation?
+
+Unused memory inside an allocated partition.
+
+---
+
+### What is External Fragmentation?
+
+Unused memory between allocated partitions.
+
+---
+
+### Which fragmentation occurs in Fixed Partitioning?
+
+Internal Fragmentation.
+
+---
+
+### Which fragmentation occurs in Variable Partitioning?
+
+External Fragmentation.
+
+---
+
+### What is the difference between First Fit and Best Fit?
+
+First Fit allocates the first suitable block.
+
+Best Fit allocates the smallest suitable block.
+
+---
+
+# Easy Way to Remember
+
+Think of a **parking lot**.
+
+🚗 Fixed-size parking spaces → **Fixed Partitioning**
+
+🚙 Custom-size parking spaces → **Variable Partitioning**
+
+Memory waste:
+
+📦 **Inside the allocated block** → **Internal Fragmentation**
+
+📦 **Between allocated blocks** → **External Fragmentation**
+
+Allocation methods:
+
+- **First Fit** → First suitable space.
+- **Best Fit** → Smallest suitable space.
+- **Worst Fit** → Largest available space.
+
+Remember:
+
+**Fixed → Internal**
+
+**Variable → External**
