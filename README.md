@@ -14718,3 +14718,407 @@ Remember:
 **Multiple Instances → Detection Algorithm**
 
 **Cycle in WFG = Deadlock**
+# Deadlock Recovery
+
+After learning Deadlock Detection, we know that the Operating System can detect when a Deadlock has occurred.
+
+However,
+
+detecting Deadlock is not enough.
+
+The deadlocked processes are still waiting forever.
+
+Therefore,
+
+the Operating System must remove the Deadlock so that the blocked processes can continue execution.
+
+This process is called **Deadlock Recovery**.
+
+---
+
+# What is Deadlock Recovery?
+
+**Deadlock Recovery** is the process of removing a Deadlock after it has been detected.
+
+The Operating System takes corrective action so that blocked processes can continue execution.
+
+In simple words,
+
+> **Deadlock Recovery is the process of breaking a Deadlock after it has already occurred.**
+
+---
+
+# Why do we need Deadlock Recovery?
+
+Suppose,
+
+the Operating System detects that:
+
+```
+P1 waits for P2
+
+P2 waits for P1
+```
+
+Both processes are waiting forever.
+
+If no action is taken,
+
+the system remains blocked.
+
+Therefore,
+
+the Operating System must recover from the Deadlock.
+
+---
+
+# Methods of Deadlock Recovery
+
+The Operating System mainly uses two methods.
+
+1. Process Termination
+2. Resource Preemption
+
+Some systems also use:
+
+- Rollback
+- Victim Selection
+
+---
+
+# 1. Process Termination
+
+### Idea
+
+Terminate one or more Deadlocked processes.
+
+When a process is terminated,
+
+all resources held by that process are released.
+
+These resources become available to other processes.
+
+As a result,
+
+Deadlock is removed.
+
+---
+
+## Method 1: Terminate All Deadlocked Processes
+
+Suppose,
+
+```
+P1
+
+P2
+
+P3
+```
+
+are Deadlocked.
+
+The Operating System terminates all of them.
+
+All resources become free.
+
+Deadlock is removed immediately.
+
+### Disadvantage
+
+A large amount of completed work is lost because every terminated process must restart.
+
+---
+
+## Method 2: Terminate One Process at a Time
+
+Instead of terminating all processes,
+
+the Operating System terminates only one process.
+
+Then,
+
+it checks whether Deadlock has disappeared.
+
+If Deadlock still exists,
+
+another process is terminated.
+
+This continues until the Deadlock is removed.
+
+### Advantage
+
+Less work is lost compared to terminating all processes.
+
+---
+
+# Victim Process
+
+When terminating one process,
+
+the Operating System must decide:
+
+**Which process should be terminated?**
+
+The selected process is called the **Victim Process**.
+
+The Operating System tries to choose the process with the lowest recovery cost.
+
+Factors considered include:
+
+- Process Priority
+- Number of Resources Held
+- Execution Time
+- Remaining Execution Time
+- Cost of Restarting the Process
+
+---
+
+# 2. Resource Preemption
+
+### Idea
+
+Instead of terminating a process,
+
+the Operating System temporarily takes a resource away from one process and gives it to another.
+
+This helps remove Deadlock.
+
+---
+
+### Example
+
+Suppose,
+
+P1 holds the Printer.
+
+P2 is waiting for the Printer.
+
+The Operating System temporarily removes the Printer from P1 and gives it to P2.
+
+After P2 finishes,
+
+the Printer can be returned to P1.
+
+This breaks the Deadlock.
+
+---
+
+### Can every resource be preempted?
+
+No.
+
+Some resources cannot be taken away safely.
+
+Examples:
+
+- Printer while printing
+- DVD Writer while writing
+- Network Transmission in progress
+
+---
+
+# Rollback
+
+Sometimes,
+
+instead of terminating a process,
+
+the Operating System saves the process state at regular intervals.
+
+These saved states are called **Checkpoints**.
+
+If Deadlock occurs,
+
+the process is rolled back to the previous checkpoint.
+
+Its resources are released.
+
+Later,
+
+the process continues execution from that checkpoint instead of starting from the beginning.
+
+---
+
+### Example
+
+Suppose,
+
+a process has completed 80% of its work.
+
+A checkpoint was saved at 60%.
+
+If Deadlock occurs,
+
+the Operating System restores the process to 60%.
+
+The process resumes from there.
+
+This saves time compared to restarting from 0%.
+
+---
+
+# Victim Selection
+
+Whenever Process Termination or Resource Preemption is used,
+
+the Operating System must choose a **Victim Process**.
+
+The Victim Process should have the lowest recovery cost.
+
+The Operating System considers:
+
+- Process Priority
+- Number of Allocated Resources
+- Amount of Work Already Completed
+- Remaining Execution Time
+- Cost of Restarting
+
+The goal is to minimize work loss.
+
+---
+
+# Difference Between Deadlock Detection and Recovery
+
+| Deadlock Detection | Deadlock Recovery |
+|--------------------|-------------------|
+| Detects whether Deadlock exists. | Removes the detected Deadlock. |
+| Identifies the problem. | Solves the problem. |
+| Uses Wait-For Graph or Detection Algorithm. | Uses Process Termination or Resource Preemption. |
+
+---
+
+# Advantages of Deadlock Recovery
+
+### 1. Better Resource Utilization
+
+Resources are allocated freely until Deadlock occurs.
+
+---
+
+### 2. Flexible
+
+The system does not unnecessarily restrict resource allocation.
+
+---
+
+### 3. Suitable When Deadlocks are Rare
+
+Recovery is efficient if Deadlocks occur infrequently.
+
+---
+
+# Disadvantages of Deadlock Recovery
+
+### 1. Loss of Work
+
+Terminating processes may waste completed work.
+
+---
+
+### 2. Resource Preemption is Difficult
+
+Not every resource can be safely taken away.
+
+---
+
+### 3. Rollback Overhead
+
+Saving checkpoints requires additional memory and processing time.
+
+---
+
+# Real-Life Example
+
+Imagine a traffic jam.
+
+First,
+
+traffic police identify the traffic jam.
+
+This is similar to **Deadlock Detection**.
+
+Then,
+
+they remove one vehicle or change the traffic flow.
+
+This is similar to **Deadlock Recovery**.
+
+Traffic starts moving again.
+
+---
+
+# Quick Revision
+
+- Deadlock Recovery removes Deadlock after it has been detected.
+- Two main methods:
+  - Process Termination
+  - Resource Preemption
+- Additional techniques:
+  - Rollback
+  - Victim Selection
+- Victim Process is selected based on the lowest recovery cost.
+- Rollback restores a process to a previously saved checkpoint.
+
+---
+
+# Interview Questions
+
+### What is Deadlock Recovery?
+
+Deadlock Recovery is the process of removing a Deadlock after it has been detected.
+
+---
+
+### What are the two main methods of Deadlock Recovery?
+
+- Process Termination
+- Resource Preemption
+
+---
+
+### What is a Victim Process?
+
+A Victim Process is the process selected by the Operating System for termination or resource preemption to remove Deadlock.
+
+---
+
+### What is Rollback?
+
+Rollback restores a process to a previously saved checkpoint after releasing its resources.
+
+---
+
+### Can every resource be preempted?
+
+No.
+
+Some resources, such as printers during printing or network transmissions, cannot be safely preempted.
+
+---
+
+### What is the difference between Deadlock Detection and Deadlock Recovery?
+
+Detection identifies the Deadlock.
+
+Recovery removes the Deadlock.
+
+---
+
+# Easy Way to Remember
+
+Imagine a **traffic jam**.
+
+🚦 Finding the traffic jam = **Deadlock Detection**
+
+🚓 Clearing the traffic jam = **Deadlock Recovery**
+
+Ways to clear it:
+
+- Remove one vehicle → **Process Termination**
+- Move a vehicle aside → **Resource Preemption**
+- Move a vehicle back to an earlier position → **Rollback**
+
+Remember:
+
+**Detect → Recover → Continue Execution**
