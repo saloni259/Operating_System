@@ -17187,3 +17187,612 @@ Remember:
 **Fixed → Internal**
 
 **Variable → External**
+# Paging
+
+In the previous topic, we studied **Contiguous Memory Allocation**.
+
+One major problem with contiguous allocation was **External Fragmentation**.
+
+Even if enough total memory was available,
+
+a process could not be loaded because there was no single continuous free block.
+
+To solve this problem,
+
+Operating Systems use **Paging**.
+
+Paging is one of the most widely used memory management techniques in modern Operating Systems.
+
+---
+
+# What is Paging?
+
+**Paging** is a memory management technique in which the process is divided into **fixed-size pages** and the main memory (RAM) is divided into **fixed-size frames**.
+
+The Operating System loads each page into any available frame.
+
+The pages do not need to be stored continuously in memory.
+
+In simple words,
+
+> **Paging divides a process into pages and RAM into frames. Each page can be stored in any free frame.**
+
+---
+
+# Why do we need Paging?
+
+Suppose the free memory is:
+
+```
+2 MB
+
+3 MB
+
+1 MB
+```
+
+Total free memory:
+
+```
+6 MB
+```
+
+Now suppose a process requires:
+
+```
+5 MB
+```
+
+The process still cannot be loaded because there is no **single continuous block** of 5 MB.
+
+This problem is called **External Fragmentation**.
+
+Paging removes this problem because pages can be placed anywhere in memory.
+
+---
+
+# What is a Page?
+
+A **Page** is a fixed-size block of a process (Logical Memory).
+
+Suppose,
+
+Process Size:
+
+```
+16 KB
+```
+
+Page Size:
+
+```
+4 KB
+```
+
+Then the process is divided into:
+
+```
+Page 0 → 4 KB
+
+Page 1 → 4 KB
+
+Page 2 → 4 KB
+
+Page 3 → 4 KB
+```
+
+So,
+
+```
+Number of Pages
+
+=
+
+Process Size / Page Size
+
+=
+
+16 / 4
+
+=
+
+4 Pages
+```
+
+---
+
+# What is a Frame?
+
+A **Frame** is a fixed-size block of Physical Memory (RAM).
+
+RAM is divided into equal-sized frames.
+
+Example:
+
+```
+Frame 0
+
+Frame 1
+
+Frame 2
+
+Frame 3
+
+Frame 4
+
+Frame 5
+```
+
+Each frame is **4 KB**.
+
+---
+
+# Important Point
+
+One page can fit into exactly one frame.
+
+Therefore,
+
+```
+Page Size = Frame Size
+```
+
+This is one of the most frequently asked interview questions.
+
+---
+
+# How Paging Works
+
+Suppose a process has four pages.
+
+```
+Page 0
+
+Page 1
+
+Page 2
+
+Page 3
+```
+
+RAM has six frames.
+
+```
+Frame 0
+
+Frame 1
+
+Frame 2
+
+Frame 3
+
+Frame 4
+
+Frame 5
+```
+
+The Operating System stores the pages like this:
+
+```
+Page 0 → Frame 3
+
+Page 1 → Frame 0
+
+Page 2 → Frame 5
+
+Page 3 → Frame 2
+```
+
+Notice that the pages are **not stored continuously**.
+
+They can be placed in **any available frame**.
+
+This is the biggest advantage of Paging.
+
+---
+
+# What is a Page Table?
+
+Since pages are stored in different frames,
+
+the Operating System must remember where each page is located.
+
+This information is stored in a **Page Table**.
+
+A Page Table stores the mapping between pages and frames.
+
+Example:
+
+| Page Number | Frame Number |
+|--------------|--------------|
+| 0 | 3 |
+| 1 | 0 |
+| 2 | 5 |
+| 3 | 2 |
+
+Meaning:
+
+- Page 0 is stored in Frame 3.
+- Page 1 is stored in Frame 0.
+- Page 2 is stored in Frame 5.
+- Page 3 is stored in Frame 2.
+
+---
+
+# Logical Address in Paging
+
+The CPU generates a **Logical Address**.
+
+The Logical Address has two parts.
+
+```
+Logical Address
+
+↓
+
+Page Number
+
++
+
+Offset
+```
+
+### Page Number
+
+Identifies which page is required.
+
+### Offset
+
+Identifies the exact location inside that page.
+
+---
+
+# Physical Address
+
+After checking the Page Table,
+
+the Operating System finds the corresponding frame.
+
+The Physical Address is:
+
+```
+Physical Address
+
+↓
+
+Frame Number
+
++
+
+Offset
+```
+
+The offset remains the same.
+
+Only the page number changes into a frame number.
+
+---
+
+# Address Translation in Paging
+
+Whenever the CPU generates a Logical Address,
+
+the Operating System performs these steps.
+
+### Step 1
+
+Extract the **Page Number**.
+
+---
+
+### Step 2
+
+Search the Page Table.
+
+---
+
+### Step 3
+
+Find the corresponding **Frame Number**.
+
+---
+
+### Step 4
+
+Combine:
+
+```
+Frame Number + Offset
+```
+
+This becomes the Physical Address.
+
+---
+
+# Example of Address Translation
+
+Suppose,
+
+Logical Address:
+
+```
+(Page = 2, Offset = 150)
+```
+
+Page Table:
+
+```
+Page 2 → Frame 5
+```
+
+Therefore,
+
+Physical Address becomes:
+
+```
+(Frame = 5, Offset = 150)
+```
+
+RAM accesses:
+
+```
+Frame 5
+
+Offset 150
+```
+
+---
+
+# Does Paging Remove Fragmentation?
+
+### External Fragmentation
+
+✅ Yes.
+
+Since pages can be stored in any free frame,
+
+there is no need for one large continuous memory block.
+
+Therefore,
+
+Paging completely removes **External Fragmentation**.
+
+---
+
+### Internal Fragmentation
+
+❌ No.
+
+The last page of a process may not be completely full.
+
+The unused space inside that page is called **Internal Fragmentation**.
+
+---
+
+# Advantages of Paging
+
+### 1. Eliminates External Fragmentation
+
+Pages can be stored anywhere in RAM.
+
+---
+
+### 2. Better Memory Utilization
+
+Every free frame can be used.
+
+---
+
+### 3. Supports Virtual Memory
+
+Paging is the foundation of Virtual Memory.
+
+---
+
+### 4. Easy Memory Allocation
+
+The Operating System does not need to search for one large continuous block.
+
+---
+
+# Disadvantages of Paging
+
+### 1. Internal Fragmentation
+
+The last page may contain unused space.
+
+---
+
+### 2. Page Table Overhead
+
+Extra memory is required to store the Page Table.
+
+---
+
+### 3. Extra Address Translation
+
+Every memory access requires Page Table lookup.
+
+This increases memory access time.
+
+Later,
+
+the **Translation Lookaside Buffer (TLB)** is used to speed up this process.
+
+---
+
+# Difference Between Contiguous Allocation and Paging
+
+| Contiguous Allocation | Paging |
+|------------------------|--------|
+| Process stored in one continuous block | Process divided into pages |
+| External Fragmentation occurs | No External Fragmentation |
+| Large continuous memory block required | Pages can be stored anywhere |
+| Simpler | Slightly more complex |
+
+---
+
+# Real-Life Example
+
+Imagine a book.
+
+The book has many pages.
+
+Instead of keeping all pages on one shelf,
+
+the librarian places each page on any empty shelf.
+
+A notebook records where every page is stored.
+
+Here,
+
+- Book = Process
+- Book Pages = Memory Pages
+- Shelves = Frames
+- Notebook = Page Table
+
+Whenever someone asks for Page 3,
+
+the notebook tells which shelf contains that page.
+
+This is exactly how Paging works.
+
+---
+
+# Quick Revision
+
+- Paging divides the process into Pages.
+- RAM is divided into Frames.
+- Page Size = Frame Size.
+- Pages can be stored in any free frame.
+- Page Table stores Page-to-Frame mapping.
+- Logical Address = Page Number + Offset.
+- Physical Address = Frame Number + Offset.
+- Paging removes External Fragmentation.
+- Paging may still have Internal Fragmentation.
+
+---
+
+# Interview Questions
+
+### What is Paging?
+
+Paging is a memory management technique in which a process is divided into pages and RAM is divided into frames.
+
+---
+
+### What is a Page?
+
+A fixed-size block of a process (Logical Memory).
+
+---
+
+### What is a Frame?
+
+A fixed-size block of Physical Memory (RAM).
+
+---
+
+### What is a Page Table?
+
+A Page Table stores the mapping between Pages and Frames.
+
+---
+
+### What is the relation between Page Size and Frame Size?
+
+```
+Page Size = Frame Size
+```
+
+---
+
+### Does Paging remove External Fragmentation?
+
+Yes.
+
+---
+
+### Does Paging remove Internal Fragmentation?
+
+No.
+
+A small amount of Internal Fragmentation may still occur in the last page.
+
+---
+
+### What is the Logical Address in Paging?
+
+```
+Page Number + Offset
+```
+
+---
+
+### What is the Physical Address in Paging?
+
+```
+Frame Number + Offset
+```
+
+---
+
+# Common Mistakes
+
+❌ Page Size and Frame Size are different.
+
+✅ Wrong.
+
+They are always equal.
+
+---
+
+❌ Pages must be stored continuously.
+
+✅ Wrong.
+
+Pages can be stored in any available frame.
+
+---
+
+❌ Paging removes both Internal and External Fragmentation.
+
+✅ Wrong.
+
+It removes External Fragmentation but may still have Internal Fragmentation.
+
+---
+
+# Easy Way to Remember
+
+Think of a **library**.
+
+📖 Book = Process
+
+📄 Pages = Process Pages
+
+🗄️ Shelves = Frames
+
+📒 Library Register = Page Table
+
+The librarian can place each page of the book on **any empty shelf**.
+
+The register records the location of every page.
+
+Similarly,
+
+the Operating System places each page in any free frame,
+
+and the **Page Table** remembers where each page is stored.
+
+Remember these four golden points:
+
+```
+Process → Pages
+
+RAM → Frames
+
+Page Size = Frame Size
+
+Page Table → Maps Pages to Frames
+```
