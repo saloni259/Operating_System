@@ -17796,3 +17796,485 @@ Page Size = Frame Size
 
 Page Table → Maps Pages to Frames
 ```
+# Segmentation
+
+After learning Paging, we now study another memory management technique called **Segmentation**.
+
+Unlike Paging,
+
+which divides memory into fixed-size pages,
+
+Segmentation divides a program according to its **logical structure**.
+
+Each logical part of the program is stored in a separate segment.
+
+---
+
+# What is Segmentation?
+
+**Segmentation** is a memory management technique in which a program is divided into **variable-size logical units called Segments**.
+
+Each segment represents a logical part of the program.
+
+In simple words,
+
+> **Segmentation divides a program into variable-size logical segments such as Code, Data, Stack, and Heap.**
+
+---
+
+# Why do we need Segmentation?
+
+A program naturally consists of different parts.
+
+For example,
+
+a C++ program contains:
+
+- Code
+- Global Variables
+- Stack
+- Heap
+
+Paging divides the program into equal-sized pages,
+
+but it ignores these logical divisions.
+
+Segmentation keeps each logical part separate.
+
+This makes memory management more meaningful.
+
+---
+
+# What is a Segment?
+
+A **Segment** is a logical part of a program.
+
+Examples:
+
+- Code Segment
+- Data Segment
+- Stack Segment
+- Heap Segment
+
+Each segment may have a different size.
+
+---
+
+# Example
+
+Suppose a program contains:
+
+```
+Code = 30 KB
+
+Data = 10 KB
+
+Stack = 15 KB
+
+Heap = 25 KB
+```
+
+The Operating System creates four different segments.
+
+Notice,
+
+the sizes are different.
+
+This is why Segmentation is called **variable-size memory allocation**.
+
+---
+
+# Characteristics of Segmentation
+
+- Segments are variable in size.
+- Each segment represents a logical unit of the program.
+- Every segment has:
+  - Segment Number
+  - Base Address
+  - Limit (Size)
+
+---
+
+# Segment Table
+
+Since segments are stored at different memory locations,
+
+the Operating System maintains a **Segment Table**.
+
+The Segment Table stores:
+
+- Segment Number
+- Base Address
+- Limit
+
+Example:
+
+| Segment | Base Address | Limit |
+|----------|--------------|-------|
+| Code | 1000 | 30 KB |
+| Data | 5000 | 10 KB |
+| Stack | 8000 | 15 KB |
+| Heap | 12000 | 25 KB |
+
+The Segment Table helps the Operating System locate each segment.
+
+---
+
+# Logical Address in Segmentation
+
+The Logical Address consists of two parts.
+
+```
+Segment Number
+
++
+
+Offset
+```
+
+### Segment Number
+
+Identifies the required segment.
+
+### Offset
+
+Specifies the exact location inside that segment.
+
+---
+
+# Address Translation in Segmentation
+
+Whenever the CPU generates a Logical Address,
+
+the Operating System performs these steps.
+
+### Step 1
+
+Extract the **Segment Number**.
+
+---
+
+### Step 2
+
+Search the Segment Table.
+
+---
+
+### Step 3
+
+Find:
+
+- Base Address
+- Limit
+
+---
+
+### Step 4
+
+Check whether:
+
+```
+Offset < Limit
+```
+
+If the condition is false,
+
+the Operating System generates an error because the address is outside the segment.
+
+---
+
+### Step 5
+
+Calculate:
+
+```
+Physical Address
+
+=
+
+Base Address
+
++
+
+Offset
+```
+
+This Physical Address is used to access RAM.
+
+---
+
+# Example
+
+Segment Table:
+
+| Segment | Base | Limit |
+|----------|------|-------|
+| 0 | 1000 | 500 |
+| 1 | 3000 | 400 |
+| 2 | 7000 | 600 |
+
+Logical Address:
+
+```
+Segment = 2
+
+Offset = 150
+```
+
+From the Segment Table:
+
+```
+Base = 7000
+```
+
+Calculate:
+
+```
+Physical Address
+
+=
+
+7000 + 150
+
+=
+
+7150
+```
+
+RAM accesses address **7150**.
+
+---
+
+# Advantages of Segmentation
+
+### 1. Logical Organization
+
+Each segment represents a meaningful part of the program.
+
+---
+
+### 2. Easy Memory Protection
+
+Different permissions can be given to different segments.
+
+Example:
+
+- Code → Read Only
+- Stack → Read & Write
+
+---
+
+### 3. Easy Sharing
+
+The same Code Segment can be shared among multiple processes.
+
+---
+
+### 4. Better Program Management
+
+Programs are easier to understand and maintain because they are divided logically.
+
+---
+
+# Disadvantages of Segmentation
+
+### 1. External Fragmentation
+
+Since segments have different sizes,
+
+free memory becomes scattered over time.
+
+---
+
+### 2. Complex Memory Management
+
+Managing variable-sized memory blocks is more difficult than fixed-size pages.
+
+---
+
+# Paging vs Segmentation
+
+| Paging | Segmentation |
+|---------|--------------|
+| Fixed-size pages | Variable-size segments |
+| Divides memory physically | Divides memory logically |
+| Uses Page Table | Uses Segment Table |
+| Removes External Fragmentation | Suffers from External Fragmentation |
+| May have Internal Fragmentation | No Internal Fragmentation (but has External Fragmentation) |
+
+---
+
+# Real-Life Example
+
+Imagine a book.
+
+### Paging
+
+Divide the book into equal-sized pages.
+
+Every page has the same size.
+
+---
+
+### Segmentation
+
+Divide the book into chapters.
+
+Example:
+
+```
+Chapter 1 → 10 Pages
+
+Chapter 2 → 25 Pages
+
+Chapter 3 → 8 Pages
+```
+
+Each chapter has a different size.
+
+The chapters represent **Segments**.
+
+---
+
+# Quick Revision
+
+- Segmentation divides a program into logical segments.
+- Segments are variable in size.
+- Each segment has:
+  - Segment Number
+  - Base Address
+  - Limit
+- Segment Table stores information about all segments.
+- Logical Address = Segment Number + Offset.
+- Physical Address = Base Address + Offset.
+- Segmentation suffers from External Fragmentation.
+
+---
+
+# Interview Questions
+
+### What is Segmentation?
+
+Segmentation is a memory management technique that divides a program into variable-sized logical segments.
+
+---
+
+### What is a Segment?
+
+A logical part of a program, such as Code, Data, Stack, or Heap.
+
+---
+
+### What does the Segment Table contain?
+
+- Segment Number
+- Base Address
+- Limit
+
+---
+
+### What is the Logical Address in Segmentation?
+
+```
+Segment Number + Offset
+```
+
+---
+
+### How is the Physical Address calculated?
+
+```
+Physical Address = Base Address + Offset
+```
+
+---
+
+### Which fragmentation occurs in Segmentation?
+
+External Fragmentation.
+
+---
+
+### What is the difference between Paging and Segmentation?
+
+Paging divides memory into fixed-size pages.
+
+Segmentation divides a program into variable-size logical segments.
+
+---
+
+# Common Mistakes
+
+❌ Segments have fixed sizes.
+
+✅ Wrong.
+
+Segments are **variable in size**.
+
+---
+
+❌ Paging and Segmentation are the same.
+
+✅ Wrong.
+
+Paging divides memory physically into fixed-size pages.
+
+Segmentation divides a program logically into variable-size segments.
+
+---
+
+❌ Segmentation removes External Fragmentation.
+
+✅ Wrong.
+
+Segmentation suffers from **External Fragmentation** because segments are of different sizes.
+
+---
+
+# Easy Way to Remember
+
+Think of a **book**.
+
+📖 **Paging**
+
+The book is divided into equal-sized pages.
+
+---
+
+📚 **Segmentation**
+
+The book is divided into chapters.
+
+Each chapter has a different number of pages.
+
+Remember:
+
+```
+Paging
+
+↓
+
+Fixed Size
+
+↓
+
+Pages
+```
+
+```
+Segmentation
+
+↓
+
+Variable Size
+
+↓
+
+Logical Segments
+```
+
+One easy trick:
+
+**Paging = Physical Division**
+
+**Segmentation = Logical Division**
