@@ -13484,3 +13484,770 @@ Need ≤ Available
 ```
 
 These are the heart of the Banker's Algorithm.
+# Banker's Algorithm (Numerical Example)
+
+After learning the theory of Banker's Algorithm, we now learn how to solve numerical problems.
+
+The main goal is to determine whether the system is in a **Safe State** or an **Unsafe State**.
+
+If we can find a **Safe Sequence**, then the system is safe.
+
+Otherwise,
+
+the system is unsafe.
+
+---
+
+# Goal of the Algorithm
+
+Whenever a process requests resources,
+
+the Operating System checks:
+
+> "Can every process still complete successfully after granting this request?"
+
+If the answer is **Yes**,
+
+the request is granted.
+
+Otherwise,
+
+the request is delayed.
+
+---
+
+# Example
+
+Suppose there are **5 Processes**:
+
+```
+P0
+
+P1
+
+P2
+
+P3
+
+P4
+```
+
+There are **3 Resource Types**:
+
+```
+A
+
+B
+
+C
+```
+
+---
+
+# Allocation Matrix
+
+| Process | A | B | C |
+|----------|---|---|---|
+| P0 | 0 | 1 | 0 |
+| P1 | 2 | 0 | 0 |
+| P2 | 3 | 0 | 2 |
+| P3 | 2 | 1 | 1 |
+| P4 | 0 | 0 | 2 |
+
+This matrix shows the resources currently allocated to each process.
+
+---
+
+# Maximum Matrix
+
+| Process | A | B | C |
+|----------|---|---|---|
+| P0 | 7 | 5 | 3 |
+| P1 | 3 | 2 | 2 |
+| P2 | 9 | 0 | 2 |
+| P3 | 2 | 2 | 2 |
+| P4 | 4 | 3 | 3 |
+
+This matrix shows the maximum resources each process may require.
+
+---
+
+# Available Vector
+
+```
+A = 3
+
+B = 3
+
+C = 2
+```
+
+These are the resources currently available in the system.
+
+---
+
+# Step 1: Calculate Need Matrix
+
+Formula:
+
+```
+Need = Maximum − Allocation
+```
+
+Let's calculate one by one.
+
+### P0
+
+```
+7−0 = 7
+
+5−1 = 4
+
+3−0 = 3
+```
+
+Need:
+
+```
+7 4 3
+```
+
+---
+
+### P1
+
+```
+3−2 = 1
+
+2−0 = 2
+
+2−0 = 2
+```
+
+Need:
+
+```
+1 2 2
+```
+
+---
+
+### P2
+
+```
+9−3 = 6
+
+0−0 = 0
+
+2−2 = 0
+```
+
+Need:
+
+```
+6 0 0
+```
+
+---
+
+### P3
+
+```
+2−2 = 0
+
+2−1 = 1
+
+2−1 = 1
+```
+
+Need:
+
+```
+0 1 1
+```
+
+---
+
+### P4
+
+```
+4−0 = 4
+
+3−0 = 3
+
+3−2 = 1
+```
+
+Need:
+
+```
+4 3 1
+```
+
+---
+
+# Final Need Matrix
+
+| Process | A | B | C |
+|----------|---|---|---|
+| P0 | 7 | 4 | 3 |
+| P1 | 1 | 2 | 2 |
+| P2 | 6 | 0 | 0 |
+| P3 | 0 | 1 | 1 |
+| P4 | 4 | 3 | 1 |
+
+Always remember:
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+# Step 2: Compare Need with Available
+
+Initially,
+
+```
+Available = (3,3,2)
+```
+
+Rule:
+
+```
+Need ≤ Available
+```
+
+If this condition is true,
+
+that process can execute.
+
+---
+
+### Check P0
+
+Need:
+
+```
+7 4 3
+```
+
+Available:
+
+```
+3 3 2
+```
+
+Not Possible.
+
+---
+
+### Check P1
+
+Need:
+
+```
+1 2 2
+```
+
+Available:
+
+```
+3 3 2
+```
+
+Possible.
+
+Execute P1.
+
+Safe Sequence:
+
+```
+P1
+```
+
+---
+
+# Step 3: Update Available
+
+After P1 finishes,
+
+it releases its allocated resources.
+
+Allocation of P1:
+
+```
+2 0 0
+```
+
+Update:
+
+```
+Available
+
+=
+
+3 3 2
+
++
+
+2 0 0
+
+=
+
+5 3 2
+```
+
+---
+
+### Check P3
+
+Need:
+
+```
+0 1 1
+```
+
+Available:
+
+```
+5 3 2
+```
+
+Possible.
+
+Execute P3.
+
+Safe Sequence:
+
+```
+P1 → P3
+```
+
+Release Allocation:
+
+```
+2 1 1
+```
+
+Update:
+
+```
+Available
+
+=
+
+5 3 2
+
++
+
+2 1 1
+
+=
+
+7 4 3
+```
+
+---
+
+### Check P0
+
+Need:
+
+```
+7 4 3
+```
+
+Available:
+
+```
+7 4 3
+```
+
+Possible.
+
+Execute P0.
+
+Safe Sequence:
+
+```
+P1 → P3 → P0
+```
+
+Release Allocation:
+
+```
+0 1 0
+```
+
+Update:
+
+```
+Available
+
+=
+
+7 4 3
+
++
+
+0 1 0
+
+=
+
+7 5 3
+```
+
+---
+
+### Check P2
+
+Need:
+
+```
+6 0 0
+```
+
+Available:
+
+```
+7 5 3
+```
+
+Possible.
+
+Execute P2.
+
+Safe Sequence:
+
+```
+P1 → P3 → P0 → P2
+```
+
+Release Allocation:
+
+```
+3 0 2
+```
+
+Update:
+
+```
+Available
+
+=
+
+7 5 3
+
++
+
+3 0 2
+
+=
+
+10 5 5
+```
+
+---
+
+### Check P4
+
+Need:
+
+```
+4 3 1
+```
+
+Available:
+
+```
+10 5 5
+```
+
+Possible.
+
+Execute P4.
+
+Safe Sequence:
+
+```
+P1 → P3 → P0 → P2 → P4
+```
+
+Release Allocation:
+
+```
+0 0 2
+```
+
+Update:
+
+```
+Available
+
+=
+
+10 5 5
+
++
+
+0 0 2
+
+=
+
+10 5 7
+```
+
+---
+
+# Final Answer
+
+Safe Sequence:
+
+```
+P1 → P3 → P0 → P2 → P4
+```
+
+Since every process completed successfully,
+
+the system is in a **Safe State**.
+
+---
+
+# Shortcut to Solve Numerical Questions
+
+Whenever you get a Banker's Algorithm problem,
+
+always follow these steps.
+
+### Step 1
+
+Calculate
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+### Step 2
+
+Write the Available Vector.
+
+---
+
+### Step 3
+
+Find a process satisfying
+
+```
+Need ≤ Available
+```
+
+---
+
+### Step 4
+
+Execute that process.
+
+---
+
+### Step 5
+
+Update
+
+```
+Available
+
+=
+
+Available
+
++
+
+Allocation
+```
+
+---
+
+### Step 6
+
+Repeat until:
+
+- All processes finish → Safe State.
+- No process satisfies the condition → Unsafe State.
+
+---
+
+# Flow of the Algorithm
+
+```
+Calculate Need Matrix
+
+↓
+
+Find Need ≤ Available
+
+↓
+
+Execute Process
+
+↓
+
+Release Allocation
+
+↓
+
+Update Available
+
+↓
+
+Repeat
+
+↓
+
+All Processes Finished?
+
+↓
+
+Yes → Safe State
+
+No → Unsafe State
+```
+
+---
+
+# Important Formulas
+
+### Need Matrix
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+### Safety Condition
+
+```
+Need ≤ Available
+```
+
+---
+
+### Available Update
+
+```
+Available = Available + Allocation
+```
+
+These three formulas are the heart of Banker's Algorithm.
+
+---
+
+# Common Mistakes
+
+❌ Using
+
+```
+Need = Allocation − Maximum
+```
+
+Wrong.
+
+Correct Formula:
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+❌ Comparing Allocation with Available.
+
+Wrong.
+
+Always compare:
+
+```
+Need ≤ Available
+```
+
+---
+
+❌ Forgetting to update Available after a process finishes.
+
+Always update:
+
+```
+Available = Available + Allocation
+```
+
+---
+
+# Quick Revision
+
+- First calculate the Need Matrix.
+- Compare Need with Available.
+- Execute any process satisfying Need ≤ Available.
+- Release its allocated resources.
+- Update Available.
+- Repeat.
+- If every process finishes → Safe State.
+- Otherwise → Unsafe State.
+
+---
+
+# Interview Questions
+
+### What is the first step of Banker's Algorithm?
+
+Calculate the Need Matrix.
+
+---
+
+### What is the formula for Need?
+
+```
+Need = Maximum − Allocation
+```
+
+---
+
+### Which condition is checked before executing a process?
+
+```
+Need ≤ Available
+```
+
+---
+
+### What happens after a process completes?
+
+Its allocated resources are returned to the Available Vector.
+
+---
+
+### When is the system in a Safe State?
+
+When a Safe Sequence exists and every process can complete successfully.
+
+---
+
+# Easy Way to Remember
+
+Remember these three formulas:
+
+```
+Need = Maximum − Allocation
+```
+
+```
+Need ≤ Available
+```
+
+```
+Available = Available + Allocation
+```
+
+These three formulas are enough to solve almost every Banker's Algorithm numerical problem.
