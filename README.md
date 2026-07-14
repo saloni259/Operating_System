@@ -15580,3 +15580,466 @@ This is exactly how **Memory Management** works.
 Remember:
 
 **Memory Management = Allocate → Protect → Share → Free Memory**
+# Address Binding
+
+After learning the basics of Memory Management, we now study **Address Binding**.
+
+When we write a program,
+
+we never specify where it will be stored in RAM.
+
+The Operating System decides the actual memory location.
+
+The process of assigning memory addresses to a program is called **Address Binding**.
+
+It is one of the basic concepts required to understand Paging and Virtual Memory.
+
+---
+
+# What is Address Binding?
+
+**Address Binding** is the process of mapping a program's addresses to actual memory addresses.
+
+It decides where the program will be placed in RAM.
+
+In simple words,
+
+> **Address Binding is the process of assigning memory addresses to a program before or during execution.**
+
+---
+
+# Why do we need Address Binding?
+
+Suppose we write a C++ program.
+
+```cpp
+int main() {
+    int a = 10;
+}
+```
+
+The compiler knows that variable `a` needs memory,
+
+but it does **not** know where the program will be loaded in RAM.
+
+The Operating System decides the actual memory location.
+
+Therefore,
+
+Address Binding is required.
+
+---
+
+# Program Execution Stages
+
+A program goes through several stages before execution.
+
+```
+Source Program (.cpp)
+
+↓
+
+Compiler
+
+↓
+
+Object Program (.obj)
+
+↓
+
+Linker
+
+↓
+
+Executable File (.exe)
+
+↓
+
+Loader
+
+↓
+
+RAM (Main Memory)
+
+↓
+
+Execution
+```
+
+Address Binding can occur at different stages of this process.
+
+---
+
+# Types of Address Binding
+
+There are three types.
+
+1. Compile-Time Binding
+2. Load-Time Binding
+3. Execution-Time Binding
+
+---
+
+# 1. Compile-Time Binding
+
+### Definition
+
+Address Binding is performed during compilation.
+
+The compiler already knows the exact memory location where the program will execute.
+
+Therefore,
+
+it generates **absolute addresses**.
+
+---
+
+### Example
+
+Suppose,
+
+the compiler knows that the program will start at:
+
+```
+Address = 1000
+```
+
+Variable:
+
+```cpp
+int a;
+```
+
+Compiler assigns:
+
+```
+a → 1004
+```
+
+The address is fixed.
+
+---
+
+### Limitation
+
+If the program needs to be loaded at another memory location,
+
+it must be compiled again.
+
+---
+
+### Real-Life Example
+
+Imagine a classroom.
+
+The teacher says,
+
+"Rahul will always sit on Seat No. 5."
+
+Rahul cannot change seats.
+
+This is Compile-Time Binding.
+
+---
+
+# 2. Load-Time Binding
+
+### Definition
+
+The compiler does not know the actual memory location.
+
+It generates **relocatable addresses**.
+
+The Loader assigns the actual memory address when the program is loaded into RAM.
+
+---
+
+### Example
+
+Compiler generates:
+
+```
+Address = 0
+```
+
+Later,
+
+the Loader loads the program at:
+
+```
+5000
+```
+
+Actual address becomes:
+
+```
+5000
+```
+
+---
+
+### Advantage
+
+The same program can be loaded at different memory locations without recompiling.
+
+---
+
+### Real-Life Example
+
+Imagine entering a movie theatre.
+
+Your seat is assigned only after you enter.
+
+Before entering,
+
+the seat is not fixed.
+
+---
+
+# 3. Execution-Time Binding
+
+### Definition
+
+Address Binding happens while the program is running.
+
+The Operating System can move the program from one memory location to another during execution.
+
+This requires a **Memory Management Unit (MMU).**
+
+---
+
+### Example
+
+Initially,
+
+the program is loaded at:
+
+```
+2000
+```
+
+Later,
+
+the Operating System moves it to:
+
+```
+7000
+```
+
+The program continues executing normally.
+
+The MMU automatically converts the addresses.
+
+---
+
+### Why is it needed?
+
+Execution-Time Binding is used for:
+
+- Paging
+- Virtual Memory
+- Swapping
+- Dynamic Memory Allocation
+
+Modern Operating Systems mainly use this method.
+
+---
+
+### Real-Life Example
+
+Imagine travelling in a train.
+
+Initially,
+
+you are sitting in Coach A.
+
+Later,
+
+you move to Coach C.
+
+Your journey continues without restarting.
+
+Similarly,
+
+the program continues running even after changing its memory location.
+
+---
+
+# Comparison of Address Binding Types
+
+| Feature | Compile-Time | Load-Time | Execution-Time |
+|----------|--------------|-----------|----------------|
+| Binding happens | During Compilation | During Loading | During Execution |
+| Address Type | Absolute | Relocatable | Dynamic |
+| Program can move during execution | ❌ No | ❌ No | ✅ Yes |
+| Requires MMU | ❌ No | ❌ No | ✅ Yes |
+
+---
+
+# Which Binding is Used in Modern Operating Systems?
+
+Modern Operating Systems use:
+
+**Execution-Time Binding**
+
+because it supports:
+
+- Paging
+- Virtual Memory
+- Swapping
+- Dynamic Relocation
+
+---
+
+# Advantages of Execution-Time Binding
+
+### 1. Flexible
+
+Programs can move while executing.
+
+---
+
+### 2. Better Memory Utilization
+
+The Operating System can relocate programs whenever required.
+
+---
+
+### 3. Supports Virtual Memory
+
+It is required for modern memory management techniques.
+
+---
+
+# Disadvantages
+
+### 1. Hardware Support Required
+
+Execution-Time Binding requires a Memory Management Unit (MMU).
+
+---
+
+### 2. More Complex
+
+Address translation happens continuously during execution.
+
+---
+
+# Real-Life Analogy
+
+Imagine booking a hotel room.
+
+### Compile-Time Binding
+
+Your room is fixed before you arrive.
+
+---
+
+### Load-Time Binding
+
+Your room is assigned when you check in.
+
+---
+
+### Execution-Time Binding
+
+The hotel changes your room during your stay,
+
+but your vacation continues without interruption.
+
+---
+
+# Quick Revision
+
+- Address Binding maps program addresses to actual memory addresses.
+- Three types:
+  - Compile-Time Binding
+  - Load-Time Binding
+  - Execution-Time Binding
+- Compile-Time → Address fixed during compilation.
+- Load-Time → Address assigned while loading.
+- Execution-Time → Address assigned during execution.
+- Modern Operating Systems mainly use Execution-Time Binding.
+- Execution-Time Binding requires MMU.
+
+---
+
+# Interview Questions
+
+### What is Address Binding?
+
+Address Binding is the process of mapping program addresses to actual memory addresses.
+
+---
+
+### What are the three types of Address Binding?
+
+- Compile-Time Binding
+- Load-Time Binding
+- Execution-Time Binding
+
+---
+
+### Which Address Binding is used in modern Operating Systems?
+
+Execution-Time Binding.
+
+---
+
+### Which type requires MMU?
+
+Execution-Time Binding.
+
+---
+
+### What is the difference between Compile-Time and Load-Time Binding?
+
+Compile-Time Binding assigns addresses during compilation.
+
+Load-Time Binding assigns addresses when the program is loaded into memory.
+
+---
+
+### Why is Execution-Time Binding preferred?
+
+Because it allows programs to move during execution and supports Paging and Virtual Memory.
+
+---
+
+# Easy Way to Remember
+
+Think of **booking a hotel room**.
+
+🏨 Compile-Time Binding
+
+Room assigned before arrival.
+
+---
+
+🏨 Load-Time Binding
+
+Room assigned during check-in.
+
+---
+
+🏨 Execution-Time Binding
+
+Room changed during your stay without interrupting your vacation.
+
+Remember the order:
+
+```
+Compile-Time
+
+↓
+
+Load-Time
+
+↓
+
+Execution-Time
+```
+
+As we move downward,
+
+the Operating System gets **more flexibility** in deciding where the program is stored.
