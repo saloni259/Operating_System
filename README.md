@@ -21057,3 +21057,530 @@ R = 0
 
 "Replace me."
 ```
+# Translation Lookaside Buffer (TLB)
+
+After learning Paging,
+
+we know that every memory access requires address translation.
+
+The CPU generates a Logical Address.
+
+The Operating System uses the **Page Table** to find the corresponding Frame Number.
+
+Then,
+
+the required data is accessed from RAM.
+
+This process requires extra time.
+
+To speed up address translation,
+
+the Operating System uses the **Translation Lookaside Buffer (TLB).**
+
+---
+
+# Why do we need TLB?
+
+Without TLB,
+
+every memory access requires:
+
+```
+CPU
+
+↓
+
+Page Table
+
+↓
+
+RAM
+```
+
+This means:
+
+1. Access the Page Table.
+2. Access the required data in RAM.
+
+Thus,
+
+one logical memory access becomes **two memory accesses**.
+
+This increases memory access time.
+
+To reduce this delay,
+
+TLB is used.
+
+---
+
+# What is TLB?
+
+**TLB (Translation Lookaside Buffer)** is a **small, high-speed cache memory** that stores recently used **Page Table entries**.
+
+Instead of searching the Page Table every time,
+
+the CPU first checks the TLB.
+
+In simple words,
+
+> **TLB is a cache that stores recently used Page Table entries to speed up address translation.**
+
+---
+
+# Where is TLB Located?
+
+```
+CPU
+
+↓
+
+TLB
+
+↓
+
+Page Table
+
+↓
+
+RAM
+```
+
+The CPU always checks the TLB before accessing the Page Table.
+
+---
+
+# How TLB Works
+
+Suppose,
+
+the CPU generates:
+
+```
+Logical Address
+
+↓
+
+Page Number = 5
+```
+
+The CPU first searches for **Page 5** in the TLB.
+
+Two cases are possible.
+
+---
+
+# Case 1: TLB Hit
+
+If the required page is found in the TLB,
+
+it is called a **TLB Hit**.
+
+The Frame Number is obtained immediately.
+
+The Page Table is not accessed.
+
+Flow:
+
+```
+CPU
+
+↓
+
+TLB
+
+↓
+
+Frame Number Found
+
+↓
+
+RAM
+```
+
+Only **one memory access** is required.
+
+---
+
+# Case 2: TLB Miss
+
+If the required page is not found in the TLB,
+
+it is called a **TLB Miss**.
+
+The Operating System performs:
+
+1. Search the Page Table.
+2. Find the Frame Number.
+3. Update the TLB.
+4. Access RAM.
+
+Flow:
+
+```
+CPU
+
+↓
+
+TLB
+
+↓
+
+Miss
+
+↓
+
+Page Table
+
+↓
+
+RAM
+
+↓
+
+Update TLB
+```
+
+This takes longer than a TLB Hit.
+
+---
+
+# Example
+
+Suppose,
+
+TLB contains:
+
+| Page | Frame |
+|------|-------|
+| 2 | 5 |
+| 4 | 8 |
+| 7 | 3 |
+
+CPU requests:
+
+```
+Page = 4
+```
+
+Since Page **4** is already present in the TLB,
+
+it is a **TLB Hit**.
+
+Frame **8** is obtained immediately.
+
+RAM is accessed directly.
+
+---
+
+Now,
+
+CPU requests:
+
+```
+Page = 6
+```
+
+Page **6** is not present in the TLB.
+
+This is a **TLB Miss**.
+
+The Operating System searches the Page Table,
+
+finds the Frame Number,
+
+updates the TLB,
+
+and then accesses RAM.
+
+---
+
+# TLB Hit Ratio
+
+The **TLB Hit Ratio** is the percentage of memory accesses that are found in the TLB.
+
+Formula:
+
+```
+TLB Hit Ratio
+
+=
+
+Number of TLB Hits
+
+/
+
+Total Memory Accesses
+```
+
+A higher TLB Hit Ratio means better performance.
+
+---
+
+# Effective Memory Access Time (EMAT)
+
+Since some memory accesses are Hits and others are Misses,
+
+the average memory access time is called **Effective Memory Access Time (EMAT).**
+
+Formula:
+
+```
+EMAT
+
+=
+
+(Hit Ratio × Hit Time)
+
++
+
+(Miss Ratio × Miss Time)
+```
+
+where,
+
+```
+Miss Ratio
+
+=
+
+1 − Hit Ratio
+```
+
+---
+
+# Advantages of TLB
+
+### 1. Faster Address Translation
+
+Most Page Table searches are avoided.
+
+---
+
+### 2. Reduces Memory Access Time
+
+TLB Hits require fewer memory accesses.
+
+---
+
+### 3. Improves CPU Performance
+
+The CPU spends less time waiting for memory.
+
+---
+
+### 4. High Hit Ratio
+
+Frequently used pages remain in the TLB,
+
+making address translation faster.
+
+---
+
+# Disadvantages of TLB
+
+### 1. Small Size
+
+The TLB can store only a limited number of Page Table entries.
+
+---
+
+### 2. TLB Miss Overhead
+
+A TLB Miss still requires accessing the Page Table.
+
+---
+
+### 3. Additional Hardware
+
+The TLB is a special hardware cache,
+
+which increases hardware complexity.
+
+---
+
+# Difference Between TLB and Page Table
+
+| TLB | Page Table |
+|-----|------------|
+| Small cache | Complete mapping table |
+| Very fast | Slower than TLB |
+| Stores recently used entries | Stores all page mappings |
+| Located near the CPU | Stored in Main Memory |
+
+---
+
+# Real-Life Example
+
+Imagine a dictionary.
+
+Instead of searching the entire dictionary every time,
+
+you keep a small notebook containing the meanings of the words you use most often.
+
+- Notebook = TLB
+- Dictionary = Page Table
+
+When you need a word:
+
+- Check the notebook first.
+- If the word is found, you get the answer immediately.
+- Otherwise, search the dictionary and write the word in the notebook for future use.
+
+This is exactly how the TLB works.
+
+---
+
+# Quick Revision
+
+- TLB stands for **Translation Lookaside Buffer**.
+- It is a **small, high-speed cache**.
+- It stores recently used Page Table entries.
+- CPU checks the TLB before the Page Table.
+- Page found in TLB → **TLB Hit**.
+- Page not found → **TLB Miss**.
+- TLB improves memory access speed.
+
+---
+
+# Interview Questions
+
+### What is TLB?
+
+TLB is a small, high-speed cache that stores recently used Page Table entries.
+
+---
+
+### Why is TLB needed?
+
+To reduce address translation time and improve memory access speed.
+
+---
+
+### What is a TLB Hit?
+
+A TLB Hit occurs when the required page is found in the TLB.
+
+---
+
+### What is a TLB Miss?
+
+A TLB Miss occurs when the required page is not found in the TLB.
+
+---
+
+### What happens after a TLB Miss?
+
+The Operating System searches the Page Table, updates the TLB, and then accesses RAM.
+
+---
+
+### What is the difference between TLB and Page Table?
+
+The TLB stores recently used Page Table entries,
+
+while the Page Table stores all page mappings.
+
+---
+
+# Common Mistakes
+
+❌ TLB stores the actual pages.
+
+✅ Wrong.
+
+TLB stores only **Page Table entries**, not the pages.
+
+---
+
+❌ Every memory access requires a Page Table lookup.
+
+✅ Wrong.
+
+If a **TLB Hit** occurs,
+
+the Page Table is not accessed.
+
+---
+
+❌ TLB replaces the Page Table.
+
+✅ Wrong.
+
+TLB only caches frequently used Page Table entries.
+
+---
+
+# Easy Way to Remember
+
+Think of a **notebook and a dictionary**.
+
+📒 Notebook = TLB
+
+📖 Dictionary = Page Table
+
+First,
+
+check the notebook.
+
+```
+Word Found
+
+↓
+
+TLB Hit
+
+↓
+
+Direct Answer
+```
+
+If the word is not found,
+
+```
+TLB Miss
+
+↓
+
+Search Dictionary
+
+↓
+
+Update Notebook
+
+↓
+
+Answer
+```
+
+Remember these key points:
+
+```
+CPU
+
+↓
+
+TLB
+
+↓
+
+Hit?
+
+↓
+
+Yes → RAM
+
+No
+
+↓
+
+Page Table
+
+↓
+
+RAM
+
+↓
+
+Update TLB
+```
