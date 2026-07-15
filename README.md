@@ -19188,3 +19188,503 @@ Remember these key points:
 - **Demand Paging → Load pages only when needed**
 - **Missing Page → Page Fault**
 - **Page Fault → Load page from Disk → Continue Execution**
+# FIFO (First-In First-Out) Page Replacement Algorithm
+
+After learning Demand Paging, we know that when a required page is not present in RAM, a **Page Fault** occurs.
+
+If RAM has a free frame,
+
+the required page is loaded.
+
+But,
+
+if RAM is already full,
+
+the Operating System must remove one page before loading the new page.
+
+This process is called **Page Replacement**.
+
+FIFO is the simplest Page Replacement Algorithm.
+
+---
+
+# What is Page Replacement?
+
+**Page Replacement** is the process of selecting a page to remove from RAM when memory is full and a new page needs to be loaded.
+
+The Operating System uses a **Page Replacement Algorithm** to decide which page should be removed.
+
+---
+
+# What is FIFO Page Replacement?
+
+**FIFO (First-In First-Out)** is a page replacement algorithm in which the **page that entered RAM first is removed first**.
+
+It follows the same principle as a **Queue**.
+
+In simple words,
+
+> **FIFO removes the oldest page from memory whenever replacement is required.**
+
+---
+
+# Why do we need FIFO?
+
+Suppose,
+
+RAM has only **3 Frames**.
+
+Initially,
+
+```
+Frame 1
+
+Frame 2
+
+Frame 3
+```
+
+All frames become full.
+
+Now,
+
+a new page needs to be loaded.
+
+Since there is no empty frame,
+
+one existing page must be removed.
+
+FIFO removes the **oldest page**.
+
+---
+
+# FIFO Principle
+
+FIFO follows:
+
+```
+First In
+
+↓
+
+First Out
+```
+
+The page that entered RAM first will leave first.
+
+It does not matter whether the page is being used frequently or not.
+
+---
+
+# FIFO Algorithm
+
+### Step 1
+
+Check whether the required page is already present in RAM.
+
+If Yes,
+
+it is a **Page Hit**.
+
+No replacement is needed.
+
+---
+
+### Step 2
+
+If the page is not present,
+
+a **Page Fault** occurs.
+
+---
+
+### Step 3
+
+If there is an empty frame,
+
+load the page into that frame.
+
+---
+
+### Step 4
+
+If RAM is full,
+
+remove the oldest page.
+
+---
+
+### Step 5
+
+Load the new page into the empty frame.
+
+---
+
+# Example
+
+Number of Frames:
+
+```
+3
+```
+
+Reference String:
+
+```
+7 0 1 2 0 3 0 4
+```
+
+Initially,
+
+all frames are empty.
+
+| Page | Frame 1 | Frame 2 | Frame 3 | Result |
+|------|---------|---------|---------|--------|
+| 7 | 7 | - | - | Fault |
+| 0 | 7 | 0 | - | Fault |
+| 1 | 7 | 0 | 1 | Fault |
+| 2 | 2 | 0 | 1 | Fault (7 removed) |
+| 0 | 2 | 0 | 1 | Hit |
+| 3 | 2 | 3 | 1 | Fault (0 removed) |
+| 0 | 2 | 3 | 0 | Fault (1 removed) |
+| 4 | 4 | 3 | 0 | Fault (2 removed) |
+
+Total:
+
+```
+Page Faults = 7
+
+Page Hits = 1
+```
+
+---
+
+# Queue Representation
+
+Initially:
+
+```
+7
+```
+
+Then,
+
+```
+7 → 0
+```
+
+Then,
+
+```
+7 → 0 → 1
+```
+
+Now,
+
+Page **2** arrives.
+
+RAM is full.
+
+Remove the oldest page:
+
+```
+Remove 7
+
+Queue:
+
+0 → 1 → 2
+```
+
+Similarly,
+
+every new page removes the oldest page.
+
+---
+
+# What is a Page Hit?
+
+A **Page Hit** occurs when the required page is already present in RAM.
+
+Example:
+
+Frames:
+
+```
+2
+
+0
+
+1
+```
+
+CPU requests:
+
+```
+0
+```
+
+Since Page **0** is already in RAM,
+
+it is a **Page Hit**.
+
+No replacement is needed.
+
+---
+
+# What is a Page Fault?
+
+A **Page Fault** occurs when the required page is not present in RAM.
+
+Example:
+
+Frames:
+
+```
+2
+
+0
+
+1
+```
+
+CPU requests:
+
+```
+3
+```
+
+Since Page **3** is not in RAM,
+
+a **Page Fault** occurs.
+
+FIFO removes the oldest page and loads Page **3**.
+
+---
+
+# What is Belady's Anomaly?
+
+Normally,
+
+increasing the number of frames should reduce Page Faults.
+
+However,
+
+in FIFO,
+
+sometimes increasing the number of frames actually **increases** the number of Page Faults.
+
+This unusual situation is called **Belady's Anomaly**.
+
+Example:
+
+```
+3 Frames → 9 Page Faults
+
+4 Frames → 10 Page Faults
+```
+
+More memory,
+
+but more Page Faults.
+
+This happens only in some Page Replacement Algorithms like FIFO.
+
+---
+
+# Advantages of FIFO
+
+### 1. Simple to Implement
+
+FIFO is very easy to understand and implement.
+
+---
+
+### 2. Low Overhead
+
+The Operating System only keeps track of the order in which pages entered RAM.
+
+---
+
+### 3. Fast
+
+Queue operations are simple and efficient.
+
+---
+
+# Disadvantages of FIFO
+
+### 1. Ignores Page Usage
+
+Frequently used pages may still be removed.
+
+---
+
+### 2. Belady's Anomaly
+
+Increasing memory may increase Page Faults.
+
+---
+
+### 3. More Page Faults
+
+FIFO generally performs worse than Optimal and LRU algorithms.
+
+---
+
+# Difference Between FIFO and LRU
+
+| FIFO | LRU |
+|------|------|
+| Removes the oldest page | Removes the least recently used page |
+| Based on arrival order | Based on recent usage |
+| Simpler | More efficient but more complex |
+| Suffers from Belady's Anomaly | Does not suffer from Belady's Anomaly |
+
+---
+
+# Real-Life Example
+
+Imagine people standing in a queue at a ticket counter.
+
+The first person who enters the queue leaves first.
+
+It does not matter whether that person visits the counter frequently.
+
+Similarly,
+
+FIFO removes the page that entered memory first.
+
+---
+
+# Quick Revision
+
+- FIFO stands for **First-In First-Out**.
+- The oldest page is replaced first.
+- FIFO uses the **Queue** principle.
+- If the required page is already in RAM → Page Hit.
+- Otherwise → Page Fault.
+- FIFO may suffer from **Belady's Anomaly**.
+
+---
+
+# Interview Questions
+
+### What is FIFO Page Replacement?
+
+FIFO is a page replacement algorithm in which the oldest page in RAM is replaced first.
+
+---
+
+### Which data structure is used in FIFO?
+
+**Queue**
+
+---
+
+### What is a Page Hit?
+
+A Page Hit occurs when the requested page is already present in RAM.
+
+---
+
+### What is a Page Fault?
+
+A Page Fault occurs when the requested page is not present in RAM.
+
+---
+
+### What is Belady's Anomaly?
+
+Belady's Anomaly is a situation where increasing the number of page frames increases the number of Page Faults.
+
+---
+
+### What is the biggest disadvantage of FIFO?
+
+FIFO may remove frequently used pages because it only considers the order in which pages entered RAM.
+
+---
+
+# Common Mistakes
+
+❌ FIFO removes the least recently used page.
+
+✅ Wrong.
+
+FIFO removes the **oldest page**.
+
+---
+
+❌ FIFO always gives the minimum Page Faults.
+
+✅ Wrong.
+
+The **Optimal Page Replacement Algorithm** gives the minimum Page Faults.
+
+---
+
+❌ FIFO never suffers from Belady's Anomaly.
+
+✅ Wrong.
+
+FIFO is the most common algorithm that suffers from **Belady's Anomaly**.
+
+---
+
+# Easy Way to Remember
+
+Think of a **queue**.
+
+👤 First person enters.
+
+👤 First person leaves.
+
+Exactly the same happens in FIFO.
+
+Remember:
+
+```
+New Page Arrives
+
+↓
+
+RAM Full?
+
+↓
+
+Yes
+
+↓
+
+Remove Oldest Page
+
+↓
+
+Load New Page
+
+↓
+
+Continue Execution
+```
+
+Remember these key points:
+
+```
+FIFO
+
+↓
+
+First In
+
+↓
+
+First Out
+
+↓
+
+Uses Queue
+
+↓
+
+Oldest Page Removed First
+```
