@@ -21584,3 +21584,376 @@ RAM
 
 Update TLB
 ```
+# Thrashing
+
+After learning Demand Paging and Page Replacement Algorithms,
+
+we know that whenever a required page is not present in RAM,
+
+a **Page Fault** occurs.
+
+A few Page Faults are normal.
+
+However,
+
+if Page Faults occur continuously,
+
+the Operating System spends more time loading pages from the Hard Disk than executing the actual program.
+
+This condition is called **Thrashing**.
+
+---
+
+# What is Thrashing?
+
+**Thrashing** is a condition in which the Operating System spends **more time swapping pages between RAM and the Hard Disk than executing the actual program.**
+
+In simple words,
+
+> **Thrashing is a condition of excessive Page Faults where the system spends most of its time replacing pages instead of executing processes.**
+
+---
+
+# Why does Thrashing occur?
+
+Thrashing occurs when the available RAM is insufficient for the running processes.
+
+As a result,
+
+pages are continuously removed and loaded back into RAM.
+
+This increases the Page Fault rate.
+
+Eventually,
+
+the CPU spends more time waiting for pages than executing instructions.
+
+---
+
+# Example
+
+Suppose,
+
+RAM has only **3 Frames**.
+
+A process repeatedly accesses the following pages:
+
+```
+1 2 3 4 1 2 3 4 1 2 3 4
+```
+
+RAM can store only three pages,
+
+but the process frequently needs four pages.
+
+Therefore,
+
+pages keep getting replaced.
+
+This causes continuous Page Faults.
+
+Instead of executing the program,
+
+the Operating System keeps swapping pages.
+
+This situation is called **Thrashing**.
+
+---
+
+# How Thrashing Happens
+
+### Step 1
+
+Many processes are loaded into RAM.
+
+---
+
+### Step 2
+
+Each process receives only a few frames.
+
+---
+
+### Step 3
+
+The required pages are not available in RAM.
+
+---
+
+### Step 4
+
+Page Faults occur repeatedly.
+
+---
+
+### Step 5
+
+The Operating System continuously swaps pages between RAM and the Hard Disk.
+
+---
+
+### Step 6
+
+CPU utilization decreases,
+
+and system performance becomes very poor.
+
+---
+
+# Symptoms of Thrashing
+
+- Very high Page Fault rate.
+- Low CPU utilization.
+- High Hard Disk activity.
+- Slow system performance.
+- Frequent page swapping.
+
+---
+
+# Causes of Thrashing
+
+### 1. Insufficient RAM
+
+Not enough memory is available for running processes.
+
+---
+
+### 2. Too Many Processes
+
+Many processes compete for limited RAM.
+
+---
+
+### 3. High Degree of Multiprogramming
+
+Too many programs execute simultaneously.
+
+---
+
+### 4. Frequent Page Replacement
+
+Useful pages are repeatedly removed and loaded again.
+
+---
+
+# Effects of Thrashing
+
+### 1. High Page Fault Rate
+
+Pages are continuously loaded and replaced.
+
+---
+
+### 2. Low CPU Utilization
+
+The CPU waits for pages instead of executing instructions.
+
+---
+
+### 3. Slow System Performance
+
+Applications become very slow.
+
+---
+
+### 4. High Disk Activity
+
+The Hard Disk is accessed continuously.
+
+---
+
+# How to Prevent Thrashing?
+
+### 1. Increase RAM
+
+More frames reduce Page Faults.
+
+---
+
+### 2. Reduce the Degree of Multiprogramming
+
+Run fewer processes simultaneously.
+
+---
+
+### 3. Allocate More Frames
+
+Provide enough frames to each process.
+
+---
+
+### 4. Use Better Page Replacement Algorithms
+
+Algorithms like **LRU** usually produce fewer unnecessary Page Faults.
+
+---
+
+# Difference Between Page Fault and Thrashing
+
+| Page Fault | Thrashing |
+|------------|-----------|
+| Missing page in RAM | Continuous excessive Page Faults |
+| Normal event | Undesirable condition |
+| OS loads one page | OS spends most time replacing pages |
+| Slight performance impact | Severe performance degradation |
+
+---
+
+# Real-Life Example
+
+Imagine you are studying.
+
+Your desk can hold only **one book**.
+
+Whenever you need another book,
+
+you return the current one to the bookshelf and bring the new one.
+
+If you spend more time changing books than studying,
+
+you are wasting your time.
+
+Here,
+
+- Desk = RAM
+- Bookshelf = Hard Disk
+- Book = Page
+
+This is exactly how **Thrashing** works.
+
+---
+
+# Quick Revision
+
+- Thrashing is caused by excessive Page Faults.
+- The Operating System spends more time swapping pages than executing programs.
+- CPU utilization becomes low.
+- Hard Disk activity becomes very high.
+- Increasing RAM helps reduce Thrashing.
+
+---
+
+# Interview Questions
+
+### What is Thrashing?
+
+Thrashing is a condition where the Operating System spends more time swapping pages between RAM and the Hard Disk than executing the actual program.
+
+---
+
+### Why does Thrashing occur?
+
+Because of excessive Page Faults caused by insufficient memory or too many running processes.
+
+---
+
+### What happens to CPU utilization during Thrashing?
+
+CPU utilization decreases because the CPU waits for pages to be loaded from the Hard Disk.
+
+---
+
+### How can Thrashing be prevented?
+
+- Increase RAM.
+- Reduce the number of running processes.
+- Allocate more frames.
+- Use efficient page replacement algorithms like LRU.
+
+---
+
+### Is every Page Fault an example of Thrashing?
+
+No.
+
+A few Page Faults are normal.
+
+Thrashing occurs only when Page Faults become excessive.
+
+---
+
+# Common Mistakes
+
+❌ Every Page Fault means Thrashing.
+
+✅ Wrong.
+
+A Page Fault is normal.
+
+Thrashing means continuous excessive Page Faults.
+
+---
+
+❌ Thrashing increases CPU utilization.
+
+✅ Wrong.
+
+Thrashing reduces CPU utilization.
+
+---
+
+❌ Thrashing improves system performance.
+
+✅ Wrong.
+
+Thrashing makes the system very slow.
+
+---
+
+# Easy Way to Remember
+
+Think of studying with only **one book on your desk**.
+
+📚 Books = Pages
+
+🪑 Desk = RAM
+
+📖 Bookshelf = Hard Disk
+
+If you spend more time changing books than studying,
+
+that is **Thrashing**.
+
+Remember this flow:
+
+```
+Too Many Processes
+
+↓
+
+Insufficient RAM
+
+↓
+
+Excessive Page Faults
+
+↓
+
+Continuous Page Swapping
+
+↓
+
+Low CPU Utilization
+
+↓
+
+Thrashing
+```
+
+Memory Trick:
+
+```
+Thrashing
+
+↓
+
+Too Many Page Faults
+
+↓
+
+Too Much Swapping
+
+↓
+
+Too Little Execution
+```
