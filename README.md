@@ -18278,3 +18278,428 @@ One easy trick:
 **Paging = Physical Division**
 
 **Segmentation = Logical Division**
+# Virtual Memory
+
+After learning Paging and Segmentation, we now study **Virtual Memory**.
+
+RAM (Main Memory) is limited.
+
+Sometimes,
+
+a program is larger than the available RAM.
+
+Even then,
+
+the Operating System allows the program to execute.
+
+This is possible because of **Virtual Memory**.
+
+---
+
+# What is Virtual Memory?
+
+**Virtual Memory** is a memory management technique that allows a program larger than the available RAM to execute by using the Hard Disk (or SSD) as an extension of RAM.
+
+Only the required pages are loaded into RAM.
+
+The remaining pages stay on secondary storage.
+
+In simple words,
+
+> **Virtual Memory uses secondary storage to extend the available main memory.**
+
+---
+
+# Why do we need Virtual Memory?
+
+Suppose,
+
+your computer has:
+
+```
+RAM = 8 GB
+```
+
+Now,
+
+you want to execute a program of:
+
+```
+12 GB
+```
+
+The entire program cannot fit into RAM.
+
+Without Virtual Memory,
+
+the program cannot execute.
+
+With Virtual Memory,
+
+only the required pages are loaded into RAM.
+
+The remaining pages stay on the Hard Disk.
+
+Thus,
+
+the program executes successfully.
+
+---
+
+# Basic Idea of Virtual Memory
+
+Instead of loading the entire program,
+
+the Operating System loads only the pages that are currently needed.
+
+Example:
+
+Program:
+
+```
+Page 0
+
+Page 1
+
+Page 2
+
+Page 3
+
+Page 4
+
+Page 5
+```
+
+Initially,
+
+RAM contains:
+
+```
+Page 0
+
+Page 2
+
+Page 5
+```
+
+The remaining pages:
+
+```
+Page 1
+
+Page 3
+
+Page 4
+```
+
+remain on the Hard Disk.
+
+Whenever they are needed,
+
+they are brought into RAM.
+
+---
+
+# How Virtual Memory Works
+
+### Step 1
+
+The program starts execution.
+
+---
+
+### Step 2
+
+Only the required pages are loaded into RAM.
+
+---
+
+### Step 3
+
+The CPU requests a page.
+
+If the page is already in RAM,
+
+execution continues normally.
+
+---
+
+### Step 4
+
+If the page is not in RAM,
+
+a **Page Fault** occurs.
+
+---
+
+### Step 5
+
+The Operating System loads the required page from the Hard Disk into RAM.
+
+If RAM is full,
+
+one existing page is removed using a **Page Replacement Algorithm**.
+
+---
+
+### Step 6
+
+Execution continues.
+
+---
+
+# Relation Between Paging and Virtual Memory
+
+Virtual Memory is generally implemented using **Paging**.
+
+- Process is divided into Pages.
+- RAM is divided into Frames.
+- Only the required pages are loaded into RAM.
+
+Therefore,
+
+Paging is the foundation of Virtual Memory.
+
+---
+
+# Example
+
+Suppose,
+
+RAM can store only **4 pages**.
+
+The program contains **8 pages**.
+
+Initially,
+
+RAM contains:
+
+```
+Page 0
+
+Page 1
+
+Page 2
+
+Page 3
+```
+
+Now,
+
+the CPU requests:
+
+```
+Page 6
+```
+
+Since Page 6 is not in RAM,
+
+a **Page Fault** occurs.
+
+The Operating System loads Page 6 into RAM.
+
+If RAM is already full,
+
+one page is replaced by Page 6.
+
+Execution then continues.
+
+---
+
+# Advantages of Virtual Memory
+
+### 1. Execute Large Programs
+
+Programs larger than RAM can execute successfully.
+
+---
+
+### 2. Better Memory Utilization
+
+Only the required pages occupy RAM.
+
+---
+
+### 3. Supports Multiprogramming
+
+More processes can run simultaneously because every process does not need to be completely loaded into RAM.
+
+---
+
+### 4. Efficient Use of RAM
+
+Unused pages remain on secondary storage instead of occupying RAM.
+
+---
+
+# Disadvantages of Virtual Memory
+
+### 1. Page Fault Overhead
+
+Loading pages from the Hard Disk is much slower than accessing RAM.
+
+---
+
+### 2. Performance Degradation
+
+Too many Page Faults reduce system performance.
+
+---
+
+### 3. Requires Secondary Storage
+
+Virtual Memory depends on the Hard Disk or SSD.
+
+---
+
+# Difference Between Physical Memory and Virtual Memory
+
+| Physical Memory | Virtual Memory |
+|-----------------|----------------|
+| Actual RAM | Uses RAM + Hard Disk |
+| Limited in size | Appears larger than RAM |
+| Faster | Slower because disk access may be required |
+| Stores active pages | Stores active and inactive pages |
+
+---
+
+# Real-Life Example
+
+Imagine a study table and a bookshelf.
+
+- Study Table = RAM
+- Bookshelf = Hard Disk
+- Book Chapters = Pages
+
+You keep only the chapter you are currently reading on the table.
+
+The remaining chapters stay on the bookshelf.
+
+Whenever you need another chapter,
+
+you replace the current chapter with the required one.
+
+This is exactly how Virtual Memory works.
+
+---
+
+# Quick Revision
+
+- Virtual Memory allows programs larger than RAM to execute.
+- It uses the Hard Disk as an extension of RAM.
+- Only required pages are loaded into RAM.
+- Remaining pages stay on secondary storage.
+- A missing page causes a **Page Fault**.
+- Paging is the basis of Virtual Memory.
+
+---
+
+# Interview Questions
+
+### What is Virtual Memory?
+
+Virtual Memory is a memory management technique that allows programs larger than RAM to execute by using secondary storage as an extension of RAM.
+
+---
+
+### Why is Virtual Memory needed?
+
+Because RAM is limited, and large programs may not fit completely into RAM.
+
+---
+
+### How is Virtual Memory implemented?
+
+Using Paging.
+
+---
+
+### What happens when the required page is not in RAM?
+
+A **Page Fault** occurs, and the Operating System loads the page from the Hard Disk into RAM.
+
+---
+
+### Can a program larger than RAM execute?
+
+Yes.
+
+Virtual Memory makes this possible by loading only the required pages into RAM.
+
+---
+
+### Does Virtual Memory increase the actual RAM size?
+
+No.
+
+It does not increase physical RAM.
+
+It only uses secondary storage to provide the illusion of larger memory.
+
+---
+
+# Common Mistakes
+
+❌ Virtual Memory increases the physical size of RAM.
+
+✅ Wrong.
+
+It only uses the Hard Disk as an extension of RAM.
+
+---
+
+❌ The entire program is always loaded into RAM.
+
+✅ Wrong.
+
+Only the required pages are loaded.
+
+---
+
+❌ Virtual Memory is faster than RAM.
+
+✅ Wrong.
+
+Accessing the Hard Disk is much slower than accessing RAM.
+
+---
+
+# Easy Way to Remember
+
+Think of a **study table**.
+
+📚 Bookshelf = Hard Disk
+
+🪑 Study Table = RAM
+
+📖 Chapter = Page
+
+Keep only the chapter you are currently reading on the table.
+
+The remaining chapters stay on the bookshelf.
+
+Whenever required,
+
+bring another chapter from the bookshelf and replace the old one.
+
+Remember these key points:
+
+```
+RAM is Limited
+
+↓
+
+Virtual Memory uses Hard Disk
+
+↓
+
+Only Required Pages are loaded
+
+↓
+
+Missing Page → Page Fault
+
+↓
+
+Execution Continues
+```
