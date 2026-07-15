@@ -20104,3 +20104,413 @@ Minimum Page Faults
 
 Not Practical
 ```
+# LRU (Least Recently Used) Page Replacement Algorithm
+
+After learning FIFO and Optimal Page Replacement,
+
+we now study **LRU (Least Recently Used)**.
+
+FIFO removes the oldest page,
+
+while Optimal removes the page that will be used farthest in the future.
+
+However,
+
+future page references are unknown.
+
+Therefore,
+
+Operating Systems use **LRU**, which makes decisions based on the **past usage** of pages.
+
+---
+
+# What is LRU?
+
+**LRU (Least Recently Used)** is a page replacement algorithm that replaces the page that **has not been used for the longest time in the past**.
+
+In simple words,
+
+> **LRU removes the page that was used least recently.**
+
+---
+
+# Why do we need LRU?
+
+Suppose,
+
+RAM contains:
+
+```
+7
+
+0
+
+1
+```
+
+Recent page usage:
+
+```
+Most Recently Used → 1
+
+Then → 0
+
+Least Recently Used → 7
+```
+
+Now,
+
+the CPU requests:
+
+```
+2
+```
+
+RAM is full.
+
+LRU removes **7** because it has not been used for the longest time.
+
+---
+
+# Basic Idea
+
+The main assumption of LRU is:
+
+> **If a page has not been used for a long time, it is less likely to be used again soon.**
+
+Therefore,
+
+replace the least recently used page.
+
+---
+
+# LRU Algorithm
+
+### Step 1
+
+Check whether the required page is already present in RAM.
+
+If Yes,
+
+it is a **Page Hit**.
+
+Update its recent usage information.
+
+---
+
+### Step 2
+
+If the page is not present,
+
+a **Page Fault** occurs.
+
+---
+
+### Step 3
+
+If there is an empty frame,
+
+load the page.
+
+---
+
+### Step 4
+
+If RAM is full,
+
+find the page that has not been used for the longest time.
+
+Remove that page.
+
+---
+
+### Step 5
+
+Load the new page and update the recent usage information.
+
+---
+
+# Example
+
+Number of Frames:
+
+```
+3
+```
+
+Reference String:
+
+```
+7 0 1 2 0 3 0 4
+```
+
+Initially,
+
+all frames are empty.
+
+| Page | Frame 1 | Frame 2 | Frame 3 | Result |
+|------|---------|---------|---------|--------|
+| 7 | 7 | - | - | Fault |
+| 0 | 7 | 0 | - | Fault |
+| 1 | 7 | 0 | 1 | Fault |
+| 2 | 2 | 0 | 1 | Fault (7 removed) |
+| 0 | 2 | 0 | 1 | Hit |
+| 3 | 2 | 0 | 3 | Fault (1 removed) |
+| 0 | 2 | 0 | 3 | Hit |
+| 4 | 4 | 0 | 3 | Fault (2 removed) |
+
+Total:
+
+```
+Page Faults = 6
+
+Page Hits = 2
+```
+
+For this reference string,
+
+LRU gives the same result as the Optimal algorithm.
+
+---
+
+# How is LRU Implemented?
+
+There are two common methods.
+
+## 1. Counter (Timestamp) Method
+
+Every page stores the time of its last access.
+
+Whenever a page is accessed,
+
+its timestamp is updated.
+
+The page with the oldest timestamp is replaced.
+
+---
+
+## 2. Stack (Doubly Linked List) Method
+
+Whenever a page is accessed,
+
+it is moved to the top of the stack.
+
+The page at the bottom is the **Least Recently Used** page.
+
+This page is replaced when needed.
+
+---
+
+# Advantages of LRU
+
+### 1. Better than FIFO
+
+LRU considers page usage instead of arrival time.
+
+---
+
+### 2. Good Performance
+
+It usually produces fewer Page Faults than FIFO.
+
+---
+
+### 3. No Belady's Anomaly
+
+Increasing the number of frames does not increase the number of Page Faults.
+
+---
+
+### 4. Practical Algorithm
+
+Unlike Optimal,
+
+LRU does not require future knowledge.
+
+---
+
+# Disadvantages of LRU
+
+### 1. More Complex
+
+The Operating System must keep track of recent page usage.
+
+---
+
+### 2. Extra Overhead
+
+Every page access requires updating timestamps or stack positions.
+
+---
+
+# Difference Between FIFO, Optimal, and LRU
+
+| Feature | FIFO | Optimal | LRU |
+|----------|------|---------|-----|
+| Replacement Basis | Oldest page | Farthest future use | Least recently used |
+| Future Knowledge Required | ❌ No | ✅ Yes | ❌ No |
+| Practical | ✅ Yes | ❌ No | ✅ Yes |
+| Belady's Anomaly | ✅ Yes | ❌ No | ❌ No |
+| Performance | Lower | Best | Close to Optimal |
+
+---
+
+# Real-Life Example
+
+Imagine your study table can hold only **3 books**.
+
+A new book arrives,
+
+but the table is already full.
+
+Instead of removing the oldest book,
+
+you remove the book that you **have not read for the longest time**.
+
+This is exactly how **LRU** works.
+
+---
+
+# Quick Revision
+
+- LRU stands for **Least Recently Used**.
+- It removes the page that has not been used for the longest time.
+- It uses **past usage**, not future knowledge.
+- It performs better than FIFO in most cases.
+- It does not suffer from **Belady's Anomaly**.
+- It can be implemented using **Counters** or a **Stack**.
+
+---
+
+# Interview Questions
+
+### What is LRU Page Replacement?
+
+LRU is a page replacement algorithm that removes the page that has not been used for the longest time.
+
+---
+
+### Why is LRU better than FIFO?
+
+Because it considers recent page usage,
+
+while FIFO only considers the order in which pages entered RAM.
+
+---
+
+### Does LRU require future knowledge?
+
+No.
+
+It only uses past page usage.
+
+---
+
+### Does LRU suffer from Belady's Anomaly?
+
+No.
+
+---
+
+### How can LRU be implemented?
+
+Using:
+
+- Counters (Timestamps)
+- Stack (Doubly Linked List)
+
+---
+
+# Common Mistakes
+
+❌ LRU removes the oldest page.
+
+✅ Wrong.
+
+LRU removes the **Least Recently Used** page.
+
+---
+
+❌ LRU requires future knowledge.
+
+✅ Wrong.
+
+Only the **Optimal Page Replacement Algorithm** requires future knowledge.
+
+---
+
+❌ LRU suffers from Belady's Anomaly.
+
+✅ Wrong.
+
+LRU does **not** suffer from Belady's Anomaly.
+
+---
+
+# Easy Way to Remember
+
+Think of your **study table**.
+
+📚 Study Table = RAM
+
+📖 Books = Pages
+
+The table is full.
+
+A new book arrives.
+
+Remove the book that you **haven't read for the longest time**.
+
+This is exactly how **LRU** works.
+
+Remember this flow:
+
+```
+New Page Arrives
+
+↓
+
+RAM Full?
+
+↓
+
+Yes
+
+↓
+
+Find Least Recently Used Page
+
+↓
+
+Remove It
+
+↓
+
+Load New Page
+
+↓
+
+Continue Execution
+```
+
+Remember these key points:
+
+```
+LRU
+
+↓
+
+Uses Past History
+
+↓
+
+Remove Least Recently Used Page
+
+↓
+
+No Future Knowledge Needed
+
+↓
+
+No Belady's Anomaly
+```
