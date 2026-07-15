@@ -20514,3 +20514,546 @@ No Future Knowledge Needed
 
 No Belady's Anomaly
 ```
+# Clock (Second Chance) Page Replacement Algorithm
+
+After learning FIFO, Optimal, and LRU,
+
+we now study the **Clock (Second Chance) Page Replacement Algorithm**.
+
+LRU gives good performance,
+
+but it requires maintaining the recent usage history of every page.
+
+This increases overhead.
+
+To reduce this overhead,
+
+Operating Systems use the **Clock Algorithm**, which approximates LRU using only one **Reference Bit**.
+
+---
+
+# What is Clock (Second Chance) Page Replacement?
+
+**Clock (Second Chance)** is a page replacement algorithm that gives recently used pages **one extra chance** before replacing them.
+
+It uses:
+
+- A **Reference Bit (R Bit)** for every page.
+- A circular pointer called the **Clock Hand**.
+
+In simple words,
+
+> **If a page was used recently, do not replace it immediately. Give it one more chance.**
+
+---
+
+# Why is it called Second Chance?
+
+Suppose the Clock Hand points to a page.
+
+If:
+
+```
+Reference Bit = 1
+```
+
+The page gets another chance.
+
+The Operating System changes the Reference Bit to **0** and moves to the next page.
+
+If:
+
+```
+Reference Bit = 0
+```
+
+The page is replaced immediately.
+
+---
+
+# What is the Reference Bit?
+
+Every page has one Reference Bit.
+
+```
+Reference Bit = 1
+```
+
+The page has been used recently.
+
+```
+Reference Bit = 0
+```
+
+The page has not been used recently.
+
+Whenever a page is accessed,
+
+its Reference Bit becomes **1**.
+
+---
+
+# Why is it called the Clock Algorithm?
+
+The pages are arranged in a circular manner.
+
+The pointer keeps moving in a circle like the hand of a clock.
+
+```
+      P1
+   ↗      ↘
+ P4        P2
+   ↖      ↙
+      P3
+```
+
+The pointer keeps rotating until it finds a page whose Reference Bit is **0**.
+
+---
+
+# Clock Algorithm
+
+### Step 1
+
+A Page Fault occurs and RAM is full.
+
+---
+
+### Step 2
+
+Check the page pointed to by the Clock Hand.
+
+---
+
+### Step 3
+
+If the Reference Bit is **0**,
+
+replace that page.
+
+---
+
+### Step 4
+
+If the Reference Bit is **1**,
+
+change it to **0**,
+
+give it a second chance,
+
+and move the Clock Hand to the next page.
+
+---
+
+### Step 5
+
+Repeat the process until a page with Reference Bit **0** is found.
+
+---
+
+### Step 6
+
+Replace that page with the new page.
+
+---
+
+# Example
+
+### Number of Frames
+
+```
+3
+```
+
+### Reference String
+
+```
+1 2 3 2 4
+```
+
+Initially,
+
+all frames are empty.
+
+Clock Hand starts from Frame 1.
+
+---
+
+## Step 1
+
+Page = 1
+
+Frames:
+
+```
+1 - -
+```
+
+Reference Bits:
+
+```
+1 - -
+```
+
+Page Fault
+
+---
+
+## Step 2
+
+Page = 2
+
+Frames:
+
+```
+1 2 -
+```
+
+Reference Bits:
+
+```
+1 1 -
+```
+
+Page Fault
+
+---
+
+## Step 3
+
+Page = 3
+
+Frames:
+
+```
+1 2 3
+```
+
+Reference Bits:
+
+```
+1 1 1
+```
+
+Page Fault
+
+RAM is now full.
+
+Clock Hand points to Page 1.
+
+---
+
+## Step 4
+
+Page = 2
+
+Page 2 is already present.
+
+Page Hit
+
+Reference Bit remains:
+
+```
+1 1 1
+```
+
+---
+
+## Step 5
+
+Page = 4
+
+Page Fault
+
+RAM is full.
+
+Clock Hand starts checking.
+
+### Page 1
+
+Reference Bit = 1
+
+↓
+
+Set it to 0
+
+↓
+
+Move ahead
+
+Bits become:
+
+```
+0 1 1
+```
+
+---
+
+### Page 2
+
+Reference Bit = 1
+
+↓
+
+Set it to 0
+
+↓
+
+Move ahead
+
+Bits become:
+
+```
+0 0 1
+```
+
+---
+
+### Page 3
+
+Reference Bit = 1
+
+↓
+
+Set it to 0
+
+↓
+
+Move ahead
+
+Bits become:
+
+```
+0 0 0
+```
+
+---
+
+### Clock Hand comes back to Page 1
+
+Reference Bit = 0
+
+Replace Page 1 with Page 4.
+
+Frames become:
+
+```
+4 2 3
+```
+
+Reference Bits:
+
+```
+1 0 0
+```
+
+(The new page gets Reference Bit = 1.)
+
+---
+
+# Final Result
+
+| Page | Frames | R Bits | Result |
+|------|--------|--------|--------|
+| 1 | 1 - - | 1 - - | Fault |
+| 2 | 1 2 - | 1 1 - | Fault |
+| 3 | 1 2 3 | 1 1 1 | Fault |
+| 2 | 1 2 3 | 1 1 1 | Hit |
+| 4 | 4 2 3 | 1 0 0 | Fault |
+
+```
+Page Faults = 4
+
+Page Hits = 1
+```
+
+---
+
+# Advantages
+
+### 1. Less Overhead
+
+Only one Reference Bit is maintained for each page.
+
+---
+
+### 2. Faster than LRU
+
+No timestamps or stack are required.
+
+---
+
+### 3. Good Performance
+
+Performance is close to LRU.
+
+---
+
+### 4. Practical
+
+Many Operating Systems use this approach because it balances simplicity and efficiency.
+
+---
+
+# Disadvantages
+
+### 1. Approximation of LRU
+
+It does not always replace the exact Least Recently Used page.
+
+---
+
+### 2. Multiple Rotations
+
+Sometimes the Clock Hand may need more than one complete rotation before finding a page with Reference Bit = 0.
+
+---
+
+# Difference Between LRU and Clock
+
+| LRU | Clock |
+|-----|-------|
+| Removes Least Recently Used page | Gives recently used pages a second chance |
+| Uses timestamps or stack | Uses Reference Bit |
+| More accurate | Approximation of LRU |
+| Higher overhead | Lower overhead |
+
+---
+
+# Real-Life Example
+
+Imagine four students sitting in a circle.
+
+The teacher wants one student to leave.
+
+If a student answered recently,
+
+the teacher says,
+
+"You get one more chance."
+
+The teacher moves to the next student.
+
+The first student who has **not participated recently** leaves the classroom.
+
+This is exactly how the Clock Algorithm works.
+
+---
+
+# Quick Revision
+
+- Clock Algorithm is an approximation of LRU.
+- Uses one **Reference Bit** per page.
+- Uses a circular pointer called the **Clock Hand**.
+- R = 1 → Give a Second Chance.
+- R = 0 → Replace the page.
+- Lower overhead than LRU.
+
+---
+
+# Interview Questions
+
+### What is the Clock Algorithm?
+
+The Clock Algorithm is a page replacement algorithm that gives recently used pages a second chance before replacing them.
+
+---
+
+### Why is it called Second Chance?
+
+Because a page with Reference Bit = 1 is not replaced immediately.
+
+---
+
+### What is the Reference Bit?
+
+A bit that indicates whether a page has been used recently.
+
+- 1 → Recently Used
+- 0 → Not Recently Used
+
+---
+
+### Why is Clock preferred over LRU?
+
+Because it provides similar performance with much lower overhead.
+
+---
+
+### Does the Clock Algorithm use timestamps?
+
+No.
+
+It only uses the Reference Bit.
+
+---
+
+# Common Mistakes
+
+❌ Clock always behaves exactly like LRU.
+
+✅ Wrong.
+
+It is only an approximation of LRU.
+
+---
+
+❌ A page with Reference Bit = 1 is replaced immediately.
+
+✅ Wrong.
+
+It gets a second chance.
+
+---
+
+❌ Clock uses timestamps.
+
+✅ Wrong.
+
+Clock uses only the Reference Bit.
+
+---
+
+# Easy Way to Remember
+
+Remember this simple rule:
+
+```
+Reference Bit = 1
+
+↓
+
+Second Chance
+
+↓
+
+Set Bit = 0
+
+↓
+
+Move Clock Hand
+```
+
+```
+Reference Bit = 0
+
+↓
+
+Replace the Page
+```
+
+Memory Trick:
+
+```
+R = 1
+
+↓
+
+"Give me one more chance."
+
+R = 0
+
+↓
+
+"Replace me."
+```
