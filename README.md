@@ -18703,3 +18703,488 @@ Missing Page → Page Fault
 
 Execution Continues
 ```
+# Demand Paging
+
+After learning Virtual Memory, we now study **Demand Paging**.
+
+In Virtual Memory,
+
+only the required pages are loaded into RAM.
+
+But an important question arises:
+
+**When should a page be loaded into RAM?**
+
+The answer is:
+
+**Load the page only when it is actually needed.**
+
+This technique is called **Demand Paging**.
+
+---
+
+# What is Demand Paging?
+
+**Demand Paging** is a memory management technique in which a page is loaded into RAM only when it is required during program execution.
+
+If a page is never used,
+
+it is never loaded into memory.
+
+In simple words,
+
+> **Demand Paging loads pages into RAM only on demand (when needed).**
+
+---
+
+# Why do we need Demand Paging?
+
+Suppose,
+
+a program contains:
+
+```
+Page 0
+
+Page 1
+
+Page 2
+
+Page 3
+
+Page 4
+```
+
+If the Operating System loads all pages into RAM,
+
+a large amount of memory is occupied,
+
+even though many pages may never be used.
+
+Demand Paging solves this problem by loading only the required pages.
+
+This saves RAM and improves memory utilization.
+
+---
+
+# Basic Idea
+
+Initially,
+
+only a few pages are loaded into RAM.
+
+Example:
+
+Program:
+
+```
+Page 0
+
+Page 1
+
+Page 2
+
+Page 3
+
+Page 4
+```
+
+RAM:
+
+```
+Page 0
+
+Page 1
+```
+
+Hard Disk:
+
+```
+Page 2
+
+Page 3
+
+Page 4
+```
+
+Later,
+
+if the CPU requests Page 3,
+
+the Operating System loads Page 3 into RAM.
+
+---
+
+# What is a Page Fault?
+
+A **Page Fault** occurs when the CPU requests a page that is **not currently present in RAM**.
+
+The Operating System temporarily stops execution,
+
+loads the required page from the Hard Disk,
+
+and then continues execution.
+
+In simple words,
+
+> **A Page Fault occurs when a required page is missing from RAM.**
+
+---
+
+# Steps of Page Fault Handling
+
+### Step 1
+
+The CPU requests a page.
+
+---
+
+### Step 2
+
+The Operating System checks the Page Table.
+
+---
+
+### Step 3
+
+If the page is already in RAM,
+
+execution continues normally.
+
+---
+
+### Step 4
+
+If the page is not in RAM,
+
+a **Page Fault** occurs.
+
+---
+
+### Step 5
+
+The Operating System loads the required page from the Hard Disk into RAM.
+
+If RAM is full,
+
+one existing page is removed using a **Page Replacement Algorithm**.
+
+---
+
+### Step 6
+
+The Page Table is updated.
+
+---
+
+### Step 7
+
+The interrupted instruction is restarted.
+
+Execution continues normally.
+
+---
+
+# Flow of Demand Paging
+
+```
+CPU Requests Page
+
+↓
+
+Check Page Table
+
+↓
+
+Page Present?
+
+↓
+
+Yes → Continue Execution
+
+↓
+
+No
+
+↓
+
+Page Fault
+
+↓
+
+Load Page from Hard Disk
+
+↓
+
+Update Page Table
+
+↓
+
+Restart Instruction
+
+↓
+
+Continue Execution
+```
+
+---
+
+# Valid Page Fault
+
+A **Valid Page Fault** occurs when:
+
+- The requested page belongs to the process.
+- The page is simply not loaded into RAM yet.
+
+Example:
+
+A process contains **Page 5**,
+
+but Page 5 is currently on the Hard Disk.
+
+When the CPU requests Page 5,
+
+the Operating System loads it into RAM.
+
+This is a **Valid Page Fault**.
+
+---
+
+# Invalid Page Fault
+
+An **Invalid Page Fault** occurs when:
+
+- The requested page does not belong to the process.
+- The requested memory address is illegal.
+
+Example:
+
+A process contains only **10 pages**.
+
+If it requests **Page 20**,
+
+the Operating System treats it as an invalid memory reference.
+
+Usually,
+
+the process is terminated.
+
+---
+
+# Demand Paging vs Normal Paging
+
+| Paging | Demand Paging |
+|---------|---------------|
+| Pages may be loaded before execution. | Pages are loaded only when needed. |
+| Uses more RAM. | Uses less RAM. |
+| Faster first access. | First access to a missing page causes a Page Fault. |
+
+---
+
+# Advantages of Demand Paging
+
+### 1. Better Memory Utilization
+
+Only required pages occupy RAM.
+
+---
+
+### 2. Faster Program Startup
+
+The Operating System does not need to load the entire program before execution.
+
+---
+
+### 3. Supports Large Programs
+
+Programs larger than RAM can execute efficiently.
+
+---
+
+### 4. Supports Multiprogramming
+
+More processes can remain active because every process does not occupy all of its pages in RAM.
+
+---
+
+# Disadvantages of Demand Paging
+
+### 1. Page Fault Overhead
+
+Loading a page from the Hard Disk is slower than accessing RAM.
+
+---
+
+### 2. Slower First Access
+
+The first access to a missing page takes extra time.
+
+---
+
+### 3. Excessive Page Faults
+
+Too many Page Faults reduce system performance.
+
+This situation is called **Thrashing**.
+
+---
+
+# Real-Life Example
+
+Imagine a library.
+
+You do not borrow every book at once.
+
+Instead,
+
+you borrow a book only when you need it.
+
+If the required book is not on your study table,
+
+you go to the library and bring it.
+
+Here,
+
+- Library = Hard Disk
+- Study Table = RAM
+- Book = Page
+- Borrowing a Book = Demand Paging
+- Going to the Library = Page Fault
+
+This is exactly how Demand Paging works.
+
+---
+
+# Quick Revision
+
+- Demand Paging loads pages only when required.
+- Unused pages remain on the Hard Disk.
+- Missing page in RAM causes a Page Fault.
+- The Operating System loads the page into RAM.
+- If RAM is full,
+  one page is replaced.
+- Execution then continues normally.
+
+---
+
+# Interview Questions
+
+### What is Demand Paging?
+
+Demand Paging is a memory management technique in which pages are loaded into RAM only when they are required.
+
+---
+
+### What is a Page Fault?
+
+A Page Fault occurs when the required page is not present in RAM.
+
+---
+
+### What happens after a Page Fault?
+
+The Operating System loads the required page from the Hard Disk, updates the Page Table, and restarts the interrupted instruction.
+
+---
+
+### What is the difference between a Valid and an Invalid Page Fault?
+
+**Valid Page Fault:** The page belongs to the process but is not in RAM.
+
+**Invalid Page Fault:** The page does not belong to the process or the address is illegal.
+
+---
+
+### Why is Demand Paging better than loading the entire program?
+
+Because only the required pages are loaded,
+
+which saves RAM and improves memory utilization.
+
+---
+
+# Common Mistakes
+
+❌ A Page Fault means the Operating System has failed.
+
+✅ Wrong.
+
+A Page Fault is a normal event in Demand Paging.
+
+---
+
+❌ Every Page Fault is invalid.
+
+✅ Wrong.
+
+Most Page Faults during normal execution are **Valid Page Faults**.
+
+---
+
+❌ Demand Paging loads the complete program into RAM.
+
+✅ Wrong.
+
+Only the required pages are loaded.
+
+---
+
+# Easy Way to Remember
+
+Think of a **library**.
+
+📚 Library = Hard Disk
+
+🪑 Study Table = RAM
+
+📖 Book = Page
+
+You bring a book to your table only when you need it.
+
+If the book is not on the table,
+
+you go to the library and bring it.
+
+This is exactly what happens during a **Page Fault**.
+
+Remember this flow:
+
+```
+Need Page
+
+↓
+
+Check RAM
+
+↓
+
+Present?
+
+↓
+
+Yes → Continue Execution
+
+No → Page Fault
+
+↓
+
+Load from Hard Disk
+
+↓
+
+Update Page Table
+
+↓
+
+Restart Instruction
+
+↓
+
+Continue Execution
+```
+
+Remember these key points:
+
+- **Demand Paging → Load pages only when needed**
+- **Missing Page → Page Fault**
+- **Page Fault → Load page from Disk → Continue Execution**
