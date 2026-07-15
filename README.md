@@ -19688,3 +19688,419 @@ Uses Queue
 
 Oldest Page Removed First
 ```
+# Optimal Page Replacement Algorithm
+
+After learning FIFO, we now study the **Optimal Page Replacement Algorithm**.
+
+FIFO removes the oldest page from RAM.
+
+However,
+
+the oldest page may be needed again very soon,
+
+which increases the number of Page Faults.
+
+Optimal Page Replacement solves this problem by making the best possible replacement decision.
+
+---
+
+# What is Optimal Page Replacement?
+
+**Optimal Page Replacement** is a page replacement algorithm that replaces the page whose **next use is farthest in the future** (or is never used again).
+
+In simple words,
+
+> **Replace the page that will be used last in the future.**
+
+It always produces the **minimum possible number of Page Faults**.
+
+---
+
+# Why do we need Optimal Page Replacement?
+
+Suppose,
+
+RAM contains:
+
+```
+7
+
+0
+
+1
+```
+
+Now,
+
+the CPU requests:
+
+```
+2
+```
+
+Future Reference String:
+
+```
+0 3 0 4 2 3
+```
+
+Future usage:
+
+```
+7 → Never used again
+
+0 → Used immediately
+
+1 → Never used again
+```
+
+The best choice is to remove **7** (or **1**),
+
+because they are never used again.
+
+This minimizes future Page Faults.
+
+---
+
+# Basic Idea
+
+Whenever RAM is full,
+
+look at the future reference string.
+
+Remove the page that will be used **last in the future**.
+
+If a page is never used again,
+
+remove it immediately.
+
+---
+
+# Algorithm
+
+### Step 1
+
+Check whether the required page is already present in RAM.
+
+If Yes,
+
+it is a **Page Hit**.
+
+---
+
+### Step 2
+
+If the page is not present,
+
+a **Page Fault** occurs.
+
+---
+
+### Step 3
+
+If there is an empty frame,
+
+load the page.
+
+---
+
+### Step 4
+
+If RAM is full,
+
+look at the future reference string.
+
+Find the page whose next use is farthest in the future.
+
+Remove that page.
+
+---
+
+### Step 5
+
+Load the new page.
+
+---
+
+# Example
+
+Number of Frames:
+
+```
+3
+```
+
+Reference String:
+
+```
+7 0 1 2 0 3 0 4
+```
+
+Initially,
+
+all frames are empty.
+
+| Page | Frame 1 | Frame 2 | Frame 3 | Result |
+|------|---------|---------|---------|--------|
+| 7 | 7 | - | - | Fault |
+| 0 | 7 | 0 | - | Fault |
+| 1 | 7 | 0 | 1 | Fault |
+| 2 | 2 | 0 | 1 | Fault (7 removed) |
+| 0 | 2 | 0 | 1 | Hit |
+| 3 | 2 | 0 | 3 | Fault (1 removed) |
+| 0 | 2 | 0 | 3 | Hit |
+| 4 | 4 | 0 | 3 | Fault (2 removed) |
+
+Total:
+
+```
+Page Faults = 6
+
+Page Hits = 2
+```
+
+---
+
+# Why is it called "Optimal"?
+
+The algorithm always chooses the **best possible page to replace**.
+
+Therefore,
+
+no other Page Replacement Algorithm can produce fewer Page Faults for the same reference string.
+
+Hence,
+
+it is called **Optimal Page Replacement**.
+
+---
+
+# Why is Optimal not used in Real Operating Systems?
+
+To make the optimal decision,
+
+the Operating System must know:
+
+```
+Which page will be used in the future?
+```
+
+During program execution,
+
+future memory references are unknown.
+
+Therefore,
+
+Optimal cannot be implemented in real systems.
+
+It is mainly used as a **benchmark** to compare other Page Replacement Algorithms.
+
+---
+
+# Advantages of Optimal Page Replacement
+
+### 1. Minimum Page Faults
+
+It always produces the lowest possible number of Page Faults.
+
+---
+
+### 2. Best Performance
+
+Among all Page Replacement Algorithms,
+
+Optimal performs the best.
+
+---
+
+### 3. Benchmark Algorithm
+
+It is used to compare the efficiency of FIFO, LRU, and other algorithms.
+
+---
+
+# Disadvantages of Optimal Page Replacement
+
+### 1. Future Knowledge Required
+
+The algorithm requires future page references.
+
+---
+
+### 2. Not Practical
+
+Future memory access cannot be predicted accurately.
+
+Therefore,
+
+it is not used in real Operating Systems.
+
+---
+
+# Difference Between FIFO and Optimal
+
+| FIFO | Optimal |
+|------|---------|
+| Removes the oldest page | Removes the page used farthest in the future |
+| Based on arrival order | Based on future usage |
+| Simple to implement | Not practical |
+| More Page Faults | Minimum Page Faults |
+| Suffers from Belady's Anomaly | Does not suffer from Belady's Anomaly |
+
+---
+
+# Real-Life Example
+
+Imagine packing a suitcase.
+
+The suitcase is full,
+
+and you must remove one item.
+
+Instead of removing the oldest item,
+
+you remove the item that you will use **last** during your trip.
+
+This is the best possible decision.
+
+Similarly,
+
+Optimal removes the page that will be used farthest in the future.
+
+---
+
+# Quick Revision
+
+- Optimal replaces the page used farthest in the future.
+- It always gives the minimum number of Page Faults.
+- Future page references are required.
+- It is not used in real Operating Systems.
+- It is used as a benchmark for comparison.
+
+---
+
+# Interview Questions
+
+### What is Optimal Page Replacement?
+
+Optimal Page Replacement replaces the page whose next use is farthest in the future.
+
+---
+
+### Why is it called Optimal?
+
+Because it always produces the minimum possible number of Page Faults.
+
+---
+
+### Why is Optimal not used in real Operating Systems?
+
+Because future memory references are unknown during execution.
+
+---
+
+### Which Page Replacement Algorithm gives the minimum Page Faults?
+
+**Optimal Page Replacement Algorithm.**
+
+---
+
+### Does Optimal suffer from Belady's Anomaly?
+
+No.
+
+---
+
+# Common Mistakes
+
+❌ Optimal removes the oldest page.
+
+✅ Wrong.
+
+It removes the page whose next use is farthest in the future.
+
+---
+
+❌ Optimal is used in modern Operating Systems.
+
+✅ Wrong.
+
+It is only a theoretical algorithm used for comparison.
+
+---
+
+❌ FIFO performs better than Optimal.
+
+✅ Wrong.
+
+Optimal always produces fewer or equal Page Faults than FIFO.
+
+---
+
+# Easy Way to Remember
+
+Think of a **trip**.
+
+🧳 Suitcase = RAM
+
+👕 Clothes = Pages
+
+The suitcase is full.
+
+Remove the cloth that you will wear **last** during the trip.
+
+Similarly,
+
+Optimal removes the page that will be used **last in the future**.
+
+Remember this flow:
+
+```
+Need New Page
+
+↓
+
+RAM Full?
+
+↓
+
+Yes
+
+↓
+
+Check Future References
+
+↓
+
+Remove Page Used Farthest in Future
+
+↓
+
+Load New Page
+
+↓
+
+Continue Execution
+```
+
+Remember these key points:
+
+```
+Optimal
+
+↓
+
+Looks at Future
+
+↓
+
+Replace Farthest Future Page
+
+↓
+
+Minimum Page Faults
+
+↓
+
+Not Practical
+```
